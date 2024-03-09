@@ -19,7 +19,11 @@ add_executable(CMakeSFMLProject
         "src/game.cpp"
         "src/game.h"
         "src/entity.cpp"
-        "src/entity.h")
+        "src/entity.h"
+        "src/player.cpp"
+        "src/player.h"
+        "src/metrics.cpp"
+        "src/metrics.h")
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-audio)
 target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
 
