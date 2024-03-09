@@ -5,6 +5,7 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include "settings.h"
+#include "game.h"
 
 namespace mainWindow {
     class ui {
@@ -15,7 +16,7 @@ namespace mainWindow {
         settings* options;
         // optional
         sf::Image icon;
-        sf::Sprite background;
+        sf::Texture backgroundImage;
         sf::Font font;
         sf::Music music;
         bool errorFlag;
