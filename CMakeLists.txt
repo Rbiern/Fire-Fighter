@@ -20,7 +20,7 @@ add_executable(CMakeSFMLProject
         "src/game.h"
         "src/entity.cpp"
         "src/entity.h")
-target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics)
+target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-audio)
 target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
 
 if(WIN32)
