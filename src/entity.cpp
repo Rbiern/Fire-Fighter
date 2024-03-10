@@ -1,16 +1,23 @@
 #include "entity.h"
 
-entity::entity() {
-    // Create a character
-    character.setSize(sf::Vector2f(50.f, 50.f));
-    character.setFillColor(sf::Color::Green);
-    character.setPosition(400.f, 300.f);
+Entity::Entity() {}
+
+void Entity::setPosition(float x, float y) {
+    sprite.setPosition(x, y);
 }
 
-sf::RectangleShape entity::getEntity() {
-    return character;
+void Entity::move(float deltaX, float deltaY) {
+    sprite.move(deltaX, deltaY);
 }
 
-float entity::getSpeed() {
-    return 0.5f;
+sf::Sprite& Entity::getSprite() {
+    return sprite;
+}
+
+bool Entity::setTexture(const std::string& texturePath) {
+    if (texture.loadFromFile(texturePath)) {
+        sprite.setTexture(texture);
+        return true;
+    }
+    return false;
 }
