@@ -4,7 +4,7 @@ namespace mainWindow {
 
     /** constructor */
     ui::ui(sf::RenderWindow &window1) : _window(window1) {
-        options = new settings(); // create new setting object
+        options = settings().getSettings();
         errorFlag = _init();
     }
 
@@ -71,7 +71,9 @@ namespace mainWindow {
         background.setScale(_window.getSize().x / background.getLocalBounds().width,
                             _window.getSize().y / background.getLocalBounds().height);
         _window.setFramerateLimit(60);
-        music.play();
+        if (options->toggleMusic()) {
+            music.play();
+        }
         bool startGameFlag = false;
         bool openSettings = false;
 
@@ -103,14 +105,25 @@ namespace mainWindow {
                 }
             }
             if (startGameFlag) {
+                if (options->toggleMusic()) {
+                    music.pause();
+                }
                 game *newGame = new game();
                 newGame->gameLoop();
                 startGameFlag = false;
+                if (options->toggleMusic()) {
+                    music.play();
+                }
             }
             if (openSettings) {
-                music.stop();
+                if (options->toggleMusic()) {
+                    music.stop();
+                }
                 _window.close();
                 options->openSettings(options->getResolution()[0], options->getResolution()[1]);
+                if (options->toggleMusic()) {
+                    music.play();
+                }
             }
             // for button mouse hover effect
             sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
@@ -144,27 +157,26 @@ namespace mainWindow {
     /** helper method to help initialize ui variables */
     bool ui::_init() {
         // Load icon image
-        if (!icon.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\img\icon.png)")) {
+        if (!icon.loadFromFile("../../resource/img/icon.png")) {
             std::cerr << "Failed to load icon" << std::endl;
             return true;
         }
         _window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
 
         // load background image for main menu
-        if (!backgroundImage.loadFromFile(
-                R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\img\menu_background.jpg)")) { //"../resource/img/main_menu_image.jpg"
+        if (!backgroundImage.loadFromFile("../../resource/img/menu_background.jpg")) { //"../resource/img/main_menu_image.jpg"
             std::cerr << "Failed to load background image!" << std::endl; // uses <iostream>
             return true; // if it failed, then loop will break and program will close
         }
 
         // Set fonts
-        if (!font.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\fonts\Rajdhani-SemiBold.ttf)")) {
+        if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
             std::cerr << "Failed to load font!" << std::endl;
             return true;
         }
 
         // set music for the main menu
-        if (!music.openFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\music\CYBERPSYCHO.wav)")) {
+        if (!music.openFromFile("../../music/EyjafjallaDream.mp3")) {
             std::cerr << "Failed to load music" << std::endl;
             return true;
         }
