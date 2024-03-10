@@ -4,10 +4,10 @@
 
 #include "game.h"
 #include "player.h"
-
+#include "entity.h"
 
 game::game() {
-    options = new settings();
+    options = settings().getSettings();
 }
 
 void game::gameLoop() {
@@ -25,7 +25,7 @@ void game::gameLoop() {
 
     // Create text for the exit button
     sf::Font font;
-    if (!font.loadFromFile(R"(../../group19/resource/fontsRajdhani-SemiBold.ttf)")) { // Change the font file path as needed
+    if (!font.loadFromFile(R"(../../resource/fontsRajdhani-SemiBold.ttf)")) { // Change the font file path as needed
         // Handle font loading failure
     }
     sf::Text exitButtonText("Exit", font, 16); // Smaller text size
@@ -35,6 +35,13 @@ void game::gameLoop() {
                                exitButton.getPosition().y + (exitButton.getSize().y - exitButtonText.getLocalBounds().height) / 2);
 
 
+    sf::Music music;
+    // set music for the main menu
+    if (!music.openFromFile("../../music/rglk2theme2distort.mp3")) {
+        std::cerr << "Failed to load music" << std::endl;
+    }
+    music.setLoop(true); // Loop the music
+    music.play();
 
 
     while (window.isOpen()) {
@@ -51,7 +58,7 @@ void game::gameLoop() {
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) {
+            if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
                 player.move(sf::Vector2f(0.f, movementSpeed));
             }
         }
@@ -85,6 +92,7 @@ void game::gameLoop() {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             if (exitButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
+                music.stop();
                 window.close();
             }
         }
