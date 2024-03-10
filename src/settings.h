@@ -27,16 +27,10 @@ private:
     }lang;
 public:
     settings();
+    settings* getSettings();
     void openSettings(int w, int h);
-    void fullScreenSettings();
-    void changeResoltion();
-    void changeFrameRate();
-    void toggleMusic();
-    void toggleSoundEffects();
-    void toggleEnglish();
-    void toggleKorean();
-    void toggleMandarin();
     int* getResolution();
+    bool toggleMusic();
     std::string* getLanguage();
 };
 
