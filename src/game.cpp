@@ -3,6 +3,8 @@
 //
 
 #include "game.h"
+#include "player.h"
+
 
 game::game() {
     options = new settings();
@@ -10,13 +12,7 @@ game::game() {
 
 void game::gameLoop() {
     sf::RenderWindow window(sf::VideoMode(options->getResolution()[0], options->getResolution()[1]), "Gamer Moment");
-
-//    entity* character = new entity();
-    sf::RectangleShape character;
-
-    character.setSize(sf::Vector2f(50.f, 50.f));
-    character.setFillColor(sf::Color::Green);
-    character.setPosition(400.f, 300.f);
+    Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
 
     sf::Clock shootCooldown;
     float movementSpeed = 0.5f;
@@ -29,7 +25,7 @@ void game::gameLoop() {
 
     // Create text for the exit button
     sf::Font font;
-    if (!font.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\fonts\Rajdhani-SemiBold.ttf)")) { // Change the font file path as needed
+    if (!font.loadFromFile(R"(../../group19/resource/fontsRajdhani-SemiBold.ttf)")) { // Change the font file path as needed
         // Handle font loading failure
     }
     sf::Text exitButtonText("Exit", font, 16); // Smaller text size
@@ -50,25 +46,25 @@ void game::gameLoop() {
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            if (character.getPosition().y - 0.5 >= 0) {
-                character.move(0.f, -movementSpeed);
+            if (player.getPosition().y - movementSpeed >= 0) {
+                player.move(sf::Vector2f(0.f, -movementSpeed));
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            if (character.getPosition().y + character.getSize().y + movementSpeed <= window.getSize().y) {
-                character.move(0.f, movementSpeed);
+            if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) {
+                player.move(sf::Vector2f(0.f, movementSpeed));
             }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            if (character.getPosition().x - movementSpeed >= 0) {
-                character.move(-movementSpeed, 0.f);
-            }
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            if (character.getPosition().x + character.getSize().x + movementSpeed <= window.getSize().x) {
-                character.move(movementSpeed, 0.f);
-            }
-        }
+//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+//            if (character.getPosition().x - movementSpeed >= 0) {
+//                character.move(-movementSpeed, 0.f);
+//            }
+//        }
+//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+//            if (character.getPosition().x + character.getSize().x + movementSpeed <= window.getSize().x) {
+//                character.move(movementSpeed, 0.f);
+//            }
+//        }
 
         // Shooting
 //        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -94,7 +90,7 @@ void game::gameLoop() {
         }
 
         window.clear();
-        window.draw(character);
+        player.draw(window);
         window.draw(exitButton); // Draw the exit button
         window.draw(exitButtonText); // Draw the exit button text
         window.display();
