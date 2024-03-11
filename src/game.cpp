@@ -10,7 +10,13 @@ game::game() {
 
 void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+    sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Gamer Moment", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+    sf::Image icon;
+    if (!icon.loadFromFile("../../resource/img/icon.png")) {
+        std::cerr << "Failed to load icon" << std::endl;
+        return;
+    }
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
 
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
