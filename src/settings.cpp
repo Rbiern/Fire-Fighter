@@ -73,8 +73,7 @@ void settings::openSettings(int w, int h) {
 
 //        sf::RenderWindow window(sf::VideoMode(w, h), "Fire Fighter", (h >= 1080) ? sf::Style::Fullscreen : NULL);
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window(fullscreen ? fullScreenMode : sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter", fullscreen ? sf::Style::Fullscreen : sf::Style::Default);
-
+    sf::RenderWindow window(fullscreen ? fullScreenMode : sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter", fullscreen || resolution[0] >= fullScreenMode.width ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60); // Limit the frame rate to 60 FPS
     // Load Icon
     sf::Image icon;
