@@ -7,12 +7,12 @@
 #include "settings.h"
 #include "game.h"
 
-namespace mainWindow {
+//namespace mainWindow {
     class ui {
     // variables
     private:
         // required!
-        sf::RenderWindow &_window;
+        sf::RenderWindow* _window;
         settings* options;
         // optional
         sf::Image icon;
@@ -23,11 +23,11 @@ namespace mainWindow {
     // methods
     public:
         // constructor
-        explicit ui(sf::RenderWindow &window1);
+        explicit ui(sf::RenderWindow *window1);
         void displayMenu();
     // helper methods
     private:
         bool _init();
     };
-}//end of namespace mainWindow
+//}//end of namespace mainWindow
 #endif //FIRE_FIGHTER_UI_H
