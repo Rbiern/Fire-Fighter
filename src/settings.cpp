@@ -1,32 +1,48 @@
 #include "settings.h"
-#include <SFML/Graphics.hpp>
 #include "ui.h"
 
-settings *options = new settings();
-
+/** constructor */
 settings::settings() {
-    fullscreen = false;
-    resolution = res.dv;
-    frameRate = 60;
-    rotation = 0;
-    music = true;
-    soundEffects = true;
-    language = lang.English;
+    // Open the file
+    std::ifstream file("../../config/settings.txt");
+    char idx = 0;
+    // Check if the file is open
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file." << std::endl;
+        return; // Return error code
+    }
+    // Read and print each line of the file
+    std::string line;
+    while (std::getline(file, line)) {
+        int number = std::stoi(line, nullptr, 2); // Convert the line to an integer
+        array[idx++] = number;
+    }
+    // Close the file
+    file.close();
+
+    fullscreen = array[0];
+    resolution = array[1] == 1 ? res.dv : array[1] == 2 ? res.sd : array[1] == 3 ? res.hd : res.uhd;
+    frameRate = array[2];
+    rotation = array[3];
+    music = array[4];
+    soundEffects = array[5];
+    language = array[6] == 1 ? lang.English : array[6] == 2 ? lang.Korean : lang.Mandarin;
 }
 
-// Function to check if mouse is inside the parallelogram button
-bool isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
+/** Helper method for checking if the parallelogram button is pressed */
+bool settings::isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
     return buttonBounds.contains(mousePosition);
 }
 
-bool isButtonPressed(const sf::RectangleShape& button, const sf::Vector2f& mousePosition) {
+/** Helper method for checking if the rectangle button is pressed */
+bool settings::isButtonPressed(const sf::RectangleShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
     return buttonBounds.contains(mousePosition);
 }
 
-// Function to create a parallelogram shape
-sf::ConvexShape createParallelogram(float width, float height) {
+/** Helper method to create a parallelogram shape */
+sf::ConvexShape settings::createParallelogram(float width, float height) {
     sf::ConvexShape parallelogram;
     parallelogram.setPointCount(4);
     parallelogram.setPoint(0, sf::Vector2f(0, 0));
@@ -39,7 +55,8 @@ sf::ConvexShape createParallelogram(float width, float height) {
     return parallelogram;
 }
 
-sf::RectangleShape createButton(float width, float height) {
+/** Helper method to create a rectangle shape */
+sf::RectangleShape settings::createRectangle(float width, float height) {
     sf::RectangleShape button(sf::Vector2f(width, height));
     button.setFillColor(sf::Color(54, 207, 213));
     button.setOutlineThickness(2);
@@ -54,7 +71,9 @@ void settings::openSettings(int w, int h) {
 //        sf::VideoMode f = sf::VideoMode::getFullscreenModes()[0];
 //        sf::RenderWindow window(sf::VideoMode(f), "Fixed Window", );
 
-        sf::RenderWindow window(sf::VideoMode(w, h), "Fire Fighter", (h >= 1080) ? sf::Style::Fullscreen : NULL);
+//        sf::RenderWindow window(sf::VideoMode(w, h), "Fire Fighter", (h >= 1080) ? sf::Style::Fullscreen : NULL);
+    sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
+    sf::RenderWindow window(fullscreen ? fullScreenMode : sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter", fullscreen ? sf::Style::Fullscreen : sf::Style::Default);
 
     window.setFramerateLimit(60); // Limit the frame rate to 60 FPS
     // Load Icon
@@ -64,19 +83,38 @@ void settings::openSettings(int w, int h) {
         return;
     }
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
-    // load fonts
+//    // load fonts
     sf::Font font;
-    if (!font.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\fonts\Rajdhani-SemiBold.ttf)")) {
-        std::cerr << "Failed to load font!" << std::endl;
-        return;
+//    if (!font.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\fonts\Rajdhani-SemiBold.ttf)")) {
+//        std::cerr << "Failed to load font!" << std::endl;
+//        return;
+//    }
+// Set fonts
+    if (language[0] == L"\uC0C8 \uAC8C\uC784") {
+        if (!font.loadFromFile("../../resource/fonts/NanumMyeongjoBold.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+    } else if (language[0] == L"\u65B0\u6E38\u620F") {
+        if (!font.loadFromFile("../../resource/fonts/simplified_Chinese.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+    } else {
+        if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
     }
 
     // languages
-    sf::Text buttonText("Select Languages", font, 20);
+    sf::String s9 = language[9];
+    sf::Text buttonText(s9, font, 20);
     buttonText.setFillColor(sf::Color::White);
     buttonText.setStyle(sf::Text::Bold);
     // for res
-    sf::Text buttonText2("Select Resolution", font, 20);
+    sf::String s10 = language[10];
+    sf::Text buttonText2(s10, font, 20);
     buttonText2.setFillColor(sf::Color::White);
     buttonText2.setStyle(sf::Text::Bold);
 
@@ -134,11 +172,11 @@ void settings::openSettings(int w, int h) {
     English.setFillColor(normalColor);
     korean.setFillColor(normalColor);
     Mandarin.setFillColor(normalColor);
-    if (language = lang.English) {
+    if (language[0] == "NEW GAME") {
         English.setFillColor(pressedColor);
-    } else if (language = lang.Korean) {
+    } else if (language[0] == L"\uC0C8 \uAC8C\uC784") {
         korean.setFillColor(pressedColor);
-    } else if (language = lang.Mandarin) {
+    } else {
         Mandarin.setFillColor(pressedColor);
     }
     // setup resolution button colors
@@ -146,13 +184,13 @@ void settings::openSettings(int w, int h) {
     sd.setFillColor(normalColor);
     hd.setFillColor(normalColor);
     uhd.setFillColor(normalColor);
-    if (resolution = res.dv) {
+    if (resolution[0] == 640) {
         dv.setFillColor(pressedColor);
-    } else if (resolution = res.sd) {
+    } else if (resolution[0] == 1280) {
         sd.setFillColor(pressedColor);
-    } else if (resolution = res.hd) {
+    } else if (resolution[0] == 1920) {
         hd.setFillColor(pressedColor);
-    } else if (resolution = res.uhd) {
+    } else {
         uhd.setFillColor(pressedColor);
     }
 
@@ -187,10 +225,10 @@ void settings::openSettings(int w, int h) {
 
 
     // Create rectangle buttons
-    sf::RectangleShape button8 = createButton(100, 50);
-    sf::RectangleShape button9 = createButton(100, 50);
-    sf::RectangleShape button10 = createButton(100, 50);
-    sf::RectangleShape button11 = createButton(100, 50);
+    sf::RectangleShape button8 = createRectangle(100, 50);
+    sf::RectangleShape button9 = createRectangle(100, 50);
+    sf::RectangleShape button10 = createRectangle(100, 50);
+    sf::RectangleShape button11 = createRectangle(100, 50);
 
     // Set initial button position
     float buttonSpacing = 20.0f;
@@ -203,22 +241,28 @@ void settings::openSettings(int w, int h) {
     button10.setPosition(startX + (button9.getSize().x + buttonSpacing) * 2, startY);
     button11.setPosition(startX + (button10.getSize().x + buttonSpacing) * 3, startY);
 
-    sf::Text text10("Fullscreen", font, 20);
+    sf::String s1 = language[3];
+    sf::Text text10(s1, font, 20);
 //    text10.setFillColor(sf::Color(235, 70, 60));
-    sf::Text text11("Music", font, 20);
+    sf::String s2 = language[4];
+    sf::Text text11(s2, font, 20);
 //    text11.setFillColor(sf::Color(235, 70, 60));
-    sf::Text text12("Sound Effects", font, 20);
+    sf::String s3 = language[5];
+    sf::Text text12(s3, font, 20);
 //    text12.setFillColor(sf::Color(235, 70, 60));
-    sf::Text text13("Rotation", font, 20);
+    sf::String s4 = language[6];
+    sf::Text text13(s4, font, 20);
 //    text13.setFillColor(sf::Color(235, 70, 60));
 
-    sf::Text text14(fullscreen ? "On" : "Off", font, 20);
+    sf::String s5 = language[7];
+    sf::String s6 = language[8];
+    sf::Text text14(fullscreen ? s5 : s6, font, 20);
     text14.setFillColor(sf::Color(235, 70, 60));
-    sf::Text text15(music ? "On" : "Off", font, 20);
+    sf::Text text15(music ? s5 : s6, font, 20);
     text15.setFillColor(sf::Color(235, 70, 60));
-    sf::Text text16(soundEffects ? "On" : "Off", font, 20);
+    sf::Text text16(soundEffects ? s5 : s6, font, 20);
     text16.setFillColor(sf::Color(235, 70, 60));
-    sf::Text text17(rotation ? "On" : "Off", font, 20);
+    sf::Text text17(rotation ? s5 : s6, font, 20);
     text17.setFillColor(sf::Color(235, 70, 60));
 
     // Set position for text
@@ -237,8 +281,8 @@ void settings::openSettings(int w, int h) {
 
 
     // Create square buttons
-    sf::RectangleShape applyButton = createButton(70, 40);
-    sf::RectangleShape cancelButton = createButton(70,40);
+    sf::RectangleShape applyButton = createRectangle(70, 40);
+    sf::RectangleShape cancelButton = createRectangle(70,40);
 
     // Set initial button position
     buttonSpacing = 20.0f;
@@ -250,9 +294,11 @@ void settings::openSettings(int w, int h) {
     cancelButton.setPosition(startX + applyButton.getSize().x + buttonSpacing, startY);
 
 
-    sf::Text applyText("Apply", font, 20);
+    sf::String s11 = language[11];
+    sf::Text applyText(s11, font, 20);
     applyButton.setFillColor(sf::Color::Green);
-    sf::Text cancelText("Cancel", font, 20);
+    sf::String s12 = language[12];
+    sf::Text cancelText(s12, font, 20);
     cancelButton.setFillColor(sf::Color(235, 70, 60));
 
     // Set position for text
@@ -274,19 +320,19 @@ void settings::openSettings(int w, int h) {
                 if (isButtonPressed(button8, mousePosition)) {
                     std::cout << "Button 10 Pressed!" << std::endl;
                     fullscreen = !fullscreen;
-                    text14.setString(fullscreen ? "On" : "Off");
+                    text14.setString(fullscreen ? s5 : s6);
                 } else if (isButtonPressed(button9, mousePosition)) {
                     std::cout << "Button 11 Pressed!" << std::endl;
                     music = !music;
-                    text15.setString(music ? "On" : "Off");
+                    text15.setString(music ? s5 : s6);
                 } else if (isButtonPressed(button10, mousePosition)) {
                     std::cout << "Button 12 Pressed!" << std::endl;
                     soundEffects = !soundEffects;
-                    text16.setString(soundEffects ? "On" : "Off");
+                    text16.setString(soundEffects ? s5 : s6);
                 } else if (isButtonPressed(button11, mousePosition)) {
                     std::cout << "Button 13 Pressed!" << std::endl;
                     rotation = !rotation;
-                    text17.setString(rotation ? "On" : "Off");
+                    text17.setString(rotation ? s5 : s6);
                 } else if (isButtonPressed(English, mousePosition)) {
                     std::cout << "Button 1 Pressed!" << std::endl;
                     English.setFillColor(pressedColor);
@@ -334,20 +380,38 @@ void settings::openSettings(int w, int h) {
                     uhd.setFillColor(pressedColor);
                     resolution = res.uhd;
                 } else if (isButtonPressed(applyButton, mousePosition)) {
+                    array[0] = (fullscreen) ? 1 : 0;
+                    array[1] = resolution == res.dv ? 1 : resolution == res.sd ? 2 : resolution == res.hd ? 3 : 4;
+                    array[2] = frameRate;
+                    array[3] = rotation;
+                    array[4] = (music) ? 1 : 0;
+                    array[5] = (soundEffects) ? 1 : 0;
+                    array[6] = language == lang.English ? 1 : language == lang.Korean ? 2 : 3;
+                    // Open file in write mode, automatically overrides the file
+                    std::ofstream file("../../config/settings.txt", std::ios::out);
+                    if (!file) {
+                        std::cerr << "Failed to open file for writing.\n";
+                        return;
+                    }
+                    for (size_t i = 0; i < 7; ++i) {
+                        // Convert the integer to a string
+                        std::string binaryString = std::bitset<8>(array[i]).to_string();
+                        binaryString = binaryString.substr(0);
+                        // Write the binary string to the file followed by a new line
+                        file << binaryString << '\n';
+                    }
+                    file.close(); // Close the file
+
                     window.close(); // Close the window if exit button is pressed
-                    sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0]; // Get the first available fullscreen mode
-                   // sf::RenderWindow window(sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter"); //make new window
-//                    sf::RenderWindow window(sf::VideoMode(fullscreenMode), "Fixed Window", sf::Style::None | sf::Style::Titlebar);
-                    sf::RenderWindow window(fullscreen ? fullscreenMode : sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter", fullscreen ? sf::Style::Fullscreen : NULL);
-                    mainWindow::ui program(window); // initialize ui window
-                    program.displayMenu(); // method from ui to run the main program loop
                 } else if (isButtonPressed(cancelButton, mousePosition)) {
+                    fullscreen = array[0];
+                    resolution = array[1] == 1 ? res.dv : array[1] == 2 ? res.sd : array[1] == 3 ? res.hd : res.uhd;
+                    frameRate = array[2];
+                    rotation = array[3];
+                    music = array[4];
+                    soundEffects = array[5];
+                    language = array[6] == 1 ? lang.English : array[6] == 2 ? lang.Korean : lang.Mandarin;
                     window.close(); // Close the window if exit button is pressed
-                    sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0]; // Get the first available fullscreen mode
-                    sf::RenderWindow window(fullscreen ? fullscreenMode : sf::VideoMode(w, h), "Fire Fighter"); //make new window
-//                    sf::RenderWindow window(sf::VideoMode(fullscreenMode), "Fixed Window", sf::Style::None | sf::Style::Titlebar);
-                    mainWindow::ui program(window); // initialize ui window
-                    program.displayMenu(); // method from ui to run the main program loop
                 }
             }
         }
@@ -414,7 +478,7 @@ int *settings::getResolution() {
     return resolution;
 }
 
-std::string *settings::getLanguage() {
+sf::String * settings::getLanguage() {
     return language;
 }
 
@@ -422,6 +486,6 @@ bool settings::toggleMusic() {
     return music;
 }
 
-settings *settings::getSettings() {
-    return options;
+bool settings::isFullScreen() {
+    return fullscreen;
 }
