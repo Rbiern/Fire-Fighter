@@ -3,11 +3,9 @@
 //
 
 #include "game.h"
-#include "player.h"
-#include "entity.h"
 
 game::game() {
-    options = settings().getSettings();
+    options = new settings();
 }
 
 void game::gameLoop() {
