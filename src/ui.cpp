@@ -165,7 +165,7 @@
 
         if (exitFlag) {
             sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-            sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen()) ? sf::Style::Fullscreen : sf::Style::Default);
+            sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
             _window = &window;
 
 
