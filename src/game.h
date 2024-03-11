@@ -6,10 +6,11 @@
 #include <iostream>
 #include "settings.h"
 #include "entity.h"
+#include "player.h"
 
 class game {
 private:
-    entity temp;
+    Entity temp;
     settings* options;
 public:
     game();
