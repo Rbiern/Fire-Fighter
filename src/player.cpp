@@ -1,8 +1,6 @@
 //Sungmin Lee
 
 #include "player.h"
-#include "bullet.h"
-#include <iostream>
 
 /**
  * constructor of player
@@ -18,6 +16,7 @@ Player::Player(float startX, float startY) : Entity() {
         std::cerr << "Shoot sound could not be loaded" << std::endl;
     }
     shootSound.setBuffer(shootBuffer);
+    options = new settings();
 }
 
 //move player's sprite
@@ -91,10 +90,9 @@ void Player::shoot() {
     //new bullet's starting posiiton
     Bullet newBullet(getPosition().x - getSize().x / 2, getPosition().y + getSize().y / 2);
     bullets.push_back(newBullet);
-
-    shootSound.play();
-
-
+    if (options->toggleSounds()) {
+        shootSound.play();
+    }
 }
 /**
  * update bullets by time
