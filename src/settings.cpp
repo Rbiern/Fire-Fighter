@@ -19,7 +19,6 @@ settings::settings() {
     }
     // Close the file
     file.close();
-
     fullscreen = array[0];
     resolution = array[1] == 1 ? res.dv : array[1] == 2 ? res.sd : array[1] == 3 ? res.hd : res.uhd;
     frameRate = array[2];
@@ -27,6 +26,26 @@ settings::settings() {
     music = array[4];
     soundEffects = array[5];
     language = array[6] == 1 ? lang.English : array[6] == 2 ? lang.Korean : lang.Mandarin;
+    if (language[0] == L"\uC0C8 \uAC8C\uC784") {
+        if (!font.loadFromFile("../../resource/fonts/NanumMyeongjoBold.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+    } else if (language[0] == L"\u65B0\u6E38\u620F") {
+        if (!font.loadFromFile("../../resource/fonts/simplified_Chinese.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+    } else {
+        if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+    }
+    if (!icon.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\img\icon.png)")) {
+        std::cerr << "Failed to load icon" << std::endl;
+        return;
+    }
 }
 
 /** Helper method for checking if the parallelogram button is pressed */
@@ -67,44 +86,10 @@ sf::RectangleShape settings::createRectangle(float width, float height) {
 /** main settings window loop */
 void settings::openSettings(int w, int h) {
     // Create the SFML window
-
-//        sf::VideoMode f = sf::VideoMode::getFullscreenModes()[0];
-//        sf::RenderWindow window(sf::VideoMode(f), "Fixed Window", );
-
-//        sf::RenderWindow window(sf::VideoMode(w, h), "Fire Fighter", (h >= 1080) ? sf::Style::Fullscreen : NULL);
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(fullscreen ? fullScreenMode : sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter", fullscreen || resolution[0] >= fullScreenMode.width ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60); // Limit the frame rate to 60 FPS
-    // Load Icon
-    sf::Image icon;
-    if (!icon.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\img\icon.png)")) {
-        std::cerr << "Failed to load icon" << std::endl;
-        return;
-    }
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
-//    // load fonts
-    sf::Font font;
-//    if (!font.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\fonts\Rajdhani-SemiBold.ttf)")) {
-//        std::cerr << "Failed to load font!" << std::endl;
-//        return;
-//    }
-// Set fonts
-    if (language[0] == L"\uC0C8 \uAC8C\uC784") {
-        if (!font.loadFromFile("../../resource/fonts/NanumMyeongjoBold.ttf")) {
-            std::cerr << "Failed to load font!" << std::endl;
-            return;
-        }
-    } else if (language[0] == L"\u65B0\u6E38\u620F") {
-        if (!font.loadFromFile("../../resource/fonts/simplified_Chinese.ttf")) {
-            std::cerr << "Failed to load font!" << std::endl;
-            return;
-        }
-    } else {
-        if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
-            std::cerr << "Failed to load font!" << std::endl;
-            return;
-        }
-    }
 
     // languages
     sf::String s9 = language[9];
@@ -129,8 +114,6 @@ void settings::openSettings(int w, int h) {
     // Get the current window size
     float screenWidth = window.getSize().x;
     float screenHeight = window.getSize().y;
-
-
     // setup dimensions and count for resolution buttons
     float buttonWidth = (screenWidth / 3) * 0.8f;
     float buttonHeight = (screenHeight / 4) * 0.5f;
@@ -145,7 +128,6 @@ void settings::openSettings(int w, int h) {
     Mandarin.setPosition(korean.getPosition().x + buttonWidth, screenHeight / 2 - buttonHeight / 2);
     // place languages text on top of button
     buttonText.setPosition(korean.getPosition().x + (buttonWidth - buttonText.getLocalBounds().width) / 2, korean.getPosition().y - 30);
-
 
     // setup dimensions and count for resolution buttons
     buttonWidth = (screenWidth / 4) * 0.8f;
@@ -193,7 +175,7 @@ void settings::openSettings(int w, int h) {
         uhd.setFillColor(pressedColor);
     }
 
-    //    // Create language buttons text with color RGB(235, 70, 60)
+    // Create language buttons text with color RGB(235, 70, 60)
     sf::Text englishText("English", font, 20);
     englishText.setPosition(English.getPosition().x + 20, English.getPosition().y + 10); // Adjusting position of text
     englishText.setFillColor(sf::Color(235, 70, 60)); // Setting text color
@@ -222,37 +204,31 @@ void settings::openSettings(int w, int h) {
     uhdText.setPosition(uhd.getPosition().x + 5, uhd.getPosition().y + 10); // Adjusting position of text
     uhdText.setFillColor(sf::Color(235, 70, 60)); // Setting text color
 
-
     // Create rectangle buttons
-    sf::RectangleShape button8 = createRectangle(100, 50);
-    sf::RectangleShape button9 = createRectangle(100, 50);
-    sf::RectangleShape button10 = createRectangle(100, 50);
-    sf::RectangleShape button11 = createRectangle(100, 50);
+    sf::RectangleShape FullscreenButton = createRectangle(100, 50);
+    sf::RectangleShape musicButton = createRectangle(100, 50);
+    sf::RectangleShape soundEffectsButton = createRectangle(100, 50);
+    sf::RectangleShape rotationButton = createRectangle(100, 50);
 
     // Set initial button position
     float buttonSpacing = 20.0f;
-    totalButtonWidth = (button8.getSize().x + buttonSpacing) * 4 - buttonSpacing;
+    totalButtonWidth = (FullscreenButton.getSize().x + buttonSpacing) * 4 - buttonSpacing;
     float startX = (window.getSize().x - totalButtonWidth) / 2;
     float startY = screenHeight * 0.21f;
 
-    button8.setPosition(startX, startY);
-    button9.setPosition(startX + button8.getSize().x + buttonSpacing, startY);
-    button10.setPosition(startX + (button9.getSize().x + buttonSpacing) * 2, startY);
-    button11.setPosition(startX + (button10.getSize().x + buttonSpacing) * 3, startY);
+    FullscreenButton.setPosition(startX, startY);
+    musicButton.setPosition(startX + FullscreenButton.getSize().x + buttonSpacing, startY);
+    soundEffectsButton.setPosition(startX + (musicButton.getSize().x + buttonSpacing) * 2, startY);
+    rotationButton.setPosition(startX + (soundEffectsButton.getSize().x + buttonSpacing) * 3, startY);
 
     sf::String s1 = language[3];
     sf::Text text10(s1, font, 20);
-//    text10.setFillColor(sf::Color(235, 70, 60));
     sf::String s2 = language[4];
     sf::Text text11(s2, font, 20);
-//    text11.setFillColor(sf::Color(235, 70, 60));
     sf::String s3 = language[5];
     sf::Text text12(s3, font, 20);
-//    text12.setFillColor(sf::Color(235, 70, 60));
     sf::String s4 = language[6];
     sf::Text text13(s4, font, 20);
-//    text13.setFillColor(sf::Color(235, 70, 60));
-
     sf::String s5 = language[7];
     sf::String s6 = language[8];
     sf::Text text14(fullscreen ? s5 : s6, font, 20);
@@ -268,15 +244,15 @@ void settings::openSettings(int w, int h) {
     float textOffsetX = 10.0f; // Offset from the button's left edge
     float textOffsetY = 15.0f; // Offset from the button's top edge
 
-    text14.setPosition(button8.getPosition().x + textOffsetX, button8.getPosition().y + textOffsetY);
-    text15.setPosition(button9.getPosition().x + textOffsetX, button9.getPosition().y + textOffsetY);
-    text16.setPosition(button10.getPosition().x + textOffsetX, button10.getPosition().y + textOffsetY);
-    text17.setPosition(button11.getPosition().x + textOffsetX, button11.getPosition().y + textOffsetY);
+    text14.setPosition(FullscreenButton.getPosition().x + textOffsetX, FullscreenButton.getPosition().y + textOffsetY);
+    text15.setPosition(musicButton.getPosition().x + textOffsetX, musicButton.getPosition().y + textOffsetY);
+    text16.setPosition(soundEffectsButton.getPosition().x + textOffsetX, soundEffectsButton.getPosition().y + textOffsetY);
+    text17.setPosition(rotationButton.getPosition().x + textOffsetX, rotationButton.getPosition().y + textOffsetY);
 
-    text10.setPosition(button8.getPosition().x + textOffsetX, button8.getPosition().y - textOffsetY * 1.8);
-    text11.setPosition(button9.getPosition().x + textOffsetX + 13, button9.getPosition().y - textOffsetY * 1.8);
-    text12.setPosition(button10.getPosition().x + textOffsetX - 15, button10.getPosition().y - textOffsetY * 1.8);
-    text13.setPosition(button11.getPosition().x + textOffsetX, button11.getPosition().y - textOffsetY * 1.8);
+    text10.setPosition(FullscreenButton.getPosition().x + textOffsetX, FullscreenButton.getPosition().y - textOffsetY * 1.8);
+    text11.setPosition(musicButton.getPosition().x + textOffsetX + 13, musicButton.getPosition().y - textOffsetY * 1.8);
+    text12.setPosition(soundEffectsButton.getPosition().x + textOffsetX - 15, soundEffectsButton.getPosition().y - textOffsetY * 1.8);
+    text13.setPosition(rotationButton.getPosition().x + textOffsetX, rotationButton.getPosition().y - textOffsetY * 1.8);
 
 
     // Create square buttons
@@ -292,7 +268,6 @@ void settings::openSettings(int w, int h) {
     applyButton.setPosition(startX, startY);
     cancelButton.setPosition(startX + applyButton.getSize().x + buttonSpacing, startY);
 
-
     sf::String s11 = language[11];
     sf::Text applyText(s11, font, 20);
     applyButton.setFillColor(sf::Color::Green);
@@ -301,8 +276,8 @@ void settings::openSettings(int w, int h) {
     cancelButton.setFillColor(sf::Color(235, 70, 60));
 
     // Set position for text
-    textOffsetX = 13.0f; // Offset from the button's left edge
-    textOffsetY = 6.0f; // Offset from the button's top edge
+    textOffsetX = 13.0f;
+    textOffsetY = 6.0f;
     applyText.setPosition(applyButton.getPosition().x + textOffsetX, applyButton.getPosition().y + textOffsetY);
     cancelText.setPosition(cancelButton.getPosition().x + textOffsetX, cancelButton.getPosition().y + textOffsetY);
 
@@ -316,19 +291,19 @@ void settings::openSettings(int w, int h) {
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2f mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
-                if (isButtonPressed(button8, mousePosition)) {
+                if (isButtonPressed(FullscreenButton, mousePosition)) {
                     std::cout << "Button 10 Pressed!" << std::endl;
                     fullscreen = !fullscreen;
                     text14.setString(fullscreen ? s5 : s6);
-                } else if (isButtonPressed(button9, mousePosition)) {
+                } else if (isButtonPressed(musicButton, mousePosition)) {
                     std::cout << "Button 11 Pressed!" << std::endl;
                     music = !music;
                     text15.setString(music ? s5 : s6);
-                } else if (isButtonPressed(button10, mousePosition)) {
+                } else if (isButtonPressed(soundEffectsButton, mousePosition)) {
                     std::cout << "Button 12 Pressed!" << std::endl;
                     soundEffects = !soundEffects;
                     text16.setString(soundEffects ? s5 : s6);
-                } else if (isButtonPressed(button11, mousePosition)) {
+                } else if (isButtonPressed(rotationButton, mousePosition)) {
                     std::cout << "Button 13 Pressed!" << std::endl;
                     rotation = !rotation;
                     text17.setString(rotation ? s5 : s6);
@@ -386,6 +361,22 @@ void settings::openSettings(int w, int h) {
                     array[4] = (music) ? 1 : 0;
                     array[5] = (soundEffects) ? 1 : 0;
                     array[6] = language == lang.English ? 1 : language == lang.Korean ? 2 : 3;
+                    if (language[0] == L"\uC0C8 \uAC8C\uC784") {
+                        if (!font.loadFromFile("../../resource/fonts/NanumMyeongjoBold.ttf")) {
+                            std::cerr << "Failed to load font!" << std::endl;
+                            return;
+                        }
+                    } else if (language[0] == L"\u65B0\u6E38\u620F") {
+                        if (!font.loadFromFile("../../resource/fonts/simplified_Chinese.ttf")) {
+                            std::cerr << "Failed to load font!" << std::endl;
+                            return;
+                        }
+                    } else {
+                        if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
+                            std::cerr << "Failed to load font!" << std::endl;
+                            return;
+                        }
+                    }
                     // Open file in write mode, automatically overrides the file
                     std::ofstream file("../../config/settings.txt", std::ios::out);
                     if (!file) {
@@ -431,10 +422,10 @@ void settings::openSettings(int w, int h) {
 
 
         // top buttons
-        window.draw(button8);
-        window.draw(button9);
-        window.draw(button10);
-        window.draw(button11);
+        window.draw(FullscreenButton);
+        window.draw(musicButton);
+        window.draw(soundEffectsButton);
+        window.draw(rotationButton);
 
         // Draw text
         window.draw(buttonText);
@@ -462,11 +453,9 @@ void settings::openSettings(int w, int h) {
         // Draw buttons
         window.draw(applyButton);
         window.draw(cancelButton);
-
         // Draw text
         window.draw(applyText);
         window.draw(cancelText);
-
 
         // Display content
         window.display();
@@ -481,10 +470,18 @@ sf::String * settings::getLanguage() {
     return language;
 }
 
-bool settings::toggleMusic() {
+bool settings::toggleMusic() const {
     return music;
 }
 
-bool settings::isFullScreen() {
+bool settings::isFullScreen() const {
     return fullscreen;
+}
+
+sf::Font settings::getFont() {
+    return font;
+}
+
+sf::Image settings::getIcon() {
+    return icon;
 }
