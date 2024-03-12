@@ -484,3 +484,7 @@ sf::Font settings::getFont() {
 sf::Image settings::getIcon() {
     return icon;
 }
+
+bool settings::toggleSounds() const {
+    return soundEffects;
+}
