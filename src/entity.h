@@ -12,15 +12,8 @@ public:
     Entity();
     virtual ~Entity() {}
 
-    virtual bool loadTexture(const std::string& filename) {
-        if (texture.loadFromFile(filename)) {
-            sprite.setTexture(texture);
-            return true;
-        }
-        return false;
-    }
-
     void setPosition(float x, float y);
+    sf::Vector2f getPosition() const;
 
     void move(float deltaX, float deltaY);
 
@@ -30,6 +23,10 @@ public:
         window.draw(sprite);
     }
     bool setTexture(const std::string& texturePath);
+
+    void setScale(float scaleX, float scaleY) {
+        sprite.setScale(scaleX, scaleY);
+    }
 };
 
 #endif //FIRE_FIGHTER_ENTITY_H
