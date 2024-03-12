@@ -12,17 +12,22 @@ void game::gameLoop() {
     window.setFramerateLimit(60);
     sf::Font font = options->getFont();
 
-    Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
+    Player user(window.getSize().x - 100.f, window.getSize().y - 100.0f);
     //*****************************************************************************************
     // pick character window code start
     // character textures
-    sf::Texture characterTexture;
-    if (!characterTexture.loadFromFile("../../resource/img/water.png")) {
-        std::cerr << "Failed to load player!" << std::endl;
+    sf::Texture characterTexture1;
+    if (!characterTexture1.loadFromFile("../../resource/img/waterBoy.png")) {
+        std::cerr << "Failed to load user!" << std::endl;
         return;
     }
-    sf::Sprite character1(characterTexture);
-    sf::Sprite character2(characterTexture);
+    sf::Texture characterTexture2;
+    if (!characterTexture2.loadFromFile("../../resource/img/waterGirl.png")) {
+        std::cerr << "Failed to load user!" << std::endl;
+        return;
+    }
+    sf::Sprite character1(characterTexture1);
+    sf::Sprite character2(characterTexture2);
     // Get the screen dimensions
     sf::Vector2u screenSize = window.getSize();
     float screenWidth = screenSize.x;
@@ -132,7 +137,7 @@ void game::gameLoop() {
         // Display the window
         window.display();
     }
-    // end of chose player window
+    // end of chose user window
     //*************************************************************************************************
 
 
@@ -145,7 +150,7 @@ void game::gameLoop() {
     exitButton.setPosition(window.getSize().x - 130.f, 20.f); // Position in the top right corner
 
     // Create text for the exit button
-    sf::Text exitButtonText("Exit", font, 16); // Smaller text size
+    sf::Text exitButtonText(options->getLanguage()[17], font, 16); // Smaller text size
     exitButtonText.setFillColor(sf::Color::White);
     // Center the text within the exit button
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
@@ -169,13 +174,13 @@ void game::gameLoop() {
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            if (player.getPosition().y - movementSpeed >= 0) {
-                player.move(sf::Vector2f(0.f, -movementSpeed));
+            if (user.getPosition().y - movementSpeed >= 0) {
+                user.move(sf::Vector2f(0.f, -movementSpeed));
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
-                player.move(sf::Vector2f(0.f, movementSpeed));
+            if (user.getPosition().y + user.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
+                user.move(sf::Vector2f(0.f, movementSpeed));
             }
         }
 
@@ -188,7 +193,7 @@ void game::gameLoop() {
             }
         }
         window.clear();
-        player.draw(window);
+        user.draw(window);
         window.draw(exitButton);
         window.draw(exitButtonText);
         window.display();
