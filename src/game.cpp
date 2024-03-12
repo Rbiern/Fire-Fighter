@@ -4,6 +4,8 @@ game::game() {
     options = new settings();
 }
 
+
+
 void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Gamer Moment", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
@@ -17,13 +19,18 @@ void game::gameLoop() {
     //*****************************************************************************************
     // pick character window code start
     // character textures
-    sf::Texture characterTexture;
-    if (!characterTexture.loadFromFile("../../resource/img/waterBoy.png")) {
+    sf::Texture characterTexture1;
+    sf::Texture characterTexture2;
+    if (!characterTexture1.loadFromFile("../../resource/img/waterBoy.png")) {
         std::cerr << "Failed to load player!" << std::endl;
         return;
     }
-    sf::Sprite character1(characterTexture);
-    sf::Sprite character2(characterTexture);
+    if (!characterTexture2.loadFromFile("../../resource/img/waterGirl.png")) {
+        std::cerr << "Failed to load player!" << std::endl;
+        return;
+    }
+    sf::Sprite character1(characterTexture1);
+    sf::Sprite character2(characterTexture2);
     // Get the screen dimensions
     sf::Vector2u screenSize = window.getSize();
     float screenWidth = screenSize.x;
@@ -77,11 +84,13 @@ void game::gameLoop() {
                     if (button1.getGlobalBounds().contains(mousePos)) {
                         // Button 1 clicked
                         std::cout << "Player 1 selected\n";
+                        player.setPlayerTexture("../../resource/img/waterBoy.png");
                         flag = false;
                     }
                     if (button2.getGlobalBounds().contains(mousePos)) {
                         // Button 2 clicked
                         std::cout << "Player 2 selected\n";
+                        player.setPlayerTexture("../../resource/img/waterGirl.png");
                         flag = false;
                     }
                     if (backButton.getGlobalBounds().contains(mousePos)) {
@@ -154,12 +163,14 @@ void game::gameLoop() {
                                exitButton.getPosition().y + (exitButton.getSize().y - exitButtonText.getLocalBounds().height) / 2);
 
     sf::Music music;
-    // set music for the main menu
-    if (!music.openFromFile("../../music/rglk2theme2distort.mp3")) {
-        std::cerr << "Failed to load music" << std::endl;
+    if (options->toggleMusic()) {
+        // set music for the main menu
+        if (!music.openFromFile("../../music/rglk2theme2distort.mp3")) {
+            std::cerr << "Failed to load music" << std::endl;
+        }
+        music.setLoop(true); // Loop the music
+        music.play();
     }
-    music.setLoop(true); // Loop the music
-    music.play();
 
 /** main game window */
     while (window.isOpen()) {
@@ -186,7 +197,9 @@ void game::gameLoop() {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             if (exitButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                music.stop();
+                if (options->toggleMusic()) {
+                    music.stop();
+                }
                 window.close();
             }
         }
