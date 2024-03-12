@@ -38,6 +38,7 @@ public:
     int* getResolution();
     bool isFullScreen() const;
     bool toggleMusic() const;
+    bool toggleSounds() const;
     sf::String * getLanguage();
     sf::Font getFont();
     sf::Image getIcon();
