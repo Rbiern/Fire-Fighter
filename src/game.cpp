@@ -8,26 +8,22 @@ void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Gamer Moment", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     sf::Image icon = options->getIcon();
+    sf::Clock clock;
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
     sf::Font font = options->getFont();
 
-    Player user(window.getSize().x - 100.f, window.getSize().y - 100.0f);
+    Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
     //*****************************************************************************************
     // pick character window code start
     // character textures
-    sf::Texture characterTexture1;
-    if (!characterTexture1.loadFromFile("../../resource/img/waterBoy.png")) {
-        std::cerr << "Failed to load user!" << std::endl;
+    sf::Texture characterTexture;
+    if (!characterTexture.loadFromFile("../../resource/img/waterBoy.png")) {
+        std::cerr << "Failed to load player!" << std::endl;
         return;
     }
-    sf::Texture characterTexture2;
-    if (!characterTexture2.loadFromFile("../../resource/img/waterGirl.png")) {
-        std::cerr << "Failed to load user!" << std::endl;
-        return;
-    }
-    sf::Sprite character1(characterTexture1);
-    sf::Sprite character2(characterTexture2);
+    sf::Sprite character1(characterTexture);
+    sf::Sprite character2(characterTexture);
     // Get the screen dimensions
     sf::Vector2u screenSize = window.getSize();
     float screenWidth = screenSize.x;
@@ -137,11 +133,12 @@ void game::gameLoop() {
         // Display the window
         window.display();
     }
-    // end of chose user window
+    // end of chose player window
     //*************************************************************************************************
 
 
     sf::Clock shootCooldown;
+    bool canShoot = true;
     float movementSpeed = 0.5f;
 
     // Create an exit button
@@ -150,7 +147,7 @@ void game::gameLoop() {
     exitButton.setPosition(window.getSize().x - 130.f, 20.f); // Position in the top right corner
 
     // Create text for the exit button
-    sf::Text exitButtonText(options->getLanguage()[17], font, 16); // Smaller text size
+    sf::Text exitButtonText("Exit", font, 16); // Smaller text size
     exitButtonText.setFillColor(sf::Color::White);
     // Center the text within the exit button
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
@@ -167,6 +164,7 @@ void game::gameLoop() {
 /** main game window */
     while (window.isOpen()) {
         sf::Event event;
+        sf::Time deltaTime = clock.restart();
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -174,13 +172,13 @@ void game::gameLoop() {
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            if (user.getPosition().y - movementSpeed >= 0) {
-                user.move(sf::Vector2f(0.f, -movementSpeed));
+            if (player.getPosition().y - movementSpeed >= 0) {
+                player.move(sf::Vector2f(0.f, -movementSpeed));
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            if (user.getPosition().y + user.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
-                user.move(sf::Vector2f(0.f, movementSpeed));
+            if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
+                player.move(sf::Vector2f(0.f, movementSpeed));
             }
         }
 
@@ -192,12 +190,22 @@ void game::gameLoop() {
                 window.close();
             }
         }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && canShoot) {
+            player.shoot();
+            shootCooldown.restart();
+            canShoot = false;
+        }
+
+        if (shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
+            canShoot = true;
+        }
+        player.updateBullets(deltaTime);
         window.clear();
-        user.draw(window);
+        player.draw(window);
+        player.drawBullets(window);
         window.draw(exitButton);
         window.draw(exitButtonText);
         window.display();
     }
     return;
 }
-
