@@ -8,7 +8,6 @@
  * @param startY Starting point in y coordinate
  */
 Player::Player(float startX, float startY) : Entity() {
-    this->setTexture("../../resource/img/waterBoy.png");
     this->setPosition(startX, startY);
     movementSpeed = 3.0f;
     //water-drop sound effect
@@ -116,4 +115,8 @@ void Player::drawBullets(sf::RenderWindow& window) {
 }
 Player::~Player() {
 
+}
+
+void Player::setPlayerTexture(char* str) {
+    this->setTexture(str);
 }
