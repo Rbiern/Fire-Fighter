@@ -1,5 +1,4 @@
 #include "settings.h"
-#include "ui.h"
 
 /** constructor */
 settings::settings() {
@@ -42,7 +41,7 @@ settings::settings() {
             return;
         }
     }
-    if (!icon.loadFromFile(R"(C:\Users\Pc MSI\CLionProjects\Fire Fighter\resource\img\icon.png)")) {
+    if (!icon.loadFromFile("../../resource/img/icon.png")) {
         std::cerr << "Failed to load icon" << std::endl;
         return;
     }
