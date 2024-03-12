@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "bullet.h"
 #include <iostream>
+#include <String>
 
 class Player : public Entity {
 public:
@@ -42,6 +43,8 @@ public:
     void decreaseLife();
 
     bool isCollidingWithEnemy(const sf::Sprite& enemySprite) const;
+
+    void setPlayerTexture(char *t);
 
 private:
     float movementSpeed;
