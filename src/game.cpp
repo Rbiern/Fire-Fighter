@@ -147,7 +147,7 @@ void game::gameLoop() {
     exitButton.setPosition(window.getSize().x - 130.f, 20.f); // Position in the top right corner
 
     // Create text for the exit button
-    sf::Text exitButtonText("Exit", font, 16); // Smaller text size
+    sf::Text exitButtonText(options->getLanguage()[17], font, 16); // Smaller text size
     exitButtonText.setFillColor(sf::Color::White);
     // Center the text within the exit button
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
