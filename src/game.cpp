@@ -1,7 +1,3 @@
-//
-// Created by Pc MSI on 2024-03-08.
-//
-
 #include "game.h"
 
 game::game() {
@@ -11,22 +7,12 @@ game::game() {
 void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Gamer Moment", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
-    sf::Image icon;
-    if (!icon.loadFromFile("../../resource/img/icon.png")) {
-        std::cerr << "Failed to load icon" << std::endl;
-        return;
-    }
+    sf::Image icon = options->getIcon();
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
+    sf::Font font = options->getFont();
 
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
-
-    sf::Font font;
-    if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
-        std::cerr << "Failed to load font!" << std::endl;
-        return;
-    }
-
     //*****************************************************************************************
     // pick character window code start
     // character textures
@@ -49,7 +35,8 @@ void game::gameLoop() {
     button1.setFillColor(sf::Color::Blue);
     button1.setPosition((screenWidth - button1.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
     // Create button 1 text
-    sf::Text text1("Water Boy", font, 20);
+    sf::String s1 = options->getLanguage()[16];
+    sf::Text text1(s1, font, 20);
     text1.setPosition(button1.getPosition().x + (button1.getSize().x - text1.getLocalBounds().width) / 2, button1.getPosition().y + (button1.getSize().y - text1.getLocalBounds().height) / 2);
     text1.setFillColor(sf::Color::White);
     // Create button 2
@@ -57,18 +44,22 @@ void game::gameLoop() {
     button2.setFillColor(sf::Color::Red);
     button2.setPosition(button1.getPosition().x + button1.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
     // Create button 2 text
-    sf::Text text2("Fire Girl", font, 20);
+    sf::String s2 = options->getLanguage()[15];
+    sf::Text text2(s2, font, 20);
     text2.setPosition(button2.getPosition().x + (button2.getSize().x - text2.getLocalBounds().width) / 2, button2.getPosition().y + (button2.getSize().y - text2.getLocalBounds().height) / 2);
     text2.setFillColor(sf::Color::White);
     // create text at top of screen
-    sf::Text chooseText("Choose a character", font, 30);
+    sf::String s3 = options->getLanguage()[13];
+    sf::Text chooseText(s3, font, 30);
     chooseText.setPosition((screenWidth - chooseText.getLocalBounds().width) / 2, 20); // Position text at the top center
     chooseText.setFillColor(sf::Color::White);
     // Create "Go Back" button
     sf::RectangleShape backButton(sf::Vector2f(150.f, 50.f));
     backButton.setFillColor(sf::Color(54, 207, 213));
     backButton.setPosition(screenWidth - backButton.getSize().x - 20, 20); // Position button at the top right
-    sf::Text backText("Go Back", font, 20);
+    // create go back text
+    sf::String s4 = options->getLanguage()[14];
+    sf::Text backText(s4, font, 20);
     backText.setPosition(backButton.getPosition().x + (backButton.getSize().x - backText.getLocalBounds().width) / 2, backButton.getPosition().y + (backButton.getSize().y - backText.getLocalBounds().height) / 2);
     backText.setFillColor(sf::Color::White);
 
@@ -147,7 +138,6 @@ void game::gameLoop() {
 
     sf::Clock shootCooldown;
     float movementSpeed = 0.5f;
-    bool canShoot = true;
 
     // Create an exit button
     sf::RectangleShape exitButton(sf::Vector2f(100.f, 30.f)); // Smaller size
@@ -160,7 +150,6 @@ void game::gameLoop() {
     // Center the text within the exit button
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
                                exitButton.getPosition().y + (exitButton.getSize().y - exitButtonText.getLocalBounds().height) / 2);
-
 
     sf::Music music;
     // set music for the main menu
@@ -189,31 +178,6 @@ void game::gameLoop() {
                 player.move(sf::Vector2f(0.f, movementSpeed));
             }
         }
-//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-//            if (character.getPosition().x - movementSpeed >= 0) {
-//                character.move(-movementSpeed, 0.f);
-//            }
-//        }
-//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-//            if (character.getPosition().x + character.getSize().x + movementSpeed <= window.getSize().x) {
-//                character.move(movementSpeed, 0.f);
-//            }
-//        }
-
-        // Shooting
-//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-//            if (canShoot && shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
-//                // Shoot projectile here
-//                shootCooldown.restart();
-//            }
-//        }
-
-        // Update shooting cooldown state
-//        if (shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
-//            canShoot = true;
-//        } else {
-//            canShoot = false;
-//        }
 
         // Check if the exit button is clicked
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -223,11 +187,10 @@ void game::gameLoop() {
                 window.close();
             }
         }
-
         window.clear();
         player.draw(window);
-        window.draw(exitButton); // Draw the exit button
-        window.draw(exitButtonText); // Draw the exit button text
+        window.draw(exitButton);
+        window.draw(exitButtonText);
         window.display();
     }
     return;
