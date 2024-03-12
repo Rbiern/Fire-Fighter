@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player(float startX, float startY) {
-    loadTexture("../../resource/img/water.png");
+    loadTexture("../../resource/img/waterBoy.png");
     sprite.setPosition(startX, startY);
     movementSpeed = 0.5f; // 기본 이동 속도 설정
 }
