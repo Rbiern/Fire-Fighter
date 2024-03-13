@@ -15,6 +15,9 @@ void game::gameLoop() {
 
     //*****************************************************************************************
     //enemy character
+    float waveAmplitude = 20.0f; // Height of the wave
+    float waveFrequency = 0.5f; // How often the wave peaks occur
+    float wavePhase = 0.0f; // Initial phase of the wave
     bool movingRight = true; // Start moving to the right
     float dropDownStep = 20.f; // How much enemies move down when reaching a screen edge
     float horizontalMoveSpeed = 1.f; // Adjust based on desired speed
@@ -22,8 +25,8 @@ void game::gameLoop() {
     int columns = 10; // Number of columns of enemies
     float spacingX = 100.f; // Horizontal spacing between enemies
     float spacingY = 70.f; // Vertical spacing between enemies
-    float startX = 100.f; // Starting X position for the first enemy
-    float startY = 50.f; // Starting Y position for the first enemy
+    float startX = -900.f; // Starting X position for the first enemy
+    float startY = 75.f; // Starting Y position for the first enemy
     std::vector<std::vector<Enemy>> enemyGrid(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x))); // Initialize all enemies
 
     for (int i = 0; i < rows; ++i) {
@@ -229,39 +232,23 @@ void game::gameLoop() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+        /** enemy stuff */
+        // Calculate elapsed time since the last frame
+        float elapsedTime = deltaTime.asSeconds();
+        wavePhase += elapsedTime; // Increment the wave phase
+        // Enemy movement logic...
         bool shouldMoveDown = false;
+        // Your existing horizontal movement logic here...
+        // Here's where you'll integrate the new wave movement logic
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
-                if (movingRight) {
-                    if (enemyGrid[i][j].getPosition().x + enemyGrid[i][j].getSize().x + horizontalMoveSpeed > window.getSize().x) {
-                        movingRight = false;
-                        shouldMoveDown = true;
-                        break; // Exit the loop since one enemy hit the boundary
-                    }
-                } else {
-                    if (enemyGrid[i][j].getPosition().x - horizontalMoveSpeed < 0) {
-                        movingRight = true;
-                        shouldMoveDown = true;
-                        break; // Exit the loop since one enemy hit the boundary
-                    }
-                }
-            }
-            if (shouldMoveDown) break; // Exit the loop if we need to move down
-        }
+                // Add vertical wave movement
+                float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
+                enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, startY + i * spacingY + waveOffset);
 
-        if (shouldMoveDown) {
-            for (int i = 0; i < rows; ++i) {
-                for (int j = 0; j < columns; ++j) {
-                    enemyGrid[i][j].move(0, dropDownStep); // Move down
-                }
-            }
-        } else {
-            for (int i = 0; i < rows; ++i) {
-                for (int j = 0; j < columns; ++j) {
-                    enemyGrid[i][j].move((movingRight ? horizontalMoveSpeed : -horizontalMoveSpeed), 0); // Continue moving in the current horizontal direction
-                }
             }
         }
+        /** end of enemy stuff */
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
