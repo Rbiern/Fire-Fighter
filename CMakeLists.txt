@@ -29,7 +29,8 @@ add_executable(CMakeSFMLProject
         "src/bullet.cpp"
         "src/metrics.cpp"
         "src/metrics.h"
-                    )
+        "src/powerup.cpp"
+        "src/powerup.h")
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-audio)
 target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
 

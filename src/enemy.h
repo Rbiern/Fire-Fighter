@@ -1,6 +1,6 @@
-#ifndef ENEMY_H
-#define ENEMY_H
-
+#ifndef FIRE_FIGHTER_ENEMY_H
+#define FIRE_FIGHTER_ENEMY_H
+#include "entity.h"
 #include <SFML/Graphics.hpp>
 #include <cmath> // For sin function
 
@@ -27,4 +27,4 @@ private:
     void loadTexture(const std::string& path);
 };
 
-#endif // ENEMY_H
+#endif // FIRE_FIGHTER_ENEMY_H

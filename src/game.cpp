@@ -16,6 +16,7 @@ void game::gameLoop() {
     sf::Font font = options->getFont();
 
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
+    powerup Powerup;
     //*****************************************************************************************
     // pick character window code start
     // character textures
@@ -162,6 +163,27 @@ void game::gameLoop() {
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
                                exitButton.getPosition().y + (exitButton.getSize().y - exitButtonText.getLocalBounds().height) / 2);
 
+    // Load life counter textures
+    sf::Texture life3Texture;
+    sf::Texture life2Texture;
+    sf::Texture life1Texture;
+    sf::Texture life0Texture;
+
+    if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
+        !life2Texture.loadFromFile("../../resource/img/2.png") ||
+        !life1Texture.loadFromFile("../../resource/img/1.png") ||
+        !life0Texture.loadFromFile("../../resource/img/0.png")) {
+        std::cerr << "Failed to load life counter textures!" << std::endl;
+        return;
+    }
+
+    // Create life counter sprites
+    sf::Sprite lifeCounterSprite;
+    lifeCounterSprite.setTexture(life3Texture);
+    lifeCounterSprite.setScale(1.5f, 1.5f); // Adjust scale as needed
+    lifeCounterSprite.setPosition(15.f, 15.f); // Top left corner of the window
+
+
     sf::Music music;
     if (options->toggleMusic()) {
         // set music for the main menu
@@ -180,6 +202,26 @@ void game::gameLoop() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+        // Draw life counter
+        int lives = player.getLives();
+        switch (lives) {
+            case 3:
+                lifeCounterSprite.setTexture(life3Texture);
+                break;
+            case 2:
+                lifeCounterSprite.setTexture(life2Texture);
+                break;
+            case 1:
+                lifeCounterSprite.setTexture(life1Texture);
+                break;
+            case 0:
+                lifeCounterSprite.setTexture(life0Texture);
+                break;
+            default:
+                break;
+        }
+        window.draw(lifeCounterSprite);
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
@@ -212,9 +254,15 @@ void game::gameLoop() {
         if (shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
             canShoot = true;
         }
+
+        // Update powerup
+        Powerup.update(deltaTime, player);
+
         player.updateBullets(deltaTime);
         window.clear();
         player.draw(window);
+        window.draw(lifeCounterSprite);
+        Powerup.draw(window,player);
         player.drawBullets(window);
         window.draw(exitButton);
         window.draw(exitButtonText);

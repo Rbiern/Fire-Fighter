@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "entity.h"
 #include "player.h"
+#include "powerup.h"
 
 class game {
 private:

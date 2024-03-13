@@ -16,6 +16,7 @@ Player::Player(float startX, float startY) : Entity() {
     }
     shootSound.setBuffer(shootBuffer);
     options = new settings();
+    lives = 3;
 }
 
 //move player's sprite
@@ -49,6 +50,14 @@ int Player::getLives() const {
 void Player::decreaseLife() {
     if (lives > 0) {
         --lives;
+    }
+}
+/**
+ * increase player's lives by 1
+ */
+void Player::increaseLife() {
+    if (lives < 3) {
+        ++lives;
     }
 }
 

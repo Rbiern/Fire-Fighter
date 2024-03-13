@@ -41,6 +41,7 @@ public:
     void setLives(int lives);
     int getLives() const;
     void decreaseLife();
+    void increaseLife();
 
     bool isCollidingWithEnemy(const sf::Sprite& enemySprite) const;
 

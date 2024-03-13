@@ -2,7 +2,7 @@
 
 Enemy::Enemy(float startX, float startY, float screenWidth)
         : screenWidth(screenWidth), movementSpeed(100.0f) { // Adjust the speed as necessary
-    loadTexture("/Users/kevinlee/Desktop/cs3307asn/group19/resource/img/fire.png");
+    loadTexture("../../resource/img/fire.png");
     sprite.setPosition(startX, startY);
     // Initialize other variables as needed, example:
     verticalMovementSpeed = 0.0f; // Assuming this is used for vertical movement
