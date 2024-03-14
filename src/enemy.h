@@ -1,15 +1,17 @@
-#ifndef FIRE_FIGHTER_ENEMY_H
-#define FIRE_FIGHTER_ENEMY_H
-#include "entity.h"
-#include <SFML/Graphics.hpp>
-#include <cmath> // For sin function
+#ifndef ENEMY_H
+#define ENEMY_H
 
-class Enemy {
+#include "entity.h" // Make sure this path is correct
+#include <SFML/Graphics.hpp>
+#include <cmath>
+
+class Enemy : public Entity { // This line changes to inherit from Entity
 public:
-    Enemy(float startX, float startY, float screenWidth); // Modified constructor
+    Enemy(float startX, float startY, float screenWidth);
     void update(const sf::Time& deltaTime);
     void draw(sf::RenderWindow& window);
     void moveTowardsPlayer(const sf::Vector2f& playerPosition, const sf::Time& deltaTime);
+    sf::Vector2u getSize() const;
 
 
 private:
@@ -17,14 +19,12 @@ private:
     sf::Texture texture;
     float movementSpeed;
     float verticalMovementSpeed;
-    float startY; // Starting Y position for oscillation
-    float time; // To control the oscillation over time
+    float startY;
+    float time;
     float screenWidth;
 
-
-
-
     void loadTexture(const std::string& path);
+
 };
 
-#endif // FIRE_FIGHTER_ENEMY_H
+#endif // ENEMY_H
