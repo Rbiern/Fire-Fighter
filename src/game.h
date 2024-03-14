@@ -8,6 +8,7 @@
 #include "entity.h"
 #include "player.h"
 #include "powerup.h"
+#include "enemy.h"
 
 class game {
 private:
