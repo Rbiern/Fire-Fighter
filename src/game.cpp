@@ -11,7 +11,9 @@ void game::gameLoop() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
     sf::Font font = options->getFont();
-    Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
+    int* res = options->getResolution(); 
+    sf::Vector2u resolution(res[0], res[1]);
+    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
 
     //*****************************************************************************************
     //enemy character
@@ -61,7 +63,7 @@ void game::gameLoop() {
     float screenWidth = screenSize.x;
     float screenHeight = screenSize.y;
     // Calculate position to center character
-    character1.setPosition((screenWidth - character1.getGlobalBounds().width - 230)/ 2, (screenHeight - character2.getGlobalBounds().height) / 2);
+    character1.setPosition((screenWidth - character1.getGlobalBounds().width - 230)/ 2, (screenHeight - character1.getGlobalBounds().height) / 2);
     character2.setPosition((screenWidth - character2.getGlobalBounds().width + 250) / 2, (screenHeight - character2.getGlobalBounds().height) / 2);
     // Create button 1
     sf::RectangleShape button1(sf::Vector2f(200.f, 50.f));
