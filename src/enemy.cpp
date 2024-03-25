@@ -2,9 +2,10 @@
 #include "Enemy.h"
 #include <cmath>
 
-Enemy::Enemy(float startX, float startY, unsigned int screenWidth)
+Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution)
         : movementSpeed(5.0f), screenWidth(screenWidth) {
     setPosition(startX, startY);
+    adjustForResolution(resolution);
 }
 
 void Enemy::update(const sf::Time& deltaTime) {
@@ -36,16 +37,39 @@ sf::Vector2u Enemy::getSize() const {
     return texture.getSize();
 }
 
+void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
+    float scale = 1.0f;
+    float speedScale = 1.0f;
+
+    if (resolution == sf::Vector2u(640, 360)) {
+        scale = 1.0f;
+        speedScale = 1.00f;
+    } else if (resolution == sf::Vector2u(1280, 720)) {
+        scale = 2.0f;
+        speedScale = 1.5f;
+    } else if (resolution == sf::Vector2u(1920, 1080)) {
+        scale = 3.5f;
+        speedScale = 1.75f;
+    } else if (resolution == sf::Vector2u(3840, 2160)) {
+        scale = 4.0f;
+        speedScale = 2.0f;
+    }
+
+    sprite.setScale(scale, scale);
+
+    movementSpeed *= speedScale;
+}
+
 EnemyWave::EnemyWave(sf::RenderWindow& window)
         : waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
-          rows(4), columns(10), spacingX(100.0f), spacingY(70.0f),
-          startX(-900.0f), startY(75.0f) {
-    enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x)));
+          rows(8), columns(4), spacingX(100.0f), spacingY(70.0f),
+          startX(-300.0f), startY(75.0f) {
+    enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, window.getSize())));
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             float positionX = startX + j * spacingX;
             float positionY = startY + i * spacingY;
-            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x);
+            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x, window.getSize());
             enemyGrid[i][j].setTexture("../../resource/img/fire.png");
         }
     }
@@ -69,3 +93,5 @@ void EnemyWave::draw(sf::RenderWindow& window) {
         }
     }
 }
+
+
