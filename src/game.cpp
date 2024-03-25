@@ -22,7 +22,7 @@ void game::gameLoop() {
     // set up player and scale
     sf::Vector2u resolution(options.getResolution()[0], options.getResolution()[1]);
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
-    EnemyWave enemyWave(window);
+    EnemyWave enemyWave(window,resolution);
 
 
     //*****************************************************************************************
