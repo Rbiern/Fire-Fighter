@@ -26,6 +26,7 @@ public:
     void gameLoop();
     char* characterSelect(sf::RenderWindow& window, Player player);
     bool handleRequest(sf::RenderWindow& window);
+    bool gameOver(sf::RenderWindow& window);
 };
 
 #endif //FIRE_FIGHTER_GAME_H
