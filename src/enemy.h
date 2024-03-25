@@ -16,6 +16,7 @@ public:
     void adjustForResolution(const sf::Vector2u& resolution);
 
 
+
 private:
     sf::Sprite sprite;
     sf::Texture texture;
@@ -25,9 +26,11 @@ private:
 
 class EnemyWave {
 public:
-    EnemyWave(sf::RenderWindow& window);
+    EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution);
     void update(sf::Time deltaTime);
     void draw(sf::RenderWindow& window);
+    void adjustSpacingForResolution(const sf::Vector2u& resolution); // Declare the method
+
 
 private:
     std::vector<std::vector<Enemy>> enemyGrid;
