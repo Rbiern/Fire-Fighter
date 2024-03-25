@@ -7,16 +7,23 @@
 #include "settings.h"
 #include "entity.h"
 #include "player.h"
-#include "powerup.h"
 #include "enemy.h"
+#include "powerup.h"
 #include "barrier.h"
+#include "metrics.h"
+
 
 class game {
 private:
     Entity temp;
-    settings* options;
+    sf::Font font;
+    settings options; // get icon, get windows size, get music, get font;
+    sf::Clock clock;
+    sf::Image icon;
+    sf::Music music;
+
 public:
-    game();
+    game(settings *opt);
     void gameLoop();
 };
 
