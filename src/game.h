@@ -9,6 +9,7 @@
 #include "player.h"
 #include "powerup.h"
 #include "enemy.h"
+#include "barrier.h"
 
 class game {
 private:

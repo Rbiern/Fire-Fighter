@@ -42,6 +42,14 @@ void game::gameLoop() {
     // end of enemy code
     //*****************************************************************************************
 
+    //*****************************************************************************************
+    // barrier setup
+    float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
+    float barrierY = (window.getSize().y - 100) / 2.f; // Center the barrier vertically
+    Barrier barrier(barrierX, barrierY); // Create the barrier object
+    // end of barrier setup
+    //*****************************************************************************************
+
 
     //*****************************************************************************************
     // pick character window code start
@@ -169,7 +177,7 @@ void game::gameLoop() {
         // Display the window
         window.display();
     }
-    // end of chose player window
+    // end of choose player window
     //*************************************************************************************************
 
     sf::Clock shootCooldown;
@@ -251,6 +259,10 @@ void game::gameLoop() {
             }
         }
         /** end of enemy stuff */
+
+        /** barrier stuff */
+        barrier.draw(window);
+        /** end of barrier stuff */
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
