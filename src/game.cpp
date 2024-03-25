@@ -291,7 +291,7 @@ void game::gameLoop() {
         }
 
         window.draw(lifeCounterSprite);
-        Powerup.update(deltaTime, player);
+        Powerup.update(deltaTime, player, window);
 
         player.updateBullets(deltaTime);
         window.clear();
