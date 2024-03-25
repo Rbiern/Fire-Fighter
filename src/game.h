@@ -24,6 +24,7 @@ private:
 public:
     explicit game(settings *opt);
     void gameLoop();
+    char* characterSelect(sf::RenderWindow& window, Player player);
     bool handleRequest(sf::RenderWindow& window);
 };
 
