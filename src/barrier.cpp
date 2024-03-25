@@ -1,12 +1,13 @@
 #include "barrier.h"
 
-Barrier::Barrier(float startX, float startY) : Entity(){
-    this->setPosition(startX, startY);
+Barrier::Barrier(float startX, float startY) : Entity() {
     this->setTexture("../../resource/img/iceBlock.png");
+    this->setPosition(startX, startY);
 
-    sf::Vector2f scale(size / texture.getSize().x, size / texture.getSize().y);
-    sprite.setScale(scale);
+//    sf::Vector2f scale(size / texture.getSize().x, size / texture.getSize().y);
+//    barrierSprite.setScale(scale);
 }
+
 
 bool Barrier::enemyCollision(const sf::Sprite& enemySprite) const {
     return sprite.getGlobalBounds().intersects(enemySprite.getGlobalBounds());
@@ -24,7 +25,7 @@ void Barrier::shrink() {
     }
     // Resize the barrier sprite
     sf::Vector2f scale(size / texture.getSize().x, size / texture.getSize().y);
-    getSprite().setScale(scale);
+    sprite.setScale(scale);
 }
 
 void Barrier::reset() {
@@ -38,7 +39,7 @@ void Barrier::spawn(float newX, float newY) {
 }
 
 void Barrier::draw(sf::RenderWindow& window) {
-    window.draw(getSprite());
+    window.draw(sprite);
 }
 
 sf::Vector2f Barrier::getSize() const {
