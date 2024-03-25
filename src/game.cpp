@@ -33,9 +33,8 @@ void game::gameLoop() {
     // end of barrier setup
     //*****************************************************************************************
 
-    // metrics m(resolution);
-
-    //*****************************************************************************************
+//    metrics m(resolution);
+//*****************************************************************************************
     // pick character window code start
     // character textures
     sf::Texture characterTexture1;
@@ -169,9 +168,30 @@ void game::gameLoop() {
     float movementSpeed = 0.5f;
 
     powerup Powerup;
+//    // Load life counter textures
+//    sf::Texture life3Texture;
+//    sf::Texture life2Texture;
+//    sf::Texture life1Texture;
+//    sf::Texture life0Texture;
+//
+//    if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
+//        !life2Texture.loadFromFile("../../resource/img/2.png") ||
+//        !life1Texture.loadFromFile("../../resource/img/1.png") ||
+//        !life0Texture.loadFromFile("../../resource/img/0.png")) {
+//        std::cerr << "Failed to load life counter textures!" << std::endl;
+//        return;
+//    }
+//
+//    // Create life counter sprites
+//    sf::Sprite lifeCounterSprite;
+//    lifeCounterSprite.setTexture(life3Texture);
+//    lifeCounterSprite.setScale(1.5f, 1.5f); // Adjust scale as needed
+//    lifeCounterSprite.setPosition(15.f, 15.f); // Top left corner of the window
+
+
     Metrics metrics(resolution);
     metrics.setScore();
-    
+
     // The message to display
     std::string message = "                      Place your AD here                      ";
     int messageLength = message.length(); int words = 0; int startPos = 0;
@@ -216,6 +236,22 @@ void game::gameLoop() {
         }
 
         int lives = player.getLives();
+//        switch (lives) {
+//            case 3:
+//                lifeCounterSprite.setTexture(life3Texture);
+//                break;
+//            case 2:
+//                lifeCounterSprite.setTexture(life2Texture);
+//                break;
+//            case 1:
+//                lifeCounterSprite.setTexture(life1Texture);
+//                break;
+//            case 0:
+//                lifeCounterSprite.setTexture(life0Texture);
+//                break;
+//            default:
+//                break;
+//        }
         metrics.updateHealthbar(lives);
 
         player.updateBullets(deltaTime);
@@ -224,12 +260,6 @@ void game::gameLoop() {
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
         enemyWave.draw(window);
-
-        //      when bullet hits enemy, increase score
-//      if (bullet hits enemy) {
-//          metrics.increaseScore(10);
-//      }
-        
         /** end of enemy stuff */
 
         window.clear();
@@ -244,8 +274,9 @@ void game::gameLoop() {
             words++;
         }
 
+//        window.draw(lifeCounterSprite);
+        Powerup.update(deltaTime, player, window);
 
-        Powerup.update(deltaTime, player);
         player.updateBullets(deltaTime);
         window.clear();
         player.draw(window);
@@ -253,6 +284,7 @@ void game::gameLoop() {
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
+//        m.draw(window);
         metrics.draw(window);
         window.display();
     }
@@ -323,6 +355,7 @@ bool game::handleRequest() {
                         return false;
                         // Add logic for resuming the game
                     }
+
                 }
             }
         }
