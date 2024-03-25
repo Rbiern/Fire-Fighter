@@ -6,13 +6,15 @@
 
 class Enemy {
 public:
-    Enemy(float startX, float startY, unsigned int screenWidth);
+    Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution);
     void update(const sf::Time& deltaTime);
     void draw(sf::RenderWindow& window);
     void setTexture(const std::string& texturePath);
     sf::Vector2f getPosition() const;
     void setPosition(float x, float y);
     sf::Vector2u getSize() const;
+    void adjustForResolution(const sf::Vector2u& resolution);
+
 
 private:
     sf::Sprite sprite;
