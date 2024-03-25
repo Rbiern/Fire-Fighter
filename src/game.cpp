@@ -1,31 +1,36 @@
 #include "game.h"
-game::game() {
-    options = new settings();
+
+game::game(settings *opt) {
+    options = *opt;
+    font = options.getFont();
+    icon = options.getIcon();
+    // check if music is enabled
+    if (options.toggleMusic()) {
+        // setup music for the main menu
+        if (!music.openFromFile("../../music/rglk2theme2distort.mp3"))
+            std::cerr << "Failed to load music" << std::endl;
+        music.setLoop(true);
+    }
 }
 
 void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
-    sf::Image icon = options->getIcon();
-    sf::Clock clock;
+    sf::RenderWindow window((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
-    sf::Font font = options->getFont();
-    int* res = options->getResolution(); 
-    sf::Vector2u resolution(res[0], res[1]);
+    // set up player and scale
+    sf::Vector2u resolution(options.getResolution()[0], options.getResolution()[1]);
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
     EnemyWave enemyWave(window);
-
-
     //*****************************************************************************************
-    //**
     // barrier setup
     float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
     float barrierY = (window.getSize().y - 100) / 2.f; // Center the barrier vertically
-    auto *barrier = new Barrier(barrierX, barrierY); // Create the barrier object
+    auto *testMe = new Barrier(barrierX, barrierY); // Create the barrier object
     // end of barrier setup
-    //*
     //*****************************************************************************************
+
+    metrics m(resolution);
 
 
     //*****************************************************************************************
@@ -55,7 +60,7 @@ void game::gameLoop() {
     button1.setFillColor(sf::Color::Blue);
     button1.setPosition((screenWidth - button1.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
     // Create button 1 text
-    sf::String s1 = options->getLanguage()[16];
+    sf::String s1 = options.getLanguage()[16];
     sf::Text text1(s1, font, 20);
     text1.setPosition(button1.getPosition().x + (button1.getSize().x - text1.getLocalBounds().width) / 2, button1.getPosition().y + (button1.getSize().y - text1.getLocalBounds().height) / 2);
     text1.setFillColor(sf::Color::White);
@@ -64,12 +69,12 @@ void game::gameLoop() {
     button2.setFillColor(sf::Color::Red);
     button2.setPosition(button1.getPosition().x + button1.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
     // Create button 2 text
-    sf::String s2 = options->getLanguage()[15];
+    sf::String s2 = options.getLanguage()[15];
     sf::Text text2(s2, font, 20);
     text2.setPosition(button2.getPosition().x + (button2.getSize().x - text2.getLocalBounds().width) / 2, button2.getPosition().y + (button2.getSize().y - text2.getLocalBounds().height) / 2);
     text2.setFillColor(sf::Color::White);
     // create text at top of screen
-    sf::String s3 = options->getLanguage()[13];
+    sf::String s3 = options.getLanguage()[13];
     sf::Text chooseText(s3, font, 30);
     chooseText.setPosition((screenWidth - chooseText.getLocalBounds().width) / 2, 20); // Position text at the top center
     chooseText.setFillColor(sf::Color::White);
@@ -78,7 +83,7 @@ void game::gameLoop() {
     backButton.setFillColor(sf::Color(54, 207, 213));
     backButton.setPosition(screenWidth - backButton.getSize().x - 20, 20); // Position button at the top right
     // create go back text
-    sf::String s4 = options->getLanguage()[14];
+    sf::String s4 = options.getLanguage()[14];
     sf::Text backText(s4, font, 20);
     backText.setPosition(backButton.getPosition().x + (backButton.getSize().x - backText.getLocalBounds().width) / 2, backButton.getPosition().y + (backButton.getSize().y - backText.getLocalBounds().height) / 2);
     backText.setFillColor(sf::Color::White);
@@ -154,7 +159,7 @@ void game::gameLoop() {
         // Display the window
         window.display();
     }
-    // end of choose player window
+    // end of chose player window
     //*************************************************************************************************
 
     sf::Clock shootCooldown;
@@ -167,7 +172,7 @@ void game::gameLoop() {
     exitButton.setPosition(window.getSize().x - 130.f, 20.f); // Position in the top right corner
 
     // Create text for the exit button
-    sf::Text exitButtonText(options->getLanguage()[17], font, 16); // Smaller text size
+    sf::Text exitButtonText(options.getLanguage()[17], font, 16); // Smaller text size
     exitButtonText.setFillColor(sf::Color::White);
     // Center the text within the exit button
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
@@ -197,20 +202,11 @@ void game::gameLoop() {
 
     // The message to display
     std::string message = "                      Place your AD here                      ";
-    int messageLength = message.length(); int words = 0;
-    // The position at which to start cutting the message
-    int startPos = 0;
-
-    sf::Music music;
-    if (options->toggleMusic()) {
-        // set music for the main menu
-        if (!music.openFromFile("../../music/rglk2theme2distort.mp3")) {
-            std::cerr << "Failed to load music" << std::endl;
-        }
-        music.setLoop(true); // Loop the music
-        music.play();
-    }
-
+    int messageLength = message.length(); int words = 0; int startPos = 0;
+    
+    // play music if it is enabled
+    if (options.toggleMusic()) music.play();
+    
 /** main game window */
     while (window.isOpen()) {
         sf::Event event;
@@ -219,20 +215,21 @@ void game::gameLoop() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-
-
+        
+        /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
         enemyWave.draw(window);
 
         /** end of enemy stuff */
 
-        // Move character
+        // Move character North
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             if (player.getPosition().y - movementSpeed >= 0) {
                 player.move(sf::Vector2f(0.f, -movementSpeed));
             }
         }
+        // Move character South
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
                 player.move(sf::Vector2f(0.f, movementSpeed));
@@ -243,12 +240,20 @@ void game::gameLoop() {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             if (exitButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                if (options->toggleMusic()) {
+                if (options.toggleMusic()) {
                     music.stop();
                 }
                 window.close();
             }
         }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (options.toggleMusic()) {
+                music.stop();
+            }
+            window.close();
+        }
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && canShoot) {
             player.shoot();
             shootCooldown.restart();
@@ -289,21 +294,25 @@ void game::gameLoop() {
         } else {
             words++;
         }
-
+        
         window.draw(lifeCounterSprite);
-        Powerup.update(deltaTime, player, window);
+        Powerup.update(deltaTime, player);
 
         player.updateBullets(deltaTime);
+
         window.clear();
+//        window.draw(barrier);
         player.draw(window);
-        window.draw(lifeCounterSprite);
+//        window.draw(lifeCounterSprite);
         Powerup.draw(window,player);
         player.drawBullets(window);
-        enemyWave.draw(window);
         window.draw(exitButton);
         window.draw(exitButtonText);
-        barrier->draw(window);
+        enemyWave.draw(window);
+        m.draw(window);
+//        testMe->draw(window);
         window.display();
+
     }
     return;
 }
