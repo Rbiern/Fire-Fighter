@@ -18,11 +18,13 @@ void game::gameLoop() {
 
 
     //*****************************************************************************************
+    //**
     // barrier setup
     float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
     float barrierY = (window.getSize().y - 100) / 2.f; // Center the barrier vertically
-    Barrier barrier(barrierX, barrierY); // Create the barrier object
+    auto *barrier = new Barrier(barrierX, barrierY); // Create the barrier object
     // end of barrier setup
+    //*
     //*****************************************************************************************
 
 
@@ -225,10 +227,6 @@ void game::gameLoop() {
 
         /** end of enemy stuff */
 
-        /** barrier stuff */
-        barrier.draw(window);
-        /** end of barrier stuff */
-
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             if (player.getPosition().y - movementSpeed >= 0) {
@@ -292,7 +290,6 @@ void game::gameLoop() {
             words++;
         }
 
-
         window.draw(lifeCounterSprite);
         Powerup.update(deltaTime, player);
 
@@ -305,6 +302,7 @@ void game::gameLoop() {
         enemyWave.draw(window);
         window.draw(exitButton);
         window.draw(exitButtonText);
+        barrier->draw(window);
         window.display();
     }
     return;
