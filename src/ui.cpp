@@ -103,7 +103,7 @@ void ui::displayMenu() {
                 music.pause();
             }
             _window->close();
-            game *newGame = new game();
+            game *newGame = new game(options);
             newGame->gameLoop();
             startGameFlag = false;
             if (options->toggleMusic()) {
