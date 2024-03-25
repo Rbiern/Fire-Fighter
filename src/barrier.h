@@ -7,7 +7,6 @@
 
 class Barrier : public Entity {
 private:
-//    bool shrink;
     float size;
     float initialSize;
     float xPosition;
@@ -16,16 +15,12 @@ private:
 public:
     // Constructor
     Barrier(float startX, float startY);
-
-
     bool enemyCollision(const sf::Sprite& enemySprite) const;
     bool bulletCollision(const sf::Sprite& bulletSprite) const;
     void shrink();
     void reset();
     void spawn(float newX, float newY);
     void draw(sf::RenderWindow& window);
-//    bool getShrink() const;
-//    void setShrink(bool value);
 
     sf::Vector2f getSize() const;
     sf::Vector2f getPosition() const;
