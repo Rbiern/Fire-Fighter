@@ -2,6 +2,7 @@
 #define FIRE_FIGHTER_POWERUP_H
 
 #include <SFML/Graphics.hpp>
+#include <random>
 #include "player.h"
 
 class powerup {
@@ -11,11 +12,12 @@ private:
     float speed;
     sf::Vector2f direction;
     bool collected;
+    std::mt19937 gen;
 
 public:
     powerup();
     void reset();
-    void update(const sf::Time& delta, Player& player);
+    void update(const sf::Time& delta, Player& player, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window, Player& player);
 };
 

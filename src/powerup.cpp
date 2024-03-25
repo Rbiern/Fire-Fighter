@@ -24,7 +24,7 @@ void powerup::reset() {
     collected = false;
 }
 
-void powerup::update(const sf::Time& delta, Player& player) {
+void powerup::update(const sf::Time& delta, Player& player, sf::RenderWindow& window) {
     if (!collected && player.getLives() < 3) { // Only update if lives < 3
         // Move the powerup
         sprite.move(direction * speed * delta.asSeconds());
@@ -35,6 +35,24 @@ void powerup::update(const sf::Time& delta, Player& player) {
             player.increaseLife();
             std::cout << "lives after: " << player.getLives() << std::endl;
             collected = true;
+        }
+
+        // Bounce off window walls
+        if (sprite.getPosition().x < 0 || sprite.getPosition().x + sprite.getGlobalBounds().width > window.getSize().x) {
+            // Change direction horizontally
+            direction.x *= -1;
+
+            // If powerup reaches right wall, bounce randomly to top or bottom
+            if (sprite.getPosition().x + sprite.getGlobalBounds().width > window.getSize().x) {
+                std::uniform_real_distribution<float> disY(0.f, window.getSize().y); // Adjust Y range as needed
+                sprite.setPosition(window.getSize().x - sprite.getGlobalBounds().width, disY(gen));
+                direction.y = (std::rand() % 2 == 0) ? 1.f : -1.f;
+            }
+        }
+
+        // Bounce off top and bottom walls
+        if (sprite.getPosition().y < 0 || sprite.getPosition().y + sprite.getGlobalBounds().height > window.getSize().y) {
+            direction.y *= -1;
         }
     }
 }

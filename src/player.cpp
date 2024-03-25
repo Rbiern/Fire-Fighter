@@ -16,7 +16,7 @@ Player::Player(float startX, float startY,  const sf::Vector2u& resolution) : En
     }
     shootSound.setBuffer(shootBuffer);
     options = new settings();
-    lives = 3;
+    lives = 2;
     adjustForResolution(resolution);
 }
 
