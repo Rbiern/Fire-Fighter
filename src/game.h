@@ -20,11 +20,11 @@ private:
     sf::Clock clock; // for updating the game
     sf::Image icon;
     sf::Music music;
-
+    powerup Powerup;
 public:
     explicit game(settings *opt);
     void gameLoop();
-    bool handleRequest();
+    bool handleRequest(sf::RenderWindow& window);
 };
 
 #endif //FIRE_FIGHTER_GAME_H
