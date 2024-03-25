@@ -14,33 +14,8 @@ void game::gameLoop() {
     int* res = options->getResolution(); 
     sf::Vector2u resolution(res[0], res[1]);
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
+    EnemyWave enemyWave(window);
 
-    //*****************************************************************************************
-    //enemy character
-    float waveAmplitude = 20.0f; // Height of the wave
-    float waveFrequency = 0.5f; // How often the wave peaks occur
-    float wavePhase = 0.0f; // Initial phase of the wave
-    bool movingRight = true; // Start moving to the right
-    float dropDownStep = 20.f; // How much enemies move down when reaching a screen edge
-    float horizontalMoveSpeed = 1.f; // Adjust based on desired speed
-    int rows = 4; // Number of rows of enemies
-    int columns = 10; // Number of columns of enemies
-    float spacingX = 100.f; // Horizontal spacing between enemies
-    float spacingY = 70.f; // Vertical spacing between enemies
-    float startX = -900.f; // Starting X position for the first enemy
-    float startY = 75.f; // Starting Y position for the first enemy
-    std::vector<std::vector<Enemy>> enemyGrid(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x))); // Initialize all enemies
-
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < columns; ++j) {
-            float positionX = startX + j * (spacingX);
-            float positionY = startY + i * (spacingY);
-            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x);
-            enemyGrid[i][j].setTexture("../../resource/img/fire.png"); // Set the texture for each enemy
-        }
-    }
-    // end of enemy code
-    //*****************************************************************************************
 
     //*****************************************************************************************
     // barrier setup
@@ -242,22 +217,12 @@ void game::gameLoop() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        /** enemy stuff */
-        // Calculate elapsed time since the last frame
-        float elapsedTime = deltaTime.asSeconds();
-        wavePhase += elapsedTime; // Increment the wave phase
-        // Enemy movement logic...
-        bool shouldMoveDown = false;
-        // Your existing horizontal movement logic here...
-        // Here's where you'll integrate the new wave movement logic
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j) {
-                // Add vertical wave movement
-                float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
-                enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, startY + i * spacingY + waveOffset);
 
-            }
-        }
+
+        // Update and draw enemies using EnemyWave
+        enemyWave.update(deltaTime);
+        enemyWave.draw(window);
+
         /** end of enemy stuff */
 
         /** barrier stuff */
@@ -337,19 +302,10 @@ void game::gameLoop() {
         window.draw(lifeCounterSprite);
         Powerup.draw(window,player);
         player.drawBullets(window);
+        enemyWave.draw(window);
         window.draw(exitButton);
         window.draw(exitButtonText);
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j) {
-                enemyGrid[i][j].update(deltaTime);
-                enemyGrid[i][j].draw(window);
-            }
-        }
         window.display();
-
-
-
-//        window.display();
     }
     return;
 }
