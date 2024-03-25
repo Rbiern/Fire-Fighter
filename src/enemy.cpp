@@ -40,36 +40,36 @@ sf::Vector2u Enemy::getSize() const {
 void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
     float scale = 1.0f;
     float speedScale = 1.0f;
-
+    // Resolution-based scaling adjustments
     if (resolution == sf::Vector2u(640, 360)) {
-        scale = 1.0f;
+        scale = 0.5f;
         speedScale = 1.00f;
     } else if (resolution == sf::Vector2u(1280, 720)) {
-        scale = 2.0f;
+        scale = 1.0f;
         speedScale = 1.5f;
     } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 3.5f;
+        scale = 2.0f;
         speedScale = 1.75f;
     } else if (resolution == sf::Vector2u(3840, 2160)) {
-        scale = 4.0f;
+        scale = 2.0f;
         speedScale = 2.0f;
     }
-
     sprite.setScale(scale, scale);
-
     movementSpeed *= speedScale;
 }
 
-EnemyWave::EnemyWave(sf::RenderWindow& window)
+
+EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution)
         : waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
           rows(8), columns(4), spacingX(100.0f), spacingY(70.0f),
           startX(-300.0f), startY(75.0f) {
-    enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, window.getSize())));
+    adjustSpacingForResolution(resolution); // Adjust spacing based on resolution
+    enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, resolution)));
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             float positionX = startX + j * spacingX;
             float positionY = startY + i * spacingY;
-            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x, window.getSize());
+            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x, resolution);
             enemyGrid[i][j].setTexture("../../resource/img/fire.png");
         }
     }
@@ -94,4 +94,21 @@ void EnemyWave::draw(sf::RenderWindow& window) {
     }
 }
 
-
+void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
+    if (resolution == sf::Vector2u(640, 360)) {
+        spacingX = 70.0f; // Smaller resolution, reduce spacing
+        spacingY = 40.0f;
+    } else if (resolution == sf::Vector2u(1280, 720)) {
+        spacingX = 100.0f; // Base resolution, base spacing
+        spacingY = 70.0f;
+    } else if (resolution == sf::Vector2u(1920, 1080)) {
+        spacingX = 130.0f; // Higher resolution, increase spacing
+        spacingY = 90.0f;
+    } else if (resolution == sf::Vector2u(3840, 2160)) {
+        spacingX = 160.0f; // 4K resolution, further increase spacing
+        spacingY = 110.0f;
+    } else {
+        // Default case for resolutions not explicitly handled
+        // Optionally adjust based on resolution dimensions, or keep base values
+    }
+}
