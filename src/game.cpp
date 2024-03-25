@@ -22,8 +22,7 @@ void game::gameLoop() {
     // set up player and scale
     sf::Vector2u resolution(options.getResolution()[0], options.getResolution()[1]);
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
-    EnemyWave enemyWave(window,resolution);
-
+    EnemyWave enemyWave(window);
 
     //*****************************************************************************************
     // barrier setup
@@ -33,7 +32,6 @@ void game::gameLoop() {
     // end of barrier setup
     //*****************************************************************************************
 
-//    metrics m(resolution);
 //*****************************************************************************************
     // pick character window code start
     // character textures
@@ -167,28 +165,6 @@ void game::gameLoop() {
     bool canShoot = true;
     float movementSpeed = 0.5f;
 
-    powerup Powerup;
-//    // Load life counter textures
-//    sf::Texture life3Texture;
-//    sf::Texture life2Texture;
-//    sf::Texture life1Texture;
-//    sf::Texture life0Texture;
-//
-//    if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
-//        !life2Texture.loadFromFile("../../resource/img/2.png") ||
-//        !life1Texture.loadFromFile("../../resource/img/1.png") ||
-//        !life0Texture.loadFromFile("../../resource/img/0.png")) {
-//        std::cerr << "Failed to load life counter textures!" << std::endl;
-//        return;
-//    }
-//
-//    // Create life counter sprites
-//    sf::Sprite lifeCounterSprite;
-//    lifeCounterSprite.setTexture(life3Texture);
-//    lifeCounterSprite.setScale(1.5f, 1.5f); // Adjust scale as needed
-//    lifeCounterSprite.setPosition(15.f, 15.f); // Top left corner of the window
-
-
     Metrics metrics(resolution);
     metrics.setScore();
 
@@ -222,7 +198,7 @@ void game::gameLoop() {
         // when user presses exit, pop up window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = handleRequest();
+            bool flag = handleRequest(window);
             if (flag) window.close();
         }
         // have player shoot when space bar is pressed
@@ -236,33 +212,16 @@ void game::gameLoop() {
         }
 
         int lives = player.getLives();
-//        switch (lives) {
-//            case 3:
-//                lifeCounterSprite.setTexture(life3Texture);
-//                break;
-//            case 2:
-//                lifeCounterSprite.setTexture(life2Texture);
-//                break;
-//            case 1:
-//                lifeCounterSprite.setTexture(life1Texture);
-//                break;
-//            case 0:
-//                lifeCounterSprite.setTexture(life0Texture);
-//                break;
-//            default:
-//                break;
-//        }
         metrics.updateHealthbar(lives);
-
         player.updateBullets(deltaTime);
-
+        Powerup.update(deltaTime, player, window);
+        player.updateBullets(deltaTime);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
         enemyWave.draw(window);
         /** end of enemy stuff */
 
-        window.clear();
         if (words == 25) {
             // Update the window title with a substring of the message
             std::string title = message.substr(startPos, 100); // Adjust the length based on your needs
@@ -274,26 +233,20 @@ void game::gameLoop() {
             words++;
         }
 
-//        window.draw(lifeCounterSprite);
-        Powerup.update(deltaTime, player, window);
-
-        player.updateBullets(deltaTime);
         window.clear();
         player.draw(window);
-//        window.draw(lifeCounterSprite);
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
-//        m.draw(window);
         metrics.draw(window);
         window.display();
     }
 }
 
-
-bool game::handleRequest() {
+/** for pop up exit button */
+bool game::handleRequest(sf::RenderWindow& win) {
     // Setup the window
-    sf::RenderWindow win(sf::VideoMode(400, 300), "Popup Window", sf::Style::Close);
+//    sf::RenderWindow win(sf::VideoMode(400, 300), "Popup Window", sf::Style::Close);
 
     // Calculate button sizes and positions dynamically based on window size
     sf::Vector2u windowSize = win.getSize();
@@ -337,7 +290,7 @@ bool game::handleRequest() {
         sf::Event event;
         while (win.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                win.close();
+//                win.close();
                 return false;
             }
 
@@ -345,13 +298,13 @@ bool game::handleRequest() {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (exitButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         std::cout << "Exit Game button clicked!" << std::endl;
-                        win.close(); // Close window on Exit Game button click
+//                        win.close(); // Close window on Exit Game button click
                         return true;
                     }
 
                     if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         std::cout << "Resume Game button clicked!" << std::endl;
-                        win.close(); // Close window on Exit Game button click
+//                        win.close(); // Close window on Exit Game button click
                         return false;
                         // Add logic for resuming the game
                     }
