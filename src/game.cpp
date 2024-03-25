@@ -1,11 +1,11 @@
 #include "game.h"
 
+/** constructor */
 game::game(settings *opt) {
-    options = *opt;
-    font = options.getFont();
-    icon = options.getIcon();
-    // check if music is enabled
-    if (options.toggleMusic()) {
+    options = *opt;             // get settings object that was created in UI class
+    font = options.getFont();   // load font from settings
+    icon = options.getIcon();   // load icon from settings
+    if (options.toggleMusic()) {// check if music is enabled
         // setup music for the main menu
         if (!music.openFromFile("../../music/rglk2theme2distort.mp3"))
             std::cerr << "Failed to load music" << std::endl;
@@ -13,6 +13,7 @@ game::game(settings *opt) {
     }
 }
 
+/** run game method */
 void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
@@ -21,7 +22,9 @@ void game::gameLoop() {
     // set up player and scale
     sf::Vector2u resolution(options.getResolution()[0], options.getResolution()[1]);
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
-    EnemyWave enemyWave(window, resolution);
+    EnemyWave enemyWave(window);
+
+
     //*****************************************************************************************
     // barrier setup
     float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
@@ -31,7 +34,6 @@ void game::gameLoop() {
     //*****************************************************************************************
 
     metrics m(resolution);
-
 
     //*****************************************************************************************
     // pick character window code start
@@ -162,22 +164,9 @@ void game::gameLoop() {
     // end of chose player window
     //*************************************************************************************************
 
-    sf::Clock shootCooldown;
+    sf::Clock shootCooldown; // for shooting cool down
     bool canShoot = true;
     float movementSpeed = 0.5f;
-
-    // Create an exit button
-    sf::RectangleShape exitButton(sf::Vector2f(100.f, 30.f)); // Smaller size
-    exitButton.setFillColor(sf::Color::Red);
-    exitButton.setPosition(window.getSize().x - 130.f, 20.f); // Position in the top right corner
-
-    // Create text for the exit button
-    sf::Text exitButtonText(options.getLanguage()[17], font, 16); // Smaller text size
-    exitButtonText.setFillColor(sf::Color::White);
-    // Center the text within the exit button
-    exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
-                               exitButton.getPosition().y + (exitButton.getSize().y - exitButtonText.getLocalBounds().height) / 2);
-
 
     powerup Powerup;
     // Load life counter textures
@@ -203,10 +192,10 @@ void game::gameLoop() {
     // The message to display
     std::string message = "                      Place your AD here                      ";
     int messageLength = message.length(); int words = 0; int startPos = 0;
-    
+
     // play music if it is enabled
     if (options.toggleMusic()) music.play();
-    
+
 /** main game window */
     while (window.isOpen()) {
         sf::Event event;
@@ -215,14 +204,6 @@ void game::gameLoop() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        
-        /** end of enemy stuff */
-        // Update and draw enemies using EnemyWave
-        enemyWave.update(deltaTime);
-        enemyWave.draw(window);
-
-        /** end of enemy stuff */
-
         // Move character North
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             if (player.getPosition().y - movementSpeed >= 0) {
@@ -235,34 +216,22 @@ void game::gameLoop() {
                 player.move(sf::Vector2f(0.f, movementSpeed));
             }
         }
-
-        // Check if the exit button is clicked
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-            if (exitButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                if (options.toggleMusic()) {
-                    music.stop();
-                }
-                window.close();
-            }
-        }
-
+        // when user presses exit, pop up window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-            if (options.toggleMusic()) {
-                music.stop();
-            }
-            window.close();
+            if (options.toggleMusic()) music.stop();
+            bool flag = handleRequest();
+            if (flag) window.close();
         }
-
+        // have player shoot when space bar is pressed
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && canShoot) {
             player.shoot();
             shootCooldown.restart();
             canShoot = false;
         }
-
         if (shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
             canShoot = true;
         }
+
         int lives = player.getLives();
         switch (lives) {
             case 3:
@@ -283,6 +252,12 @@ void game::gameLoop() {
 
         player.updateBullets(deltaTime);
 
+        /** end of enemy stuff */
+        // Update and draw enemies using EnemyWave
+        enemyWave.update(deltaTime);
+        enemyWave.draw(window);
+        /** end of enemy stuff */
+
         window.clear();
         if (words == 25) {
             // Update the window title with a substring of the message
@@ -294,25 +269,111 @@ void game::gameLoop() {
         } else {
             words++;
         }
-        
+
         window.draw(lifeCounterSprite);
         Powerup.update(deltaTime, player);
-
         player.updateBullets(deltaTime);
-
         window.clear();
-//        window.draw(barrier);
         player.draw(window);
 //        window.draw(lifeCounterSprite);
         Powerup.draw(window,player);
         player.drawBullets(window);
-        window.draw(exitButton);
-        window.draw(exitButtonText);
         enemyWave.draw(window);
         m.draw(window);
-//        testMe->draw(window);
         window.display();
-
     }
-    return;
 }
+
+
+bool game::handleRequest() {
+    // Setup the window
+    sf::RenderWindow win(sf::VideoMode(400, 300), "Popup Window", sf::Style::Close);
+
+    // Calculate button sizes and positions dynamically based on window size
+    sf::Vector2u windowSize = win.getSize();
+    float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
+    float buttonHeight = 50.f; // Fixed height for buttons
+    float buttonX = (windowSize.x - buttonWidth) / 2; // Center the button on the x-axis
+    float exitButtonY = windowSize.y * 0.3f; // Exit button at 30% of window height
+    float resumeButtonY = windowSize.y * 0.5f; // Resume button at 50% of window height
+
+    // Setup the rectangle shape for buttons
+    sf::RectangleShape exitButton(sf::Vector2f(buttonWidth, buttonHeight));
+    exitButton.setFillColor(sf::Color(100, 100, 100));
+    exitButton.setPosition(buttonX, exitButtonY);
+
+    sf::RectangleShape resumeButton(sf::Vector2f(buttonWidth, buttonHeight));
+    resumeButton.setFillColor(sf::Color(100, 100, 100));
+    resumeButton.setPosition(buttonX, resumeButtonY);
+
+    // Setup the text for buttons
+    sf::Text exitText;
+    exitText.setFont(font);
+    exitText.setString("Exit Game");
+    exitText.setCharacterSize(24);
+    exitText.setFillColor(sf::Color::White);
+    // Center text on its button
+    exitText.setPosition(buttonX + (buttonWidth - exitText.getLocalBounds().width) / 2, exitButtonY + (buttonHeight - exitText.getLocalBounds().height) / 2);
+
+    sf::Text resumeText;
+    resumeText.setFont(font);
+    resumeText.setString("Resume Game");
+    resumeText.setCharacterSize(24);
+    resumeText.setFillColor(sf::Color::White);
+    // Center text on its button
+    resumeText.setPosition(buttonX + (buttonWidth - resumeText.getLocalBounds().width) / 2, resumeButtonY + (buttonHeight - resumeText.getLocalBounds().height) / 2);
+
+    // Colors for normal and hover states
+    sf::Color normalColor(100, 100, 100); // Normal state color
+    sf::Color hoverColor(150, 150, 150);  // Hover state color
+
+    while (win.isOpen()) {
+        sf::Event event;
+        while (win.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                win.close();
+                return false;
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    if (exitButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
+                        std::cout << "Exit Game button clicked!" << std::endl;
+                        win.close(); // Close window on Exit Game button click
+                        return true;
+                    }
+
+                    if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
+                        std::cout << "Resume Game button clicked!" << std::endl;
+                        win.close(); // Close window on Exit Game button click
+                        return false;
+                        // Add logic for resuming the game
+                    }
+                }
+            }
+        }
+        // Check for hover state for exitButton
+        sf::Vector2i mousePos = sf::Mouse::getPosition(win);
+        if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            exitButton.setFillColor(hoverColor);
+        } else {
+            exitButton.setFillColor(normalColor);
+        }
+
+        // Check for hover state for resumeButton
+        if (resumeButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            resumeButton.setFillColor(hoverColor);
+        } else {
+            resumeButton.setFillColor(normalColor);
+        }
+
+        win.clear();
+        win.draw(exitButton);
+        win.draw(exitButton); // Draw the exit button shape
+        win.draw(exitText); // Draw the exit button text
+        win.draw(resumeButton); // Draw the resume button shape
+        win.draw(resumeText); // Draw the resume button text
+        win.display();
+    }
+}
+
