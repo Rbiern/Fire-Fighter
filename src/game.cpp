@@ -80,6 +80,12 @@ void game::gameLoop() {
             bool flag = handleRequest(window);
             if (flag) window.close();
         }
+        // when the game has ended
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+            if (options.toggleMusic()) music.stop();
+            bool flag = gameOver(window);
+            if (flag) window.close();
+        }
         // have player shoot when space bar is pressed
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && canShoot) {
             player.shoot();
@@ -341,5 +347,123 @@ char* game::characterSelect(sf::RenderWindow &window, Player player) {
         window.display();
     }
     return str;
+}
+
+bool game::gameOver(sf::RenderWindow &win) {
+    // Setup the window
+//    sf::RenderWindow win(sf::VideoMode(400, 300), "Popup Window", sf::Style::Close);
+
+
+// Load a texture from a file
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("../../resource/img/set-on-fire_1920.jpg")) {
+        return EXIT_FAILURE; // Error handling
+    }
+
+    // Create a sprite that will have the texture of the background
+    sf::Sprite backgroundSprite;
+    backgroundSprite.setTexture(backgroundTexture);
+    // Optionally, scale the sprite to fit the window size
+    backgroundSprite.setScale(
+            float(win.getSize().x) / backgroundTexture.getSize().x,
+            float(win.getSize().y) / backgroundTexture.getSize().y);
+
+    // Calculate button sizes and positions dynamically based on window size
+    sf::Vector2u windowSize = win.getSize();
+    float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
+    float buttonHeight = 50.f; // Fixed height for buttons
+    float buttonX = (windowSize.x - buttonWidth) / 2; // Center the button on the x-axis
+    float exitButtonY = windowSize.y * 0.3f; // Exit button at 30% of window height
+    float resumeButtonY = windowSize.y * 0.5f; // Resume button at 50% of window height
+
+    // Setup the rectangle shape for buttons
+    sf::RectangleShape exitButton(sf::Vector2f(buttonWidth, buttonHeight));
+    exitButton.setFillColor(sf::Color(100, 100, 100));
+    exitButton.setPosition(buttonX, exitButtonY);
+
+    sf::RectangleShape resumeButton(sf::Vector2f(buttonWidth, buttonHeight));
+    resumeButton.setFillColor(sf::Color(100, 100, 100));
+    resumeButton.setPosition(buttonX, resumeButtonY);
+
+    // Setup the text for buttons
+    sf::Text exitText;
+    exitText.setFont(font);
+    exitText.setString("Exit");
+    exitText.setCharacterSize(24);
+    exitText.setFillColor(sf::Color::White);
+    // Center text on its button
+    exitText.setPosition(buttonX + (buttonWidth - exitText.getLocalBounds().width) / 2, exitButtonY + (buttonHeight - exitText.getLocalBounds().height) / 2);
+
+    sf::Text resumeText;
+    resumeText.setFont(font);
+    resumeText.setString("Retry");
+    resumeText.setCharacterSize(24);
+    resumeText.setFillColor(sf::Color::White);
+    // Center text on its button
+    resumeText.setPosition(buttonX + (buttonWidth - resumeText.getLocalBounds().width) / 2, resumeButtonY + (buttonHeight - resumeText.getLocalBounds().height) / 2);
+
+    // Colors for normal and hover states
+    sf::Color normalColor(100, 100, 100); // Normal state color
+    sf::Color hoverColor(150, 150, 150);  // Hover state color
+
+    // Create a text object
+    sf::Text text;
+    text.setFont(font); // Set the font to our loaded font
+    text.setString("You Lost"); // Set the text string
+    text.setCharacterSize(48); // Set the text size
+    text.setFillColor(sf::Color::Red); // Set the text color
+
+    // Position the text at the top center of the window
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width/2.0f, textRect.top);
+    text.setPosition(sf::Vector2f(win.getSize().x/2.0f, 20.f));
+
+    while (win.isOpen()) {
+        sf::Event event;
+        while (win.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                return false;
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    if (exitButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
+                        std::cout << "Exit Game button clicked!" << std::endl;
+                        return true;
+                    }
+
+                    if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
+                        std::cout << "Resume Game button clicked!" << std::endl;
+                        return false;
+                    }
+
+                }
+            }
+        }
+        // Check for hover state for exitButton
+        sf::Vector2i mousePos = sf::Mouse::getPosition(win);
+        if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            exitButton.setFillColor(hoverColor);
+        } else {
+            exitButton.setFillColor(normalColor);
+        }
+
+        // Check for hover state for resumeButton
+        if (resumeButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            resumeButton.setFillColor(hoverColor);
+        } else {
+            resumeButton.setFillColor(normalColor);
+        }
+
+        win.clear();
+        win.draw(backgroundSprite);
+        win.draw(exitButton);
+        win.draw(exitButton); // Draw the exit button shape
+        win.draw(exitText); // Draw the exit button text
+        win.draw(resumeButton); // Draw the resume button shape
+        win.draw(resumeText); // Draw the resume button text
+        win.draw(text);
+        win.display();
+    }
 }
 
