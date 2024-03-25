@@ -1,30 +1,41 @@
-#ifndef ENEMY_H
-#define ENEMY_H
-
-#include "entity.h" // Make sure this path is correct
+// Enemy.h
+#pragma once
 #include <SFML/Graphics.hpp>
-#include <cmath>
+#include <vector>
+#include <string>
 
-class Enemy : public Entity { // This line changes to inherit from Entity
+class Enemy {
 public:
-    Enemy(float startX, float startY, float screenWidth);
+    Enemy(float startX, float startY, unsigned int screenWidth);
     void update(const sf::Time& deltaTime);
     void draw(sf::RenderWindow& window);
-    void moveTowardsPlayer(const sf::Vector2f& playerPosition, const sf::Time& deltaTime);
+    void setTexture(const std::string& texturePath);
+    sf::Vector2f getPosition() const;
+    void setPosition(float x, float y);
     sf::Vector2u getSize() const;
-
 
 private:
     sf::Sprite sprite;
     sf::Texture texture;
     float movementSpeed;
-    float verticalMovementSpeed;
-    float startY;
-    float time;
-    float screenWidth;
-
-    void loadTexture(const std::string& path);
-
+    unsigned int screenWidth;
 };
 
-#endif // ENEMY_H
+class EnemyWave {
+public:
+    EnemyWave(sf::RenderWindow& window);
+    void update(sf::Time deltaTime);
+    void draw(sf::RenderWindow& window);
+
+private:
+    std::vector<std::vector<Enemy>> enemyGrid;
+    float waveAmplitude;
+    float waveFrequency;
+    float wavePhase;
+    int rows;
+    int columns;
+    float spacingX;
+    float spacingY;
+    float startX;
+    float startY;
+};
