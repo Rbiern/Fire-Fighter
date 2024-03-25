@@ -11,7 +11,7 @@ Bullet::Bullet(float startX, float startY) : Entity() {
 
 
 void Bullet::update(const sf::Time& delta) {
-    move(-speed * delta.asSeconds(), 0); // 총알 이동
+    move(-speed * delta.asSeconds(), 0); 
 }
 
 //sf::Vector2f Bullet::getPosition() const {
