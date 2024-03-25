@@ -14,7 +14,7 @@
 class Player : public Entity {
 public:
 
-    Player(float startX, float startY);
+    Player(float startX, float startY,  const sf::Vector2u& resolution);
 
     virtual ~Player();
 
@@ -52,8 +52,10 @@ private:
     int lives;
     sf::SoundBuffer shootBuffer;
     sf::Sound shootSound;
-    std::vector<Bullet> bullets; // 발사된 총알을 저장하는 컨테이너
+    std::vector<Bullet> bullets;
     settings *options;
+    void setScale(float scaleFactor);
+    void adjustForResolution(const sf::Vector2u &resolution);
 };
 
 #endif //FIRE_FIGHTER_PLAYER_H

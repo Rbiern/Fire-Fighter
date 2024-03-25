@@ -7,7 +7,7 @@
  * @param startX Starting point in x coordinate
  * @param startY Starting point in y coordinate
  */
-Player::Player(float startX, float startY) : Entity() {
+Player::Player(float startX, float startY,  const sf::Vector2u& resolution) : Entity() {
     this->setPosition(startX, startY);
     movementSpeed = 3.0f;
     //water-drop sound effect
@@ -17,6 +17,7 @@ Player::Player(float startX, float startY) : Entity() {
     shootSound.setBuffer(shootBuffer);
     options = new settings();
     lives = 3;
+    adjustForResolution(resolution);
 }
 
 //move player's sprite
@@ -128,4 +129,29 @@ Player::~Player() {
 
 void Player::setPlayerTexture(char* str) {
     this->setTexture(str);
+}
+void Player::adjustForResolution(const sf::Vector2u& resolution) {
+    float scale = 1.0f;
+    float speedScale = 1.0f;
+
+    if (resolution == sf::Vector2u(640, 360)) {
+        scale = 1.0f;
+        speedScale = 1.00f;
+    } else if (resolution == sf::Vector2u(1280, 720)) {
+        scale = 2.0f;
+        speedScale = 1.5f;
+    } else if (resolution == sf::Vector2u(1920, 1080)) {
+        scale = 3.5f;
+        speedScale = 1.75f;
+    } else if (resolution == sf::Vector2u(3840, 2160)) {
+        scale = 4.0f;
+        speedScale = 2.0f;
+    }
+
+    sprite.setScale(scale, scale);
+
+    movementSpeed *= speedScale;
+}
+void Player::setScale(float scaleFactor) {
+    sprite.setScale(scaleFactor, scaleFactor);
 }

@@ -30,7 +30,10 @@ add_executable(CMakeSFMLProject
         "src/metrics.cpp"
         "src/metrics.h"
         "src/powerup.cpp"
-        "src/powerup.h")
+        "src/powerup.h"
+        "src/barrier.cpp"
+        "src/barrier.h")
+
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-audio)
 target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
 

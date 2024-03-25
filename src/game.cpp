@@ -1,22 +1,56 @@
 #include "game.h"
-
 game::game() {
     options = new settings();
 }
 
-
-
 void game::gameLoop() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Gamer Moment", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+    sf::RenderWindow window((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     sf::Image icon = options->getIcon();
     sf::Clock clock;
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
     sf::Font font = options->getFont();
+    int* res = options->getResolution(); 
+    sf::Vector2u resolution(res[0], res[1]);
+    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
 
-    Player player(window.getSize().x-100.f, window.getSize().y -100.0f);
-    powerup Powerup;
+    //*****************************************************************************************
+    //enemy character
+    float waveAmplitude = 20.0f; // Height of the wave
+    float waveFrequency = 0.5f; // How often the wave peaks occur
+    float wavePhase = 0.0f; // Initial phase of the wave
+    bool movingRight = true; // Start moving to the right
+    float dropDownStep = 20.f; // How much enemies move down when reaching a screen edge
+    float horizontalMoveSpeed = 1.f; // Adjust based on desired speed
+    int rows = 4; // Number of rows of enemies
+    int columns = 10; // Number of columns of enemies
+    float spacingX = 100.f; // Horizontal spacing between enemies
+    float spacingY = 70.f; // Vertical spacing between enemies
+    float startX = -900.f; // Starting X position for the first enemy
+    float startY = 75.f; // Starting Y position for the first enemy
+    std::vector<std::vector<Enemy>> enemyGrid(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x))); // Initialize all enemies
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            float positionX = startX + j * (spacingX);
+            float positionY = startY + i * (spacingY);
+            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x);
+            enemyGrid[i][j].setTexture("../../resource/img/fire.png"); // Set the texture for each enemy
+        }
+    }
+    // end of enemy code
+    //*****************************************************************************************
+
+    //*****************************************************************************************
+    // barrier setup
+    float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
+    float barrierY = (window.getSize().y - 100) / 2.f; // Center the barrier vertically
+    Barrier barrier(barrierX, barrierY); // Create the barrier object
+    // end of barrier setup
+    //*****************************************************************************************
+
+
     //*****************************************************************************************
     // pick character window code start
     // character textures
@@ -37,7 +71,7 @@ void game::gameLoop() {
     float screenWidth = screenSize.x;
     float screenHeight = screenSize.y;
     // Calculate position to center character
-    character1.setPosition((screenWidth - character1.getGlobalBounds().width - 230)/ 2, (screenHeight - character2.getGlobalBounds().height) / 2);
+    character1.setPosition((screenWidth - character1.getGlobalBounds().width - 230)/ 2, (screenHeight - character1.getGlobalBounds().height) / 2);
     character2.setPosition((screenWidth - character2.getGlobalBounds().width + 250) / 2, (screenHeight - character2.getGlobalBounds().height) / 2);
     // Create button 1
     sf::RectangleShape button1(sf::Vector2f(200.f, 50.f));
@@ -143,9 +177,8 @@ void game::gameLoop() {
         // Display the window
         window.display();
     }
-    // end of chose player window
+    // end of choose player window
     //*************************************************************************************************
-
 
     sf::Clock shootCooldown;
     bool canShoot = true;
@@ -163,6 +196,8 @@ void game::gameLoop() {
     exitButtonText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitButtonText.getLocalBounds().width) / 2,
                                exitButton.getPosition().y + (exitButton.getSize().y - exitButtonText.getLocalBounds().height) / 2);
 
+
+    powerup Powerup;
     // Load life counter textures
     sf::Texture life3Texture;
     sf::Texture life2Texture;
@@ -183,6 +218,11 @@ void game::gameLoop() {
     lifeCounterSprite.setScale(1.5f, 1.5f); // Adjust scale as needed
     lifeCounterSprite.setPosition(15.f, 15.f); // Top left corner of the window
 
+    // The message to display
+    std::string message = "                      Place your AD here                      ";
+    int messageLength = message.length(); int words = 0;
+    // The position at which to start cutting the message
+    int startPos = 0;
 
     sf::Music music;
     if (options->toggleMusic()) {
@@ -202,26 +242,27 @@ void game::gameLoop() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+        /** enemy stuff */
+        // Calculate elapsed time since the last frame
+        float elapsedTime = deltaTime.asSeconds();
+        wavePhase += elapsedTime; // Increment the wave phase
+        // Enemy movement logic...
+        bool shouldMoveDown = false;
+        // Your existing horizontal movement logic here...
+        // Here's where you'll integrate the new wave movement logic
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                // Add vertical wave movement
+                float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
+                enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, startY + i * spacingY + waveOffset);
 
-        // Draw life counter
-        int lives = player.getLives();
-        switch (lives) {
-            case 3:
-                lifeCounterSprite.setTexture(life3Texture);
-                break;
-            case 2:
-                lifeCounterSprite.setTexture(life2Texture);
-                break;
-            case 1:
-                lifeCounterSprite.setTexture(life1Texture);
-                break;
-            case 0:
-                lifeCounterSprite.setTexture(life0Texture);
-                break;
-            default:
-                break;
+            }
         }
-        window.draw(lifeCounterSprite);
+        /** end of enemy stuff */
+
+        /** barrier stuff */
+        barrier.draw(window);
+        /** end of barrier stuff */
 
         // Move character
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
@@ -254,8 +295,40 @@ void game::gameLoop() {
         if (shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
             canShoot = true;
         }
+        int lives = player.getLives();
+        switch (lives) {
+            case 3:
+                lifeCounterSprite.setTexture(life3Texture);
+                break;
+            case 2:
+                lifeCounterSprite.setTexture(life2Texture);
+                break;
+            case 1:
+                lifeCounterSprite.setTexture(life1Texture);
+                break;
+            case 0:
+                lifeCounterSprite.setTexture(life0Texture);
+                break;
+            default:
+                break;
+        }
 
-        // Update powerup
+        player.updateBullets(deltaTime);
+
+        window.clear();
+        if (words == 25) {
+            // Update the window title with a substring of the message
+            std::string title = message.substr(startPos, 100); // Adjust the length based on your needs
+            window.setTitle(title);
+            // Increment the start position to move the text, wrapping around if necessary
+            if (++startPos + 20 > messageLength) startPos = 0;
+            words = 0;
+        } else {
+            words++;
+        }
+
+
+        window.draw(lifeCounterSprite);
         Powerup.update(deltaTime, player);
 
         player.updateBullets(deltaTime);
@@ -266,7 +339,17 @@ void game::gameLoop() {
         player.drawBullets(window);
         window.draw(exitButton);
         window.draw(exitButtonText);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                enemyGrid[i][j].update(deltaTime);
+                enemyGrid[i][j].draw(window);
+            }
+        }
         window.display();
+
+
+
+//        window.display();
     }
     return;
 }
