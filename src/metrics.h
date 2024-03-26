@@ -6,9 +6,14 @@
 #include "player.h"
 
 class Metrics {
+private:
+    sf::Vector2u windowSize;
+    sf::Font font;
+    sf::Text scoreText, pointsText, roundText;
+    sf::RectangleShape separationLine;
+    int score;
 public:
-    Metrics(sf::Vector2u windowSize);
-
+    Metrics(sf::Vector2u windowSize, sf::Font f);
     void setScore();
     void setPoints(int points);
     void setRound(int round);
@@ -21,14 +26,6 @@ public:
     sf::Sprite healthBar;
     void increaseScore(int points);
     int getScore() const;
-
-private:
-    int score;
-    sf::Vector2u windowSize;
-    sf::Font font;
-    sf::Text scoreText, pointsText, roundText;
-
-    sf::RectangleShape separationLine;
 };
 
 #endif //FIRE_FIGHTER_METRICS_H
