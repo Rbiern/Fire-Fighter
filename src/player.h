@@ -8,8 +8,9 @@
 #include <SFML/Audio.hpp>
 #include "settings.h"
 #include "bullet.h"
+#include "enemy.h"
 #include <iostream>
-#include <String>
+#include <string>
 
 class Player : public Entity {
 public:
@@ -20,7 +21,7 @@ public:
 
     void shoot();
 
-    void updateBullets(const sf::Time& delta);
+    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave);
 
 
     void drawBullets(sf::RenderWindow& window);
