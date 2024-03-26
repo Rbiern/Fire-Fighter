@@ -1,5 +1,4 @@
 #include "ui.h"
-#include <SFML/Graphics.hpp>
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(640, 360), "Fire Fighter"); //make new window
