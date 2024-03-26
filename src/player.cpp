@@ -107,16 +107,71 @@ void Player::shoot() {
  * update bullets by time
  * @param delta time
  */
-void Player::updateBullets(const sf::Time& delta) {
+//void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
+//    for (auto it = bullets.begin(); it != bullets.end();) {
+//        it->update(delta);
+//        // Check collision with enemy
+//        bool collisionDetected = false;
+//        std::cout << "Checking collision for bullet at position: X=" << it->getPosition().x << ", Y=" << it->getPosition().y << std::endl;
+//        for (int i = 0; i < enemyWave.getRows(); ++i) {
+//            for (int j = 0; j < enemyWave.getColumns(); ++j) {
+//                auto enemyBounds = enemyWave.getEnemy(i, j).getGlobalBounds();
+//                if (it->getGlobalBounds().intersects(enemyBounds)) {
+//                    // If collision detected, remove bullet and enemy
+//                    std::cout << "Collision detected with enemy at row " << i << ", column " << j << std::endl;
+//                    it = bullets.erase(it);
+//                    enemyWave.removeEnemy(i, j);
+//                    collisionDetected = true;
+//                    break;
+//                }
+//            }
+//            if (collisionDetected) break; // Exit outer loop if collision detected
+//        }
+//
+//        if (!collisionDetected){
+//            if (it->getPosition().x < 0) {
+//                it = bullets.erase(it);
+//            } else {
+//                ++it;
+//            }
+//        }
+//    }
+//}
+
+//void Player::updateBullets(const sf::Time& delta,  EnemyWave& enemyWave) {
+//    for (auto& bullet : bullets) {
+//        bullet.update(delta);
+//    }
+//
+//    // delete bullets gone off screen
+//    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](const Bullet& bullet) {
+//        return bullet.getPosition().x < 0;
+//    }), bullets.end());
+//}
+void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
     for (auto& bullet : bullets) {
         bullet.update(delta);
     }
+    auto bulletIt = bullets.begin();
+    while (bulletIt != bullets.end()) {
+        bool bulletRemoved = false;
+        for (int i = 0; i < enemyWave.getRows() && !bulletRemoved; ++i) {
+            for (int j = 0; j < enemyWave.getColumns() && !bulletRemoved; ++j) {
+                Enemy& enemy = enemyWave.getEnemy(i, j);
+                if (enemy.getIsAlive() && bulletIt->getGlobalBounds().intersects(enemy.getGlobalBounds())) {
+                    enemy.kill();
+                    bulletIt = bullets.erase(bulletIt);
+                    bulletRemoved = true;
+                }
+            }
+        }
 
-    // delete bullets gone off screen
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](const Bullet& bullet) {
-        return bullet.getPosition().x < 0;
-    }), bullets.end());
+        if (!bulletRemoved) {
+            ++bulletIt;
+        }
+    }
 }
+
 
 void Player::drawBullets(sf::RenderWindow& window) {
     for (auto& bullet : bullets) {
