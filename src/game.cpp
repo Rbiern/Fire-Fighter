@@ -98,9 +98,9 @@ void game::gameLoop() {
 
         int lives = player.getLives();
         metrics.updateHealthbar(lives);
-        player.updateBullets(deltaTime);
+        player.updateBullets(deltaTime,enemyWave);
         Powerup.update(deltaTime, player, window);
-        player.updateBullets(deltaTime);
+
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
@@ -466,4 +466,3 @@ bool game::gameOver(sf::RenderWindow &win) {
         win.display();
     }
 }
-
