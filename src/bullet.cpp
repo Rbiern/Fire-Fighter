@@ -1,19 +1,30 @@
-#include "bullet.h"
-#include <iostream>
-Bullet::Bullet(float startX, float startY) : Entity() {
-    this->setTexture("../../resource/img/water-bullet.png");
-    this->setPosition(startX,startY);
-    speed = 100.0f;
-    this->setScale(0.2f,0.2f);
-    std::cout << "Bullet sprite texture: " << sprite.getTexture() << std::endl;
-    std::cout << "Bullet sprite position: (" << sprite.getPosition().x << ", " << sprite.getPosition().y << ")" << std::endl;
-}
+#include "Bullet.h"
 
+Bullet::Bullet(float startX, float startY) {
+    loadTexture();
+    sprite.setPosition(startX, startY);
+    sprite.setScale(0.2f,0.2f);
+    speed = 300.f;
+}
 
 void Bullet::update(const sf::Time& delta) {
-    move(-speed * delta.asSeconds(), 0); 
+    sprite.move(-speed * delta.asSeconds(), 0);
 }
 
-//sf::Vector2f Bullet::getPosition() const {
-//    return sprite.getPosition();
-//}
+void Bullet::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+}
+
+sf::FloatRect Bullet::getGlobalBounds() const {
+    return sprite.getGlobalBounds();
+}
+
+void Bullet::loadTexture() {
+    if (!texture.loadFromFile("../../resource/img/water-bullet.png")) {
+    }
+    sprite.setTexture(texture);
+}
+const sf::Sprite& Bullet::getSprite() const {
+    return sprite;
+}
+
