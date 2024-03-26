@@ -1,11 +1,8 @@
 #include "metrics.h"
 #include <iostream>
 
-Metrics::Metrics(sf::Vector2u windowSize) : score(0), windowSize(windowSize) {
-    if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
-        std::cerr << "Failed to load font file!" << std::endl;
-    }
-
+Metrics::Metrics(sf::Vector2u windowSize, sf::Font f) : score(0), windowSize(windowSize) {
+    font = f;
     scoreText.setFont(font);
     pointsText.setFont(font);
     roundText.setFont(font);
