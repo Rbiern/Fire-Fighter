@@ -5,55 +5,57 @@ game::game(settings *opt) {
     options = *opt;             // get settings object that was created in UI class
     font = options.getFont();   // load font from settings
     icon = options.getIcon();   // load icon from settings
-    if (options.toggleMusic()) {// check if music is enabled
-        // setup music for the main menu
+    if (options.toggleMusic()) {// check if music is enabled, if so, load it into memory
         if (!music.openFromFile("../../music/rglk2theme2distort.mp3"))
             std::cerr << "Failed to load music" << std::endl;
         music.setLoop(true);
     }
+    resolution.x = options.getResolution()[0]; // screen resolution width
+    resolution.y = options.getResolution()[1]; // screen resolution height
 }
 
 /** run game method */
 void game::gameLoop() {
+    // setup window, fame rate, and icon
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
+
     // set up player and scale
-    sf::Vector2u resolution(options.getResolution()[0], options.getResolution()[1]);
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
     EnemyWave enemyWave(window, resolution);
 
-    // set up barrier
-    float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
-    float barrierY = (window.getSize().y - 100) / 2.f; // Center the barrier vertically
-    Barrier barrier(barrierX, barrierY); // Create the barrier object
+    // barrier setup
+    float barrierX = (window.getSize().x -100) / 2.f;   // Center the barrier horizontally
+    float barrierY = (window.getSize().y - 100) / 2.f;  // Center the barrier vertically
+    Barrier barrier(barrierX, barrierY);   // Create the barrier object
 
-    char* str = characterSelect(window, player);
-    if (str == NULL) {
-        return;
-    } else {
-        player.setPlayerTexture(str);
-    }
+    // character selection screen method call
+    char* str = characterSelectScreen(window, player);
+    if (str == NULL) return;                            // an error has occurred or user exited back to UI
+    else player.setPlayerTexture(str);               // test player texture to selected file path of str
 
     sf::Clock shootCooldown; // for shooting cool down
     bool canShoot = true;
     float movementSpeed = 0.5f;
 
-    Metrics metrics(resolution);
+    // setup metrics bar on top of the window
+    Metrics metrics(resolution, options.getFont());
     metrics.setScore();
 
-    // The message to display
+    // The message to display on window bar
     std::string message = "                      Place your AD here                      ";
     int messageLength = message.length(); int words = 0; int startPos = 0;
 
-    // play music if it is enabled
+    // start the music if it is enabled
     if (options.toggleMusic()) music.play();
 
-/** main game window */
+/** main game loop */
     while (window.isOpen()) {
-        sf::Event event;
+        sf::Event event{};
         sf::Time deltaTime = clock.restart();
+        // when user closes the window through press of X or red dot on mac, close game loop
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -73,13 +75,13 @@ void game::gameLoop() {
         // when user presses exit, pop up window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = handleRequest(window);
+            bool flag = handleExitRequest(window);
             if (flag) window.close();
         }
         // when the game has ended
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = gameOver(window);
+            bool flag = gameOverScreen(window);
             if (flag) window.close();
         }
         // have player shoot when space bar is pressed
@@ -94,42 +96,187 @@ void game::gameLoop() {
 
         int lives = player.getLives();
         metrics.updateHealthbar(lives);
-        player.updateBullets(deltaTime,enemyWave);
+        player.updateBullets(deltaTime);
         Powerup.update(deltaTime, player, window);
-
+        player.updateBullets(deltaTime);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
         enemyWave.draw(window);
         /** end of enemy stuff */
 
+        // Update the window title message
         if (words == 25) {
-            // Update the window title with a substring of the message
             std::string title = message.substr(startPos, 100); // Adjust the length based on your needs
             window.setTitle(title);
-            // Increment the start position to move the text, wrapping around if necessary
-            if (++startPos + 20 > messageLength) startPos = 0;
+            if (++startPos + 20 > messageLength) startPos = 0; // Increment the start position to move the text, wrapping around if necessary
             words = 0;
-        } else {
-            words++;
-        }
+        } else words++;
 
         window.clear();
         player.draw(window);
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
-        barrier.draw(window);
+       // barrier.draw(window);
         metrics.draw(window);
         window.display();
     }
 }
 
-/** for pop up exit button */
-bool game::handleRequest(sf::RenderWindow& win) {
-    // Setup the window
-//    sf::RenderWindow win(sf::VideoMode(400, 300), "Popup Window", sf::Style::Close);
 
+/**
+ * character selection window
+ * handles character selection
+ * */
+char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player) {
+    char* str;                                          // String of player texture path to return
+    sf::Texture boyTexture;                             // load image of the boy droplet image
+    sf::Texture girlTexture;                            // load image of the girl droplet image
+    sf::Texture characterBackDropTexture;               // load image of the backdrop of the characters
+    if (!boyTexture.loadFromFile("../../resource/img/waterBoy.png")) {
+        std::cerr << "Failed to load player!" << std::endl;
+    }
+    if (!girlTexture.loadFromFile("../../resource/img/waterGirl.png")) {
+        std::cerr << "Failed to load player!" << std::endl;
+    }
+    if (!characterBackDropTexture.loadFromFile("../../resource/img/character_back_drop.png")) {
+        std::cerr << "Failed to load backdrop!" << std::endl;
+    }
+    sf::Sprite boyDroplet(boyTexture);          // sprite of the boy player
+    sf::Sprite girlDroplet(girlTexture);        // sprite of the girl player
+    sf::Sprite characterBackDrop(characterBackDropTexture); // sprites of the backdrop
+
+    // Get the screen dimensions
+    float screenWidth = resolution.x;
+    float screenHeight = resolution.y;
+    // Calculate position to center character
+    boyDroplet.setPosition((screenWidth - boyDroplet.getGlobalBounds().width - 250) / 2, (screenHeight - boyDroplet.getGlobalBounds().height - 70) / 2);
+    girlDroplet.setPosition((screenWidth - girlDroplet.getGlobalBounds().width + 250) / 2, (screenHeight - girlDroplet.getGlobalBounds().height - 70) / 2);
+
+    // Create boy select button
+    sf::RectangleShape button1(sf::Vector2f(200.f, 50.f));
+    button1.setFillColor(sf::Color::Blue);
+    button1.setPosition((screenWidth - button1.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
+    // Create boy select button text
+    sf::String s1 = options.getLanguage()[16];
+    sf::Text text1(s1, font, 20);
+    text1.setPosition(button1.getPosition().x + (button1.getSize().x - text1.getLocalBounds().width) / 2, button1.getPosition().y + (button1.getSize().y - text1.getLocalBounds().height) / 2);
+    text1.setFillColor(sf::Color(235, 70, 60));
+    // Create girl select button
+    sf::RectangleShape button2(sf::Vector2f(200.f, 50.f));
+    button2.setFillColor(sf::Color::Blue);
+    button2.setPosition(button1.getPosition().x + button1.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
+    // Create girl select button text
+    sf::String s2 = options.getLanguage()[15];
+    sf::Text text2(s2, font, 20);
+    text2.setPosition(button2.getPosition().x + (button2.getSize().x - text2.getLocalBounds().width) / 2, button2.getPosition().y + (button2.getSize().y - text2.getLocalBounds().height) / 2);
+    text2.setFillColor(sf::Color(235, 70, 60));
+    // create text at top of screen
+    sf::String s3 = options.getLanguage()[13];
+    sf::Text chooseText(s3, font, 50);
+    chooseText.setPosition((screenWidth - chooseText.getLocalBounds().width) / 2, 50); // Position text at the top center
+    chooseText.setFillColor(sf::Color(235, 70, 60));
+    // Create "Go Back" button
+    sf::RectangleShape backButton(sf::Vector2f(150.f, 50.f));
+    backButton.setFillColor(sf::Color(54, 207, 213));
+    backButton.setPosition(screenWidth - backButton.getSize().x - 20, 20); // Position button at the top right
+    // create go back text on go back button
+    sf::String s4 = options.getLanguage()[14];
+    sf::Text backText(s4, font, 20);
+    backText.setPosition(backButton.getPosition().x + (backButton.getSize().x - backText.getLocalBounds().width) / 2, backButton.getPosition().y + (backButton.getSize().y - backText.getLocalBounds().height) / 2);
+    backText.setFillColor(sf::Color(235, 70, 60));
+
+    bool hoverFlagBoy = false;          // flag to know when to display backdrop for boy
+    bool hoverFlagGirl = false;         // flag to know when to display backdrop for girl
+    for (int flag = true; flag;) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return NULL;
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    if (button1.getGlobalBounds().contains(mousePos)) {
+                        // boy select Button clicked
+                        std::cout << "Player 1 selected\n";
+                        str = "../../resource/img/waterBoy.png";
+                        flag = false;
+
+                    }
+                    if (button2.getGlobalBounds().contains(mousePos)) {
+                        // girl select Button  clicked
+                        std::cout << "Player 2 selected\n";
+                        str = "../../resource/img/waterGirl.png";
+                        flag = false;
+                    }
+                    if (backButton.getGlobalBounds().contains(mousePos)) {
+                        // Back button clicked
+                        std::cout << "Go Back\n";
+                        window.close();
+                        return NULL;
+                    }
+                }
+            }
+            if (event.type == sf::Event::MouseMoved) {
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                if (button1.getGlobalBounds().contains(mousePos)) {
+                    // Button 1 hovered
+                    button1.setFillColor(sf::Color(0, 0, 255, 200));
+                    hoverFlagBoy = true;
+                } else {
+                    button1.setFillColor(sf::Color(0, 0, 255, 255));
+                    hoverFlagBoy = false;
+                }
+
+                if (button2.getGlobalBounds().contains(mousePos)) {
+                    // Button 2 hovered
+                    button2.setFillColor(sf::Color(255, 105, 180, 200));
+                    hoverFlagGirl = true;
+                } else {
+                    button2.setFillColor(sf::Color(255, 105, 180, 255));
+                    hoverFlagGirl = false;
+                }
+
+                if (backButton.getGlobalBounds().contains(mousePos)) {
+                    // Back button hovered
+                    backButton.setFillColor(sf::Color(54, 207, 213, 200));
+                } else {
+                    backButton.setFillColor(sf::Color(54, 207, 213, 255));
+                }
+            }
+        }
+        window.clear(sf::Color(52, 109, 129));
+
+        // Draw elements
+        if (hoverFlagBoy) {
+            characterBackDrop.setPosition((screenWidth - characterBackDrop.getGlobalBounds().width - 250) / 2, (screenHeight - characterBackDrop.getGlobalBounds().height - 70) / 2);
+            window.draw(characterBackDrop);
+        } else if (hoverFlagGirl) {
+            characterBackDrop.setPosition((screenWidth - characterBackDrop.getGlobalBounds().width + 250) / 2, (screenHeight - characterBackDrop.getGlobalBounds().height - 70) / 2);
+            window.draw(characterBackDrop);
+        }
+        window.draw(boyDroplet);
+        window.draw(girlDroplet);
+        window.draw(button1);
+        window.draw(text1);
+        window.draw(button2);
+        window.draw(text2);
+        window.draw(chooseText);
+        window.draw(backButton);
+        window.draw(backText);
+
+        // Display the window
+        window.display();
+    }
+    return str;
+}
+
+
+/** handle window when user presses ESC key */
+bool game::handleExitRequest(sf::RenderWindow& win) {
     // Calculate button sizes and positions dynamically based on window size
     sf::Vector2u windowSize = win.getSize();
     float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
@@ -215,142 +362,11 @@ bool game::handleRequest(sf::RenderWindow& win) {
     }
 }
 
-char* game::characterSelect(sf::RenderWindow &window, Player player) {
-    char* str;
-    sf::Texture characterTexture1;
-    sf::Texture characterTexture2;
-    if (!characterTexture1.loadFromFile("../../resource/img/waterBoy.png")) {
-        std::cerr << "Failed to load player!" << std::endl;
-        return NULL;
-    }
-    if (!characterTexture2.loadFromFile("../../resource/img/waterGirl.png")) {
-        std::cerr << "Failed to load player!" << std::endl;
-        return NULL;
-    }
-    sf::Sprite character1(characterTexture1);
-    sf::Sprite character2(characterTexture2);
-    // Get the screen dimensions
-    sf::Vector2u screenSize = window.getSize();
-    float screenWidth = screenSize.x;
-    float screenHeight = screenSize.y;
-    // Calculate position to center character
-    character1.setPosition((screenWidth - character1.getGlobalBounds().width - 230)/ 2, (screenHeight - character1.getGlobalBounds().height) / 2);
-    character2.setPosition((screenWidth - character2.getGlobalBounds().width + 250) / 2, (screenHeight - character2.getGlobalBounds().height) / 2);
-    // Create button 1
-    sf::RectangleShape button1(sf::Vector2f(200.f, 50.f));
-    button1.setFillColor(sf::Color::Blue);
-    button1.setPosition((screenWidth - button1.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
-    // Create button 1 text
-    sf::String s1 = options.getLanguage()[16];
-    sf::Text text1(s1, font, 20);
-    text1.setPosition(button1.getPosition().x + (button1.getSize().x - text1.getLocalBounds().width) / 2, button1.getPosition().y + (button1.getSize().y - text1.getLocalBounds().height) / 2);
-    text1.setFillColor(sf::Color::White);
-    // Create button 2
-    sf::RectangleShape button2(sf::Vector2f(200.f, 50.f));
-    button2.setFillColor(sf::Color::Red);
-    button2.setPosition(button1.getPosition().x + button1.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
-    // Create button 2 text
-    sf::String s2 = options.getLanguage()[15];
-    sf::Text text2(s2, font, 20);
-    text2.setPosition(button2.getPosition().x + (button2.getSize().x - text2.getLocalBounds().width) / 2, button2.getPosition().y + (button2.getSize().y - text2.getLocalBounds().height) / 2);
-    text2.setFillColor(sf::Color::White);
-    // create text at top of screen
-    sf::String s3 = options.getLanguage()[13];
-    sf::Text chooseText(s3, font, 30);
-    chooseText.setPosition((screenWidth - chooseText.getLocalBounds().width) / 2, 20); // Position text at the top center
-    chooseText.setFillColor(sf::Color::White);
-    // Create "Go Back" button
-    sf::RectangleShape backButton(sf::Vector2f(150.f, 50.f));
-    backButton.setFillColor(sf::Color(54, 207, 213));
-    backButton.setPosition(screenWidth - backButton.getSize().x - 20, 20); // Position button at the top right
-    // create go back text
-    sf::String s4 = options.getLanguage()[14];
-    sf::Text backText(s4, font, 20);
-    backText.setPosition(backButton.getPosition().x + (backButton.getSize().x - backText.getLocalBounds().width) / 2, backButton.getPosition().y + (backButton.getSize().y - backText.getLocalBounds().height) / 2);
-    backText.setFillColor(sf::Color::White);
-
-    for (int flag = true; flag;) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-                return NULL;
-            }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    if (button1.getGlobalBounds().contains(mousePos)) {
-                        // Button 1 clicked
-                        std::cout << "Player 1 selected\n";
-//                       player.setPlayerTexture("../../resource/img/waterBoy.png");
-                        str = "../../resource/img/waterBoy.png";
-                        flag = false;
-
-                    }
-                    if (button2.getGlobalBounds().contains(mousePos)) {
-                        // Button 2 clicked
-                        std::cout << "Player 2 selected\n";
-//                        player.setPlayerTexture("../../resource/img/waterGirl.png");
-                        str = "../../resource/img/waterGirl.png";
-                        flag = false;
-                    }
-                    if (backButton.getGlobalBounds().contains(mousePos)) {
-                        // Back button clicked
-                        std::cout << "Go Back\n";
-                        window.close();
-                        return NULL;
-                    }
-                }
-            }
-            if (event.type == sf::Event::MouseMoved) {
-                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                if (button1.getGlobalBounds().contains(mousePos)) {
-                    // Button 1 hovered
-                    button1.setFillColor(sf::Color(0, 0, 255, 200));
-                } else {
-                    button1.setFillColor(sf::Color(0, 0, 255, 255));
-                }
-
-                if (button2.getGlobalBounds().contains(mousePos)) {
-                    // Button 2 hovered
-                    button2.setFillColor(sf::Color(255, 0, 0, 200));
-                } else {
-                    button2.setFillColor(sf::Color(255, 0, 0, 255));
-                }
-
-                if (backButton.getGlobalBounds().contains(mousePos)) {
-                    // Back button hovered
-                    backButton.setFillColor(sf::Color(54, 207, 213, 200));
-                } else {
-                    backButton.setFillColor(sf::Color(54, 207, 213, 255));
-                }
-            }
-        }
-        // Clear the window
-        window.clear(sf::Color(52, 109, 129));
-
-        // Draw elements
-        window.draw(character1);
-        window.draw(character2);
-        window.draw(button1);
-        window.draw(text1);
-        window.draw(button2);
-        window.draw(text2);
-        window.draw(chooseText);
-        window.draw(backButton);
-        window.draw(backText);
-
-        // Display the window
-        window.display();
-    }
-    return str;
-}
-
-bool game::gameOver(sf::RenderWindow &win) {
-    // Setup the window
-//    sf::RenderWindow win(sf::VideoMode(400, 300), "Popup Window", sf::Style::Close);
-
-
+/**
+ * handle window when game is over
+ * creates a message on window upon game over
+ * */
+bool game::gameOverScreen(sf::RenderWindow &win) {
 // Load a texture from a file
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("../../resource/img/set-on-fire_1920.jpg")) {
