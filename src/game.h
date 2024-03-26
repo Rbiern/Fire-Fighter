@@ -5,7 +5,6 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include "settings.h"
-#include "entity.h"
 #include "player.h"
 #include "enemy.h"
 #include "powerup.h"
@@ -14,19 +13,19 @@
 
 class game {
 private:
-    Entity temp;
-    sf::Font font;
     settings options; // get icon, get windows size, get music, get font;
-    sf::Clock clock; // for updating the game
+    sf::Font font;
     sf::Image icon;
     sf::Music music;
+    sf::Vector2u resolution;
+    sf::Clock clock; // for updating the game
     powerup Powerup;
 public:
     explicit game(settings *opt);
     void gameLoop();
-    char* characterSelect(sf::RenderWindow& window, Player player);
-    bool handleRequest(sf::RenderWindow& window);
-    bool gameOver(sf::RenderWindow& window);
+    char* characterSelectScreen(sf::RenderWindow& window, const Player& player);
+    bool handleExitRequest(sf::RenderWindow& window);
+    bool gameOverScreen(sf::RenderWindow& window);
 };
 
 #endif //FIRE_FIGHTER_GAME_H
