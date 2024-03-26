@@ -1,8 +1,7 @@
 #include "ui.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(640, 360), "Fire Fighter"); //make new window
-    ui program(&window); // initialize ui window
-    program.displayMenu(); // method from ui to run the main program loop
+    ui *program = new ui(); // create a new UI menu 
+    program->displayMenu(); // run UI window loop
     return 0;
 }
