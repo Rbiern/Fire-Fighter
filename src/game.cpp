@@ -24,14 +24,10 @@ void game::gameLoop() {
     Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
     EnemyWave enemyWave(window, resolution);
 
-    //*****************************************************************************************
-    // barrier setup
+    // set up barrier
     float barrierX = (window.getSize().x -100) / 2.f; // Center the barrier horizontally
     float barrierY = (window.getSize().y - 100) / 2.f; // Center the barrier vertically
-    auto *testMe = new Barrier(barrierX, barrierY); // Create the barrier object
-    // end of barrier setup
-    //*****************************************************************************************
-
+    Barrier barrier(barrierX, barrierY); // Create the barrier object
 
     char* str = characterSelect(window, player);
     if (str == NULL) {
@@ -123,6 +119,7 @@ void game::gameLoop() {
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
+        barrier.draw(window);
         metrics.draw(window);
         window.display();
     }
