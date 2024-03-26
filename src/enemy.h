@@ -13,15 +13,17 @@ public:
     sf::Vector2f getPosition() const;
     void setPosition(float x, float y);
     sf::Vector2u getSize() const;
+    sf::FloatRect getGlobalBounds() const;
     void adjustForResolution(const sf::Vector2u& resolution);
-
-
+    void kill(); 
+    bool getIsAlive() const;
 
 private:
     sf::Sprite sprite;
     sf::Texture texture;
     float movementSpeed;
     unsigned int screenWidth;
+    bool isAlive;
 };
 
 class EnemyWave {
@@ -29,8 +31,11 @@ public:
     EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution);
     void update(sf::Time deltaTime);
     void draw(sf::RenderWindow& window);
-    void adjustSpacingForResolution(const sf::Vector2u& resolution); // Declare the method
-
+    void removeEnemy(int row, int column);
+    Enemy& getEnemy(int row, int column);
+    int getRows() const;
+    int getColumns() const;
+    void adjustSpacingForResolution(const sf::Vector2u& resolution);
 
 private:
     std::vector<std::vector<Enemy>> enemyGrid;
