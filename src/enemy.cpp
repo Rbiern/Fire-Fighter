@@ -3,9 +3,12 @@
 #include <cmath>
 
 Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution)
-        : movementSpeed(5.0f), screenWidth(screenWidth) {
+        : movementSpeed(5.0f), screenWidth(screenWidth),isAlive(true) {
     setPosition(startX, startY);
     adjustForResolution(resolution);
+}
+void Enemy::kill() {
+    isAlive = false;
 }
 
 void Enemy::update(const sf::Time& deltaTime) {
@@ -13,11 +16,14 @@ void Enemy::update(const sf::Time& deltaTime) {
     sprite.move(moveDistance, 0);
     if (sprite.getPosition().x > screenWidth) {
         sprite.setPosition(-sprite.getGlobalBounds().width, sprite.getPosition().y);
+
     }
 }
 
 void Enemy::draw(sf::RenderWindow& window) {
-    window.draw(sprite);
+    if (isAlive) {
+        window.draw(sprite);
+    }
 }
 
 void Enemy::setTexture(const std::string& texturePath) {
@@ -29,18 +35,14 @@ sf::Vector2f Enemy::getPosition() const {
     return sprite.getPosition();
 }
 
+
 void Enemy::setPosition(float x, float y) {
     sprite.setPosition(x, y);
 }
-
-sf::Vector2u Enemy::getSize() const {
-    return texture.getSize();
-}
-
 void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
     float scale = 1.0f;
     float speedScale = 1.0f;
-    // Resolution-based scaling adjustments
+
     if (resolution == sf::Vector2u(640, 360)) {
         scale = 0.5f;
         speedScale = 1.00f;
@@ -48,17 +50,47 @@ void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
         scale = 1.0f;
         speedScale = 1.5f;
     } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 2.0f;
+        scale = 1.5f;
         speedScale = 1.75f;
     } else if (resolution == sf::Vector2u(3840, 2160)) {
         scale = 2.0f;
         speedScale = 2.0f;
     }
+
     sprite.setScale(scale, scale);
+
     movementSpeed *= speedScale;
 }
+sf::FloatRect Enemy::getGlobalBounds() const {
+    return sprite.getGlobalBounds();
+}
+void EnemyWave::removeEnemy(int row, int column) {
+    // Remove enemy at specified position
+    enemyGrid[row].erase(enemyGrid[row].begin() + column);
+}
 
+sf::Vector2u Enemy::getSize() const {
+    return texture.getSize();
+}
 
+void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
+    if (resolution == sf::Vector2u(640, 360)) {
+        spacingX = 70.0f; // Smaller resolution, reduce spacing
+        spacingY = 40.0f;
+    } else if (resolution == sf::Vector2u(1280, 720)) {
+        spacingX = 100.0f; // Base resolution, base spacing
+        spacingY = 70.0f;
+    } else if (resolution == sf::Vector2u(1920, 1080)) {
+        spacingX = 130.0f; // Higher resolution, increase spacing
+        spacingY = 90.0f;
+    } else if (resolution == sf::Vector2u(3840, 2160)) {
+        spacingX = 160.0f; // 4K resolution, further increase spacing
+        spacingY = 110.0f;
+    } else {
+        // Default case for resolutions not explicitly handled
+        // Optionally adjust based on resolution dimensions, or keep base values
+    }
+}
 EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution)
         : waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
           rows(8), columns(4), spacingX(100.0f), spacingY(70.0f),
@@ -94,21 +126,17 @@ void EnemyWave::draw(sf::RenderWindow& window) {
     }
 }
 
-void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
-    if (resolution == sf::Vector2u(640, 360)) {
-        spacingX = 70.0f; // Smaller resolution, reduce spacing
-        spacingY = 40.0f;
-    } else if (resolution == sf::Vector2u(1280, 720)) {
-        spacingX = 100.0f; // Base resolution, base spacing
-        spacingY = 70.0f;
-    } else if (resolution == sf::Vector2u(1920, 1080)) {
-        spacingX = 130.0f; // Higher resolution, increase spacing
-        spacingY = 90.0f;
-    } else if (resolution == sf::Vector2u(3840, 2160)) {
-        spacingX = 160.0f; // 4K resolution, further increase spacing
-        spacingY = 110.0f;
-    } else {
-        // Default case for resolutions not explicitly handled
-        // Optionally adjust based on resolution dimensions, or keep base values
-    }
+Enemy& EnemyWave::getEnemy(int row, int column) {
+    return enemyGrid[row][column];
+}
+
+int EnemyWave::getRows() const {
+    return rows;
+}
+
+int EnemyWave::getColumns() const {
+    return columns;
+}
+bool Enemy::getIsAlive() const {
+    return isAlive; // Assuming 'isAlive' is a boolean member variable indicating the alive status.
 }
