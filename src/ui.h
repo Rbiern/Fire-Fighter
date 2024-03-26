@@ -8,20 +8,16 @@
 #include "game.h"
 
 class ui {
-    // variables
 private:
-    sf::RenderWindow* _window;
+    sf::RenderWindow _window;
     settings* options;
     sf::Texture backgroundImage;
     sf::Font font;
     sf::Music music;
     bool errorFlag;
-    // methods
 public:
-    // constructor
-    explicit ui(sf::RenderWindow *window1);
+    ui();
     void displayMenu();
-    // helper methods
 private:
     sf::ConvexShape createButtonShape(float windowWidth);
     bool _init();
