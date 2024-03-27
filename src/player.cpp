@@ -1,6 +1,7 @@
 //Sungmin Lee
 
 #include "player.h"
+#include "barrier.h"
 
 /**
  * constructor of player
@@ -172,6 +173,19 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
     }
 }
 
+void Player::updateBarrier(const sf::Time delta, Barrier& barrier) {
+    for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
+        bulletIt->update(delta);
+
+        if (barrier.bulletCollision(bulletIt->getSprite())) {
+            bulletIt = bullets.erase(bulletIt);
+            barrier.shrink();
+        }
+        else {
+            ++bulletIt;
+        }
+    }
+}
 
 void Player::drawBullets(sf::RenderWindow& window) {
     for (auto& bullet : bullets) {
