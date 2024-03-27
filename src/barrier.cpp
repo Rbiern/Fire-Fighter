@@ -10,6 +10,10 @@ bool Barrier::enemyCollision(const Enemy& enemy) const {
     return sprite.getGlobalBounds().intersects(enemy.getGlobalBounds());
 }
 
+bool Barrier::bulletCollision(const sf::Sprite& bulletSprite) const {
+    return sprite.getGlobalBounds().intersects(bulletSprite.getGlobalBounds());
+}
+
 void Barrier::shrink() {
     // Calculate the new size
     size /= 1.02; // Divide the size by 1.02 to shrink it
