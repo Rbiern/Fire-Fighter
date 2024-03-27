@@ -29,7 +29,7 @@ void game::gameLoop() {
     // barrier setup
     float barrierX = (window.getSize().x -100) / 2.f;   // Center the barrier horizontally
     float barrierY = (window.getSize().y - 100) / 2.f;  // Center the barrier vertically
-    Barrier barrier(barrierX, barrierY);   // Create the barrier object
+    Barrier barrier(barrierX, barrierY, resolution);   // Create the barrier object
 
     // character selection screen method call
     char* str = characterSelectScreen(window, player);
@@ -96,9 +96,8 @@ void game::gameLoop() {
 
         int lives = player.getLives();
         metrics.updateHealthbar(lives);
-        player.updateBullets(deltaTime);
         Powerup.update(deltaTime, player, window);
-        player.updateBullets(deltaTime);
+        player.updateBullets(deltaTime, enemyWave);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
@@ -115,9 +114,9 @@ void game::gameLoop() {
             }
         }
 
-         /** when bullet hits barrier, the barrier shrinks */
+        /** when bullet hits barrier, the barrier shrinks */
         player.updateBarrier(deltaTime,barrier);
-        
+
         enemyWave.draw(window);
         /** end of enemy stuff */
 
@@ -134,7 +133,7 @@ void game::gameLoop() {
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
-        //barrier.draw(window);
+        barrier.draw(window);
         metrics.draw(window);
         window.display();
     }
