@@ -94,7 +94,7 @@ void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
 EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution)
         : waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
           rows(8), columns(4), spacingX(100.0f), spacingY(70.0f),
-          startX(-300.0f), startY(75.0f) {
+          startX(200.0f), startY(75.0f) {
     adjustSpacingForResolution(resolution); // Adjust spacing based on resolution
     enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, resolution)));
     for (int i = 0; i < rows; ++i) {
