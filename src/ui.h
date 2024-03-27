@@ -17,6 +17,7 @@ private:
     bool errorFlag;
 public:
     ui();
+    ~ui();
     void displayMenu();
 private:
     sf::ConvexShape createButtonShape(float windowWidth);
