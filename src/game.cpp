@@ -118,7 +118,7 @@ void game::gameLoop() {
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
-       // barrier.draw(window);
+        //barrier.draw(window);
         metrics.draw(window);
         window.display();
     }
@@ -155,22 +155,26 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
     girlDroplet.setPosition((screenWidth - girlDroplet.getGlobalBounds().width + 250) / 2, (screenHeight - girlDroplet.getGlobalBounds().height - 70) / 2);
 
     // Create boy select button
-    sf::RectangleShape button1(sf::Vector2f(200.f, 50.f));
-    button1.setFillColor(sf::Color::Blue);
-    button1.setPosition((screenWidth - button1.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
+    sf::RectangleShape selectBoyButton(sf::Vector2f(200.f, 50.f));
+    selectBoyButton.setFillColor(sf::Color::Blue);
+    selectBoyButton.setPosition((screenWidth - selectBoyButton.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
+    selectBoyButton.setOutlineThickness(2);
+    selectBoyButton.setOutlineColor(sf::Color::White);
     // Create boy select button text
     sf::String s1 = options.getLanguage()[16];
     sf::Text text1(s1, font, 20);
-    text1.setPosition(button1.getPosition().x + (button1.getSize().x - text1.getLocalBounds().width) / 2, button1.getPosition().y + (button1.getSize().y - text1.getLocalBounds().height) / 2);
+    text1.setPosition(selectBoyButton.getPosition().x + (selectBoyButton.getSize().x - text1.getLocalBounds().width) / 2, selectBoyButton.getPosition().y + (selectBoyButton.getSize().y - text1.getLocalBounds().height) / 2);
     text1.setFillColor(sf::Color(235, 70, 60));
     // Create girl select button
-    sf::RectangleShape button2(sf::Vector2f(200.f, 50.f));
-    button2.setFillColor(sf::Color::Blue);
-    button2.setPosition(button1.getPosition().x + button1.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
+    sf::RectangleShape selectGirlButton(sf::Vector2f(200.f, 50.f));
+    selectGirlButton.setFillColor(sf::Color::Blue);
+    selectGirlButton.setPosition(selectBoyButton.getPosition().x + selectBoyButton.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
+    selectGirlButton.setOutlineThickness(2);
+    selectGirlButton.setOutlineColor(sf::Color::White);
     // Create girl select button text
     sf::String s2 = options.getLanguage()[15];
     sf::Text text2(s2, font, 20);
-    text2.setPosition(button2.getPosition().x + (button2.getSize().x - text2.getLocalBounds().width) / 2, button2.getPosition().y + (button2.getSize().y - text2.getLocalBounds().height) / 2);
+    text2.setPosition(selectGirlButton.getPosition().x + (selectGirlButton.getSize().x - text2.getLocalBounds().width) / 2, selectGirlButton.getPosition().y + (selectGirlButton.getSize().y - text2.getLocalBounds().height) / 2);
     text2.setFillColor(sf::Color(235, 70, 60));
     // create text at top of screen
     sf::String s3 = options.getLanguage()[13];
@@ -181,6 +185,8 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
     sf::RectangleShape backButton(sf::Vector2f(150.f, 50.f));
     backButton.setFillColor(sf::Color(54, 207, 213));
     backButton.setPosition(screenWidth - backButton.getSize().x - 20, 20); // Position button at the top right
+    backButton.setOutlineThickness(2);
+    backButton.setOutlineColor(sf::Color::White);
     // create go back text on go back button
     sf::String s4 = options.getLanguage()[14];
     sf::Text backText(s4, font, 20);
@@ -199,14 +205,14 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    if (button1.getGlobalBounds().contains(mousePos)) {
+                    if (selectBoyButton.getGlobalBounds().contains(mousePos)) {
                         // boy select Button clicked
                         std::cout << "Player 1 selected\n";
                         str = "../../resource/img/waterBoy.png";
                         flag = false;
 
                     }
-                    if (button2.getGlobalBounds().contains(mousePos)) {
+                    if (selectGirlButton.getGlobalBounds().contains(mousePos)) {
                         // girl select Button  clicked
                         std::cout << "Player 2 selected\n";
                         str = "../../resource/img/waterGirl.png";
@@ -222,21 +228,21 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
             }
             if (event.type == sf::Event::MouseMoved) {
                 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                if (button1.getGlobalBounds().contains(mousePos)) {
+                if (selectBoyButton.getGlobalBounds().contains(mousePos)) {
                     // Button 1 hovered
-                    button1.setFillColor(sf::Color(0, 0, 255, 200));
+                    selectBoyButton.setFillColor(sf::Color(0, 0, 255, 200));
                     hoverFlagBoy = true;
                 } else {
-                    button1.setFillColor(sf::Color(0, 0, 255, 255));
+                    selectBoyButton.setFillColor(sf::Color(0, 0, 255, 255));
                     hoverFlagBoy = false;
                 }
 
-                if (button2.getGlobalBounds().contains(mousePos)) {
+                if (selectGirlButton.getGlobalBounds().contains(mousePos)) {
                     // Button 2 hovered
-                    button2.setFillColor(sf::Color(255, 105, 180, 200));
+                    selectGirlButton.setFillColor(sf::Color(255, 105, 180, 200));
                     hoverFlagGirl = true;
                 } else {
-                    button2.setFillColor(sf::Color(255, 105, 180, 255));
+                    selectGirlButton.setFillColor(sf::Color(255, 105, 180, 255));
                     hoverFlagGirl = false;
                 }
 
@@ -260,9 +266,9 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
         }
         window.draw(boyDroplet);
         window.draw(girlDroplet);
-        window.draw(button1);
+        window.draw(selectBoyButton);
         window.draw(text1);
-        window.draw(button2);
+        window.draw(selectGirlButton);
         window.draw(text2);
         window.draw(chooseText);
         window.draw(backButton);
@@ -289,10 +295,14 @@ bool game::handleExitRequest(sf::RenderWindow& win) {
     sf::RectangleShape exitButton(sf::Vector2f(buttonWidth, buttonHeight));
     exitButton.setFillColor(sf::Color(100, 100, 100));
     exitButton.setPosition(buttonX, exitButtonY);
+    exitButton.setOutlineThickness(2);
+    exitButton.setOutlineColor(sf::Color::White);
 
     sf::RectangleShape resumeButton(sf::Vector2f(buttonWidth, buttonHeight));
     resumeButton.setFillColor(sf::Color(100, 100, 100));
     resumeButton.setPosition(buttonX, resumeButtonY);
+    resumeButton.setOutlineThickness(2);
+    resumeButton.setOutlineColor(sf::Color::White);
 
     // Setup the text for buttons
     sf::Text exitText;
@@ -393,10 +403,14 @@ bool game::gameOverScreen(sf::RenderWindow &win) {
     sf::RectangleShape exitButton(sf::Vector2f(buttonWidth, buttonHeight));
     exitButton.setFillColor(sf::Color(100, 100, 100));
     exitButton.setPosition(buttonX, exitButtonY);
+    exitButton.setOutlineThickness(2);
+    exitButton.setOutlineColor(sf::Color::White);
 
     sf::RectangleShape resumeButton(sf::Vector2f(buttonWidth, buttonHeight));
     resumeButton.setFillColor(sf::Color(100, 100, 100));
     resumeButton.setPosition(buttonX, resumeButtonY);
+    resumeButton.setOutlineThickness(2);
+    resumeButton.setOutlineColor(sf::Color::White);
 
     // Setup the text for buttons
     sf::Text exitText;
