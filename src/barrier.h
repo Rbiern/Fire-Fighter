@@ -16,6 +16,7 @@ public:
     Barrier(float startX, float startY, const sf::Vector2u& resolution);
 
     bool enemyCollision(const Enemy& enemy) const;
+    bool bulletCollision(const sf::Sprite& bulletSprite) const;
 
     void shrink();
     void reset(const sf::Vector2u& resolution);
