@@ -1,7 +1,6 @@
 //Sungmin Lee
 
 #include "player.h"
-#include "barrier.h"
 
 /**
  * constructor of player
