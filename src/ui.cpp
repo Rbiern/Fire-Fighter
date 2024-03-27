@@ -173,3 +173,7 @@ void ui::displayMenu() {
         displayMenu();
     }
 }
+
+ui::~ui() {
+    delete(options);
+}
