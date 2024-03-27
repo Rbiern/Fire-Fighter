@@ -102,6 +102,22 @@ void game::gameLoop() {
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
+
+        /** when enemy collides barrier, the barrier shrinks */
+        for (int i = 0; i < enemyWave.getRows(); ++i) {
+            for (int j = 0; j < enemyWave.getColumns(); ++j) {
+                Enemy &enemy = enemyWave.getEnemy(i, j);
+                if (enemy.getIsAlive() && barrier.enemyCollision(enemy)) {
+                    barrier.shrink();
+                    // also kill the enemy
+                    enemy.kill();
+                }
+            }
+        }
+
+         /** when bullet hits barrier, the barrier shrinks */
+        player.updateBarrier(deltaTime,barrier);
+        
         enemyWave.draw(window);
         /** end of enemy stuff */
 
