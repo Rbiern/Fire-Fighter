@@ -7,7 +7,7 @@
 #include "bullet.h"
 #include <SFML/Audio.hpp>
 #include "settings.h"
-#include "bullet.h"
+#include "barrier.h"
 #include "enemy.h"
 #include <iostream>
 #include <string>
@@ -23,6 +23,7 @@ public:
 
     void updateBullets(const sf::Time& delta, EnemyWave& enemyWave);
 
+    void updateBarrier(const sf::Time delta, Barrier& barrier);
 
     void drawBullets(sf::RenderWindow& window);
 
