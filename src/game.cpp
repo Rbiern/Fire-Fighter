@@ -22,9 +22,15 @@ void game::gameLoop() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
 
-    // set up player and scale
-    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
+    //set up enemy
     EnemyWave enemyWave(window, resolution);
+    // setup metrics bar on top of the window
+    Metrics metrics(resolution, options.getFont());
+    metrics.setScore();
+    metrics.setEnemyCount(enemyWave.getTotalSpawned());
+    // set up player and scale
+    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution,metrics);
+
 
     // barrier setup
     std::vector<Barrier> barriers;
@@ -54,10 +60,6 @@ void game::gameLoop() {
     bool canShoot = true;
     float movementSpeed = 0.5f;
 
-    // setup metrics bar on top of the window
-    Metrics metrics(resolution, options.getFont());
-    metrics.setScore();
-    metrics.setEnemyCount(enemyWave.getTotalSpawned());
 
 
     // The message to display on window bar
@@ -115,7 +117,7 @@ void game::gameLoop() {
         metrics.setEnemyKilled(Enemy::getTotalDeath());
 
         Powerup.update(deltaTime, player, window);
-        player.updateBullets(deltaTime, enemyWave, metrics);
+        player.updateBullets(deltaTime, enemyWave);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
