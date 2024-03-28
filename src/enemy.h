@@ -17,7 +17,7 @@ public:
     void adjustForResolution(const sf::Vector2u& resolution);
     void kill(); 
     bool getIsAlive() const;
-    static int getTotalDead();
+    static int getTotalDeath();
 
 
 private:
@@ -26,7 +26,7 @@ private:
     float movementSpeed;
     unsigned int screenWidth;
     bool isAlive;
-    static int totalDead; // Already correct
+    static int totalDeath; // Already correct
 };
 
 class EnemyWave {
@@ -43,7 +43,6 @@ public:
     //enemy count
     void enemyHit(int row, int column); // Method to call when an enemy is hit
     int getTotalSpawned() const { return totalSpawned; }
-    //int getTotalDead() const { return totalDead; }
 
 
 private:
