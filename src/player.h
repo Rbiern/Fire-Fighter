@@ -23,7 +23,7 @@ public:
 
     void updateBullets(const sf::Time& delta, EnemyWave& enemyWave);
 
-    void updateBarrier(const sf::Time delta, Barrier& barrier);
+    void updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution);
 
     void drawBullets(sf::RenderWindow& window);
 
