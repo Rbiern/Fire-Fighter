@@ -9,19 +9,19 @@
 
 class ui {
 private:
-    sf::RenderWindow _window;
-    settings* options;
+    game* startGame;
+    sf::RenderWindow window;
+    settings options;
     sf::Texture backgroundImage;
     sf::Font font;
     sf::Music music;
-    bool errorFlag;
 public:
     ui();
     ~ui();
     void displayMenu();
 private:
-    sf::ConvexShape createButtonShape(float windowWidth);
-    bool _init();
+    void _init();
+    sf::ConvexShape createButtonShape(float windowWidth, float startX);
 };
 
 #endif //FIRE_FIGHTER_UI_H
