@@ -9,20 +9,18 @@
 #include "settings.h"
 #include "barrier.h"
 #include "enemy.h"
-#include "metrics.h"
 #include <iostream>
 #include <string>
+#include "metrics.h"
 
 class Player : public Entity {
 public:
-
-    Player(float startX, float startY,  const sf::Vector2u& resolution);
+    Player(float startX, float startY,  const sf::Vector2u& resolution,Metrics& metrics);
 
     virtual ~Player();
-
     void shoot();
 
-    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics);
+    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave);
 
     void updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution);
 
@@ -49,7 +47,6 @@ public:
     bool isCollidingWithEnemy(const sf::Sprite& enemySprite) const;
 
     void setPlayerTexture(char *t);
-
 private:
     float movementSpeed;
     int lives;
@@ -59,6 +56,8 @@ private:
     settings *options;
     void setScale(float scaleFactor);
     void adjustForResolution(const sf::Vector2u &resolution);
+    Metrics& metrics;
+
 };
 
 #endif //FIRE_FIGHTER_PLAYER_H
