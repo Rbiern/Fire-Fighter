@@ -1,6 +1,7 @@
 // Enemy.cpp
 #include "Enemy.h"
 #include <cmath>
+#include <iostream>
 
 Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution)
         : movementSpeed(5.0f), screenWidth(screenWidth),isAlive(true) {
@@ -8,15 +9,16 @@ Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vec
     adjustForResolution(resolution);
 }
 
-int Enemy::totalDead = 0;
+int Enemy::totalDeath = 0;
 
 void Enemy::kill() {
     isAlive = false;
-    totalDead++;
+    totalDeath++;
+    std::cout << "Enemy killed. Total deaths: " << totalDeath << std::endl;
 }
 
-int Enemy::getTotalDead() {
-    return totalDead;
+int Enemy::getTotalDeath() {
+    return totalDeath;
 }
 
 void Enemy::update(const sf::Time& deltaTime) {
