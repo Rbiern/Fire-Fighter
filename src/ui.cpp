@@ -2,104 +2,92 @@
 
 /** constructor */
 ui::ui() {
-    options = new settings();
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-    _window.create((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
-    font = options->getFont();
-    errorFlag = _init();
+    window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0], options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+    _init();
 }
 
-/**
- * helper method to help initialize ui variables
- * returns false if successful, otherwise returns true
- * */
-bool ui::_init() {
-    sf::Image icon = options->getIcon();                                                            // Load icon image
-    _window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());    // Set the window icon
-    if (!backgroundImage.loadFromFile("../../resource/img/menu_background.jpg")) {          // load background image for main menu
-        std::cerr << "Failed to load background image!" << std::endl; // uses <iostream>
-        return true;
+/** destructor */
+ui::~ui() {
+    if (window.isOpen()) {      // Close the SFML window if it's open
+        window.close();
     }
-    if (!music.openFromFile("../../music/EyjafjallaDream.mp3")) {                           // set music for the main menu
-        std::cerr << "Failed to load music" << std::endl;
-        return true;
+    if (startGame != nullptr) {   // delete it if it's not nullptr
+        delete startGame;
+        startGame = nullptr;      // Set to nullptr after deletion
     }
-    music.setLoop(true);                                                                            // enable music to loop
-    return false;
-}
-
-/** help create the button shapes on screen */
-sf::ConvexShape ui::createButtonShape(float windowWidth) {
-    // Calculate button positions
-    float startX = (windowWidth - ((windowWidth / 5.f) * 3)) / 2.f;
-    sf::ConvexShape parallelogram;
-    parallelogram.setPointCount(4);
-    parallelogram.setPoint(0, sf::Vector2f(startX, 0.f));
-    parallelogram.setPoint(1, sf::Vector2f(startX + (windowWidth / 5.f), 0.f));
-    parallelogram.setPoint(2, sf::Vector2f(startX + (windowWidth / 5.f) - 50.f, 55.f));
-    parallelogram.setPoint(3, sf::Vector2f(startX - 50.f, 55.f));
-    parallelogram.setFillColor(sf::Color(54, 207, 213));
-    return parallelogram;
 }
 
 /** main UI menu loop */
 void ui::displayMenu() {
-    if (errorFlag) return;
-
     // Calculate button dimensions based on window size
-    float windowWidth = static_cast<float>(_window.getSize().x);
-    float windowHeight = static_cast<float>(_window.getSize().y);
+    // done this way to account for rendering the window at higher resolution hen your device monitor
+    float windowWidth = static_cast<float>(window.getSize().x);
+    float windowHeight = static_cast<float>(window.getSize().y);
     // Calculate button positions
     float startX = (windowWidth - ((windowWidth / 5.f) * 3)) / 2.f;
 
     //Create settings button
-    sf::ConvexShape settingsbutton = createButtonShape(windowWidth);
-    settingsbutton.setPosition(startX, windowHeight - 55.f - 20.f);
+    sf::ConvexShape settingsbutton = createButtonShape(windowWidth, startX);
+    settingsbutton.setPosition(windowWidth / 5.f, windowHeight - 75.f);
     // Create quit button
-    sf::ConvexShape quitButton = createButtonShape(windowWidth);
-    quitButton.setPosition(startX + (windowWidth / 5.f), windowHeight - 55.f - 20.f);
+    sf::ConvexShape quitButton = createButtonShape(windowWidth, startX);
+    quitButton.setPosition(startX + (windowWidth / 5.f), windowHeight - 75.f);
     // Create new game button
-    sf::ConvexShape newGameButton = createButtonShape(windowWidth);
-    newGameButton.setPosition(startX - (windowWidth / 5.f), windowHeight - 55.f - 20.f);
+    sf::ConvexShape newGameButton = createButtonShape(windowWidth, startX);
+    newGameButton.setPosition(startX - (windowWidth / 5.f), windowHeight - 75.f);
 
-    // Create settings button text
-    sf::String s1 = options->getLanguage()[0];
-    sf::Text text1(s1, font, 20);
-    text1.setFillColor(sf::Color(235, 70, 60));
-    text1.setPosition(settingsbutton.getPosition().x, settingsbutton.getPosition().y + 20);
-    // Create quit button text
-    sf::String s2 = options->getLanguage()[1];
-    sf::Text text2(s2, font, 20);
-    text2.setFillColor(sf::Color(235, 70, 60));
-    text2.setPosition(quitButton.getPosition().x + 5, quitButton.getPosition().y + 20);
+    // Create the separationLine2 from the bottom-right of the New Game button to the top-right of the New Game button
+    sf::VertexArray separationLine1(sf::Lines, 2);
+    separationLine1[0].position = sf::Vector2f(newGameButton.getPosition().x + newGameButton.getPoint(2).x, newGameButton.getPosition().y + newGameButton.getPoint(2).y);
+    separationLine1[1].position = sf::Vector2f(newGameButton.getPosition().x + newGameButton.getPoint(1).x, newGameButton.getPosition().y + newGameButton.getPoint(1).y);
+    separationLine1[0].color = sf::Color::Red;
+    separationLine1[1].color = sf::Color::Red;
+
+    // Create the separationLine2 from the bottom-right of the settings button to the top-right of the settings button
+    sf::VertexArray separationLine2(sf::Lines, 2);
+    separationLine2[0].position = sf::Vector2f(settingsbutton.getPosition().x + settingsbutton.getPoint(2).x, settingsbutton.getPosition().y + settingsbutton.getPoint(2).y);
+    separationLine2[1].position = sf::Vector2f(settingsbutton.getPosition().x + settingsbutton.getPoint(1).x, settingsbutton.getPosition().y + settingsbutton.getPoint(1).y);
+    separationLine2[0].color = sf::Color::Red;
+    separationLine2[1].color = sf::Color::Red;
+
     // Create new game button text
-    sf::String s3 = options->getLanguage()[2];
-    sf::Text text3(s3, font, 20);
-    text3.setFillColor(sf::Color(235, 70, 60));
-    text3.setPosition(quitButton.getPosition().x + (windowWidth / 5.f) + 20, newGameButton.getPosition().y + 20);
+    sf::String newGameString = options.getLanguage()[0];
+    sf::Text newGameText(newGameString, font, 20);
+    newGameText.setFillColor(sf::Color(235, 70, 60));
+    newGameText.setPosition(settingsbutton.getPosition().x, settingsbutton.getPosition().y + 20);
+    // Create settings button text
+    sf::String settingsString = options.getLanguage()[1];
+    sf::Text settingsText(settingsString, font, 20);
+    settingsText.setFillColor(sf::Color(235, 70, 60));
+    settingsText.setPosition(quitButton.getPosition().x + 5, quitButton.getPosition().y + 20);
+    // Create quit button text
+    sf::String quitString = options.getLanguage()[2];
+    sf::Text quitText(quitString, font, 20);
+    quitText.setFillColor(sf::Color(235, 70, 60));
+    quitText.setPosition(quitButton.getPosition().x + (windowWidth / 5.f) + 20, newGameButton.getPosition().y + 20);
 
     sf::Sprite background(backgroundImage);
     background.setTexture(backgroundImage);
-    background.setScale(_window.getSize().x / background.getLocalBounds().width,_window.getSize().y / background.getLocalBounds().height);
+    background.setScale(window.getSize().x / background.getLocalBounds().width, window.getSize().y / background.getLocalBounds().height);
 
-    _window.setFramerateLimit(60);
-    if (options->toggleMusic()) music.play();
+    if (options.toggleMusic()) music.play();
 
     bool startGameFlag = false;
     bool openSettings = false;
     bool exitFlag = false;
 
-    // The main loop starts here
+    // The UI window loop starts here
     while (1) {
         sf::Event event;
-        while (_window.pollEvent(event)) {
+        while (window.pollEvent(event)) {
             // check if user has closed the window
             if (event.type == sf::Event::Closed) {
-                _window.close();
+                window.close();
                 return;
             }
             if (event.type == sf::Event::MouseButtonPressed) {
-                sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 //game window
                 if (newGameButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                     std::cout << "New Game" << std::endl;
@@ -113,67 +101,95 @@ void ui::displayMenu() {
                 //quit button
                 if (quitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                     std::cout << "Quit" << std::endl;
-                    _window.close();
+                    window.close();
                     return;
                 }
             }
         }
+        // checks if new game button was pressed or not
         if (startGameFlag) {
-            if (options->toggleMusic()) {
-                music.pause();
-            }
-            _window.close();
-            game *newGame = new game(options);
-            newGame->gameLoop();
+            if (options.toggleMusic()) music.pause();
+            window.close();
+
+            startGame = new game(&options);
+            startGame->gameLoop();
+            delete(startGame);
+            startGame = nullptr;
+
             startGameFlag = false;
-            if (options->toggleMusic()) {
-                music.play();
-            }
-            exitFlag = true;
+            if (options.toggleMusic()) music.play();
+            exitFlag = true;    // set to true we can exit the loop and create a new window for UI
             break;
         }
         if (openSettings) {
-            _window.close();
-            options->openSettings(options->getResolution()[0], options->getResolution()[1]);
+            window.close();
+            options.openSettings();
             // when exited settings
-            exitFlag = true;
+            exitFlag = true;    // set to true to exit loop and create a new UI window reloaded with new settings applied weather or not any changes were applied in settings
             break;
         }
         // for button mouse hover effect
-        sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
-        if (settingsbutton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (settingsbutton.getGlobalBounds().contains(mousePos.x, mousePos.y))
             settingsbutton.setFillColor(sf::Color(0, 255, 0, 200)); // Green with transparency
-        } else {
+        else
             settingsbutton.setFillColor(sf::Color(54, 207, 213));
-        }
-        if (quitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-            quitButton.setFillColor(sf::Color(0, 0, 255, 200)); // Blue with transparency
-        } else {
+        if (quitButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
+            quitButton.setFillColor(sf::Color(0, 0, 255, 200));     // Blue with transparency
+        else
             quitButton.setFillColor(sf::Color(54, 207, 213));
-        }
-        if (newGameButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-            newGameButton.setFillColor(sf::Color(255, 0, 255, 200)); // Red with transparency
-        } else {
+        if (newGameButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
+            newGameButton.setFillColor(sf::Color(255, 0, 255, 200));// Red with transparency
+        else
             newGameButton.setFillColor(sf::Color(54, 207, 213));
-        }
-        _window.clear();
-        _window.draw(background);
-        _window.draw(settingsbutton);
-        _window.draw(quitButton);
-        _window.draw(newGameButton);
-        _window.draw(text1);
-        _window.draw(text2);
-        _window.draw(text3);
-        _window.display();
-    }
-    if (exitFlag) {
+
+        window.clear();
+        window.draw(background);
+        window.draw(settingsbutton);
+        window.draw(quitButton);
+        window.draw(newGameButton);
+        window.draw(separationLine2);
+        window.draw(separationLine1);
+        window.draw(newGameText);
+        window.draw(settingsText);
+        window.draw(quitText);
+        window.display();
+    }// end of while loop
+
+    if (exitFlag) {     // if returning from settings or playing a new game, then reload UI
         sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-        _window.create((options->isFullScreen()) ? fullScreenMode : sf::VideoMode(options->getResolution()[0],options->getResolution()[1]), "Fire Fighter", (options->isFullScreen() || options->getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+        window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0], options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
         _init();
         displayMenu();
     }
 }
 
-ui::~ui() {
-    delete(options);
+/**
+ * helper method to help initialize ui variables, it is also need to reload changed values from settings
+ * returns false if successful, otherwise returns true
+ * */
+void ui::_init() {
+    sf::Image icon = options.getIcon();                                                             // Load icon image
+    window.setFramerateLimit(60);                                                              // set frame rate
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());     // Set the window icon
+    font = options.getFont();                                                                       // Set the font
+    if (!backgroundImage.loadFromFile("../../resource/img/menu_background.jpg")) {          // load background image for main menu
+        std::cerr << "Failed to load background image!" << std::endl;
+    }
+    if (!music.openFromFile("../../music/EyjafjallaDream.mp3")) {                           // set music for the main menu
+        std::cerr << "Failed to load music" << std::endl;
+    }
+    music.setLoop(true);                                                                            // enable music to loop
+}
+
+/** help create the button shapes on screen */
+sf::ConvexShape ui::createButtonShape(float windowWidth, float startX) {
+    sf::ConvexShape parallelogram;
+    parallelogram.setPointCount(4);
+    parallelogram.setPoint(0, sf::Vector2f(startX, 0.f));
+    parallelogram.setPoint(1, sf::Vector2f(startX + (windowWidth / 5.f), 0.f));
+    parallelogram.setPoint(2, sf::Vector2f(startX + (windowWidth / 5.f) - 50.f, 55.f));
+    parallelogram.setPoint(3, sf::Vector2f(startX - 50.f, 55.f));
+    parallelogram.setFillColor(sf::Color(54, 207, 213));
+    return parallelogram;
 }
