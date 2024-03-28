@@ -9,18 +9,18 @@
 #include "settings.h"
 #include "barrier.h"
 #include "enemy.h"
+#include "metrics.h"
 #include <iostream>
 #include <string>
-#include "metrics.h"
 
 class Player : public Entity {
 public:
-    Player(float startX, float startY,  const sf::Vector2u& resolution,Metrics& metrics);
+    Player(float startX, float startY,  const sf::Vector2u& resolution);
 
     virtual ~Player();
     void shoot();
 
-    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave);
+    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics);
 
     void updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution);
 
@@ -56,7 +56,6 @@ private:
     settings *options;
     void setScale(float scaleFactor);
     void adjustForResolution(const sf::Vector2u &resolution);
-    Metrics& metrics;
 
 };
 
