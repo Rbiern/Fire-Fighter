@@ -51,6 +51,7 @@ void game::gameLoop() {
         barriers.emplace_back(barrierX, barrierY + i * barrierSpacing, resolution);
     }
 
+
     // character selection screen method call
     char* str = characterSelectScreen(window, player);
     if (str == NULL) return;                            // an error has occurred or user exited back to UI
@@ -121,7 +122,22 @@ void game::gameLoop() {
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
-
+        //Check enemy collides with player
+        for (int i = 0; i < enemyWave.getRows(); ++i) {
+            for (int j = 0; j < enemyWave.getColumns(); ++j) {
+                Enemy &enemy = enemyWave.getEnemy(i, j);
+                if (enemy.getIsAlive() && player.isCollidingWithEnemy(enemy.getSprite())) {
+                    enemy.kill();
+                    player.decreaseLife();
+                    metrics.updateHealthbar(player.getLives());
+                    //if life is 0, display gameover screen
+                    if (player.getLives() <= 0) {
+                        gameOverScreen(window);
+                        std::cout << "Game Over" << std::endl;
+                    }
+                }
+            }
+        }
         /** when enemy collides barrier, the barrier shrinks */
         for (auto& barrier : barriers) {
             for (int i = 0; i < enemyWave.getRows(); ++i) {
