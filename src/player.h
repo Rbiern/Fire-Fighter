@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "barrier.h"
 #include "enemy.h"
+#include "metrics.h"
 #include <iostream>
 #include <string>
 
@@ -21,7 +22,7 @@ public:
 
     void shoot();
 
-    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave);
+    void updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics);
 
     void updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution);
 
