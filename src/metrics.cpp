@@ -6,12 +6,20 @@ Metrics::Metrics(sf::Vector2u windowSize, sf::Font f) : score(0), windowSize(win
     scoreText.setFont(font);
     pointsText.setFont(font);
     roundText.setFont(font);
+    enemyCountText.setFont(font);
+    enemyKilledText.setFont(font);
+
     scoreText.setCharacterSize(24);
     pointsText.setCharacterSize(24);
     roundText.setCharacterSize(24);
+    enemyCountText.setCharacterSize(24);
+    enemyKilledText.setCharacterSize(24);
+
     scoreText.setFillColor(sf::Color::White);
     pointsText.setFillColor(sf::Color::White);
     roundText.setFillColor(sf::Color::White);
+    enemyCountText.setFillColor(sf::Color::White);
+    enemyKilledText.setFillColor(sf::Color::White);
 
     if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
         !life2Texture.loadFromFile("../../resource/img/2.png") ||
@@ -62,12 +70,30 @@ void Metrics::setRound(int round) {
     roundText.setPosition(windowSize.x - roundText.getLocalBounds().width - 20, 10);
 }
 
+void Metrics::setEnemyCount(int enemyCount) {
+    enemyCountText.setString("Total Enemy: " + std::to_string(enemyCount));
+    // Calculate the X position to start just to the right of the score text
+    float newXPosition = scoreText.getPosition().x + scoreText.getLocalBounds().width + 20.f; // 20.f for horizontal spacing from the score
+    float newYPosition = scoreText.getPosition().y; // Align vertically with the top of the score text
+    enemyCountText.setPosition(newXPosition, newYPosition);
+}
+
+void Metrics::setEnemyKilled(int enemyKilled) {
+    enemyKilledText.setString("Enemy Killed: " + std::to_string(enemyKilled));
+    // Place directly under the "Total Enemy" text
+    float newXPosition = enemyCountText.getPosition().x; // Align horizontally with the "Total Enemy" text
+    float newYPosition = enemyCountText.getPosition().y + enemyCountText.getLocalBounds().height + 5.f; // Slight vertical spacing
+    enemyKilledText.setPosition(newXPosition, newYPosition);
+}
+
 void Metrics::draw(sf::RenderTarget& target) {
     target.draw(scoreText);
     target.draw(pointsText);
     target.draw(roundText);
     target.draw(healthBar);
     target.draw(separationLine);
+    target.draw(enemyCountText);
+    target.draw(enemyKilledText);
 }
 
 void Metrics::increaseScore(int points) {
