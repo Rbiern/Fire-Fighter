@@ -17,6 +17,8 @@ public:
     void adjustForResolution(const sf::Vector2u& resolution);
     void kill(); 
     bool getIsAlive() const;
+    static int getTotalDead();
+
 
 private:
     sf::Sprite sprite;
@@ -24,6 +26,7 @@ private:
     float movementSpeed;
     unsigned int screenWidth;
     bool isAlive;
+    static int totalDead; // Already correct
 };
 
 class EnemyWave {
@@ -37,6 +40,12 @@ public:
     int getColumns() const;
     void adjustSpacingForResolution(const sf::Vector2u& resolution);
 
+    //enemy count
+    void enemyHit(int row, int column); // Method to call when an enemy is hit
+    int getTotalSpawned() const { return totalSpawned; }
+    //int getTotalDead() const { return totalDead; }
+
+
 private:
     std::vector<std::vector<Enemy>> enemyGrid;
     float waveAmplitude;
@@ -48,4 +57,5 @@ private:
     float spacingY;
     float startX;
     float startY;
+    int totalSpawned = 0;
 };
