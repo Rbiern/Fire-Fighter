@@ -148,7 +148,7 @@ void Player::shoot() {
 //        return bullet.getPosition().x < 0;
 //    }), bullets.end());
 //}
-void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
+void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics) {
     for (auto& bullet : bullets) {
         bullet.update(delta);
     }
@@ -162,6 +162,7 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
                     enemy.kill();
                     bulletIt = bullets.erase(bulletIt);
                     bulletRemoved = true;
+                    metrics.increaseScore(10);
                 }
             }
         }
