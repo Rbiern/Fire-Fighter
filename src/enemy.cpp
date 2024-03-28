@@ -7,8 +7,16 @@ Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vec
     setPosition(startX, startY);
     adjustForResolution(resolution);
 }
+
+int Enemy::totalDead = 0;
+
 void Enemy::kill() {
     isAlive = false;
+    totalDead++;
+}
+
+int Enemy::getTotalDead() {
+    return totalDead;
 }
 
 void Enemy::update(const sf::Time& deltaTime) {
@@ -103,6 +111,7 @@ EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution)
             float positionY = startY + i * spacingY;
             enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x, resolution);
             enemyGrid[i][j].setTexture("../../resource/img/fire.png");
+            totalSpawned++;
         }
     }
 }
