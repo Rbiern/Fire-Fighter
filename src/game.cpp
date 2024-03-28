@@ -115,7 +115,7 @@ void game::gameLoop() {
         metrics.setEnemyKilled(Enemy::getTotalDeath());
 
         Powerup.update(deltaTime, player, window);
-        player.updateBullets(deltaTime, enemyWave);
+        player.updateBullets(deltaTime, enemyWave, metrics);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
