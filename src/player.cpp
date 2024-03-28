@@ -1,14 +1,13 @@
 //Sungmin Lee
 
 #include "player.h"
-#include "metrics.h"
 
 /**
  * constructor of player
  * @param startX Starting point in x coordinate
  * @param startY Starting point in y coordinate
  */
-Player::Player(float startX, float startY,  const sf::Vector2u& resolution,Metrics& metrics) : Entity(), metrics(metrics) {
+Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Entity() {
     this->setPosition(startX, startY);
     movementSpeed = 3.0f;
     //water-drop sound effect
@@ -149,7 +148,7 @@ void Player::shoot() {
 //        return bullet.getPosition().x < 0;
 //    }), bullets.end());
 //}
-void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
+void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics) {
     for (auto& bullet : bullets) {
         bullet.update(delta);
     }
@@ -161,7 +160,7 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
                 Enemy& enemy = enemyWave.getEnemy(i, j);
                 if (enemy.getIsAlive() && bulletIt->getGlobalBounds().intersects(enemy.getGlobalBounds())) {
                     enemy.kill();
-                    metrics.increaseScore(50);
+                    metrics.increaseScore(10);
                     bulletIt = bullets.erase(bulletIt);
                     bulletRemoved = true;
                 }
