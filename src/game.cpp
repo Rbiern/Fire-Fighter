@@ -43,6 +43,9 @@ void game::gameLoop() {
     // setup metrics bar on top of the window
     Metrics metrics(resolution, options.getFont());
     metrics.setScore();
+    metrics.setEnemyCount(enemyWave.getTotalSpawned());
+    metrics.setEnemyKilled(Enemy::getTotalDead());
+
 
     // The message to display on window bar
     std::string message = "                      Place your AD here                      ";
