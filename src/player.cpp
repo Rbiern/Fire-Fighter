@@ -172,13 +172,13 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
     }
 }
 
-void Player::updateBarrier(const sf::Time delta, Barrier& barrier) {
+void Player::updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution) {
     for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
         bulletIt->update(delta);
 
         if (barrier.bulletCollision(bulletIt->getSprite())) {
             bulletIt = bullets.erase(bulletIt);
-            barrier.shrink();
+            barrier.shrink(resolution);
         }
         else {
             ++bulletIt;
