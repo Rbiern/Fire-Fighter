@@ -27,9 +27,23 @@ void game::gameLoop() {
     EnemyWave enemyWave(window, resolution);
 
     // barrier setup
-    float barrierX = (window.getSize().x -100) / 2.f;   // Center the barrier horizontally
-    float barrierY = (window.getSize().y - 100) / 2.f;  // Center the barrier vertically
-    Barrier barrier(barrierX, barrierY, resolution);   // Create the barrier object
+    std::vector<Barrier> barriers;
+    float barrierX = (window.getSize().x - 100) / 2.f; // Center the barriers horizontally
+    float barrierY = 100.0f; // (window.getSize().y - barrierWave.getHeight()) / 4.0f; // Calculate the startY position for the first barrier based on resolution
+    float barrierSpacing = 150.0f; // Default spacing
+    if (resolution == sf::Vector2u(640, 360)) {
+        barrierSpacing = 100.0f; // Adjust spacing for smaller resolution
+    } else if (resolution == sf::Vector2u(1280, 720)) {
+        barrierSpacing = 150.0f; // Base spacing for medium resolution
+    } else if (resolution == sf::Vector2u(1920, 1080)) {
+        barrierSpacing = 200.0f; // Increase spacing for higher resolution
+    } else if (resolution == sf::Vector2u(3840, 2160)) {
+        barrierSpacing = 250.0f; // Further increase spacing for 4K resolution
+    }
+
+    for (int i = 0; i < 3; ++i) { // Create 3 barriers, adjust the count as needed
+        barriers.emplace_back(barrierX, barrierY + i * barrierSpacing, resolution);
+    }
 
     // character selection screen method call
     char* str = characterSelectScreen(window, player);
@@ -107,19 +121,23 @@ void game::gameLoop() {
         enemyWave.update(deltaTime);
 
         /** when enemy collides barrier, the barrier shrinks */
-        for (int i = 0; i < enemyWave.getRows(); ++i) {
-            for (int j = 0; j < enemyWave.getColumns(); ++j) {
-                Enemy &enemy = enemyWave.getEnemy(i, j);
-                if (enemy.getIsAlive() && barrier.enemyCollision(enemy)) {
-                    barrier.shrink();
-                    // also kill the enemy
-                    enemy.kill();
+        for (auto& barrier : barriers) {
+            for (int i = 0; i < enemyWave.getRows(); ++i) {
+                for (int j = 0; j < enemyWave.getColumns(); ++j) {
+                    Enemy &enemy = enemyWave.getEnemy(i, j);
+                    if (enemy.getIsAlive() && barrier.enemyCollision(enemy)) {
+                        barrier.shrink(resolution);
+                        // also kill the enemy
+                        enemy.kill();
+                    }
                 }
             }
         }
 
         /** when bullet hits barrier, the barrier shrinks */
-        player.updateBarrier(deltaTime,barrier);
+        for (auto& barrier : barriers) {
+            player.updateBarrier(deltaTime, barrier, resolution);
+        }
 
         enemyWave.draw(window);
         /** end of enemy stuff */
@@ -137,7 +155,10 @@ void game::gameLoop() {
         Powerup.draw(window,player);
         player.drawBullets(window);
         enemyWave.draw(window);
-        barrier.draw(window);
+        for (auto& barrier : barriers) {
+            barrier.setTexture("../../resource/img/iceBlock.png");
+            barrier.draw(window);
+        }
         metrics.draw(window);
         window.display();
     }
