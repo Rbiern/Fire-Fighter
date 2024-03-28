@@ -29,7 +29,7 @@ void game::gameLoop() {
     metrics.setScore();
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
     // set up player and scale
-    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution,metrics);
+    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
 
 
     // barrier setup
@@ -117,7 +117,7 @@ void game::gameLoop() {
         metrics.setEnemyKilled(Enemy::getTotalDeath());
 
         Powerup.update(deltaTime, player, window);
-        player.updateBullets(deltaTime, enemyWave);
+        player.updateBullets(deltaTime, enemyWave, metrics);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
