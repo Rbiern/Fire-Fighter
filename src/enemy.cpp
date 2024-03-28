@@ -58,7 +58,7 @@ void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
         speedScale = 1.00f;
     } else if (resolution == sf::Vector2u(1280, 720)) {
         scale = 1.0f;
-        speedScale = 1.5f;
+        speedScale = 10.5f;
     } else if (resolution == sf::Vector2u(1920, 1080)) {
         scale = 1.5f;
         speedScale = 1.75f;
@@ -150,4 +150,7 @@ int EnemyWave::getColumns() const {
 }
 bool Enemy::getIsAlive() const {
     return isAlive; // Assuming 'isAlive' is a boolean member variable indicating the alive status.
+}
+const sf::Sprite& Enemy::getSprite() const {
+    return sprite;
 }
