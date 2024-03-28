@@ -15,10 +15,10 @@ public:
     sf::Vector2u getSize() const;
     sf::FloatRect getGlobalBounds() const;
     void adjustForResolution(const sf::Vector2u& resolution);
-    void kill(); 
+    void kill();
     bool getIsAlive() const;
     static int getTotalDeath();
-
+    const sf::Sprite &getSprite() const;
 
 private:
     sf::Sprite sprite;
@@ -27,6 +27,7 @@ private:
     unsigned int screenWidth;
     bool isAlive;
     static int totalDeath; // Already correct
+
 };
 
 class EnemyWave {
