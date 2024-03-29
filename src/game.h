@@ -20,11 +20,11 @@ private:
     sf::Music music;
     sf::Vector2u resolution;
     sf::Clock clock; // for updating the game
-//    Metrics metrics;
+    Metrics metrics;
     powerup Powerup;
     Player* player;
 public:
-    game(settings *opt);
+    explicit game(settings *opt);
     ~game();
     void gameLoop();
     char* characterSelectScreen(const Player* player);
