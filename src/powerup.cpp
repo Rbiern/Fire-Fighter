@@ -24,16 +24,16 @@ void powerup::reset() {
     collected = false;
 }
 
-void powerup::update(const sf::Time& delta, Player& player, sf::RenderWindow& window) {
-    if (!collected && player.getLives() < 3) { // Only update if lives < 3
+void powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& window) {
+    if (!collected && player->getLives() < 3) { // Only update if lives < 3
         // Move the powerup
         sprite.move(direction * speed * delta.asSeconds());
 
         // Check collision with player
-        if (sprite.getGlobalBounds().intersects(player.getSprite().getGlobalBounds())) {
-            std::cout << "lives before: " << player.getLives() << std::endl;
-            player.increaseLife();
-            std::cout << "lives after: " << player.getLives() << std::endl;
+        if (sprite.getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
+            std::cout << "lives before: " << player->getLives() << std::endl;
+            player->increaseLife();
+            std::cout << "lives after: " << player->getLives() << std::endl;
             collected = true;
         }
 
@@ -57,8 +57,8 @@ void powerup::update(const sf::Time& delta, Player& player, sf::RenderWindow& wi
     }
 }
 
-void powerup::draw(sf::RenderWindow& window, Player& player) {
-    if (!collected && player.getLives() < 3) { // Only draw if lives < 3
+void powerup::draw(sf::RenderWindow& window, Player* player) {
+    if (!collected && player->getLives() < 3) { // Only draw if lives < 3
         window.draw(sprite);
     }
 }
