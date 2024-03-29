@@ -438,6 +438,11 @@ float settings::heightScaling(float y) {
     return y * ((float)resolution[1]/720.f);
 }
 
+sf::Vector2u settings::getVector() {
+    sf::Vector2u vector(resolution[0], resolution[1]);
+    return vector;
+}
+
 /** Helper method for checking if the parallelogram button is pressed */
 bool settings::isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
