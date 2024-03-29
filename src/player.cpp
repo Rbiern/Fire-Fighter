@@ -16,7 +16,7 @@ Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Ent
     }
     shootSound.setBuffer(shootBuffer);
     options = new settings();
-    lives = 2;
+    lives = 3;
     adjustForResolution(resolution);
 }
 
@@ -107,47 +107,6 @@ void Player::shoot() {
  * update bullets by time
  * @param delta time
  */
-//void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave) {
-//    for (auto it = bullets.begin(); it != bullets.end();) {
-//        it->update(delta);
-//        // Check collision with enemy
-//        bool collisionDetected = false;
-//        std::cout << "Checking collision for bullet at position: X=" << it->getPosition().x << ", Y=" << it->getPosition().y << std::endl;
-//        for (int i = 0; i < enemyWave.getRows(); ++i) {
-//            for (int j = 0; j < enemyWave.getColumns(); ++j) {
-//                auto enemyBounds = enemyWave.getEnemy(i, j).getGlobalBounds();
-//                if (it->getGlobalBounds().intersects(enemyBounds)) {
-//                    // If collision detected, remove bullet and enemy
-//                    std::cout << "Collision detected with enemy at row " << i << ", column " << j << std::endl;
-//                    it = bullets.erase(it);
-//                    enemyWave.removeEnemy(i, j);
-//                    collisionDetected = true;
-//                    break;
-//                }
-//            }
-//            if (collisionDetected) break; // Exit outer loop if collision detected
-//        }
-//
-//        if (!collisionDetected){
-//            if (it->getPosition().x < 0) {
-//                it = bullets.erase(it);
-//            } else {
-//                ++it;
-//            }
-//        }
-//    }
-//}
-
-//void Player::updateBullets(const sf::Time& delta,  EnemyWave& enemyWave) {
-//    for (auto& bullet : bullets) {
-//        bullet.update(delta);
-//    }
-//
-//    // delete bullets gone off screen
-//    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](const Bullet& bullet) {
-//        return bullet.getPosition().x < 0;
-//    }), bullets.end());
-//}
 void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics) {
     for (auto& bullet : bullets) {
         bullet.update(delta);
@@ -192,7 +151,7 @@ void Player::drawBullets(sf::RenderWindow& window) {
     }
 }
 Player::~Player() {
-
+    delete options;
 }
 
 void Player::setPlayerTexture(char* str) {
@@ -206,13 +165,13 @@ void Player::adjustForResolution(const sf::Vector2u& resolution) {
         scale = 1.0f;
         speedScale = 1.00f;
     } else if (resolution == sf::Vector2u(1280, 720)) {
-        scale = 2.0f;
+        scale = 1.5f;
         speedScale = 1.5f;
     } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 3.5f;
+        scale = 2.0f;
         speedScale = 1.75f;
     } else if (resolution == sf::Vector2u(3840, 2160)) {
-        scale = 4.0f;
+        scale = 2.6f;
         speedScale = 2.0f;
     }
 
