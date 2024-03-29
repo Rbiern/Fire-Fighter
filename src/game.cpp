@@ -1,7 +1,7 @@
 #include "game.h"
 
 /** constructor */
-game::game(settings *opt) {
+game::game(settings *opt) : metrics(opt->getVector(), opt) {
     // settings
     options = *opt;
     font = options.getFont();   // load font from settings
@@ -12,6 +12,7 @@ game::game(settings *opt) {
         music.setLoop(true);
     }
 
+    resolution = opt->getVector();
 
     // setup window, fame rate, and icon
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
@@ -19,12 +20,12 @@ game::game(settings *opt) {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
     // screen resolution
-    resolution.x = options.getResolution()[0]; // screen resolution width
-    resolution.y = options.getResolution()[1]; // screen resolution height
-    std::cout << options.getResolution()[0] << std::endl;
-    std::cout << window.getSize().x << std::endl;
+//    resolution.x = options.getResolution()[0]; // screen resolution width
+//    resolution.y = options.getResolution()[1]; // screen resolution height
+//    std::cout << options.getResolution()[0] << std::endl;
+//    std::cout << window.getSize().x << std::endl;
     player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
-}
+    }
 
 /** destructor */
 game::~game() {
@@ -39,7 +40,7 @@ void game::gameLoop() {
     // setup metrics bar on top of the window
 //    Metrics metrics(resolution, options.getFont());
 // metrics bar
-    Metrics metrics(options.getVector(), &options);
+//    Metrics metrics(options.getVector(), &options);
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
 
 
