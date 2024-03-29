@@ -58,7 +58,7 @@ void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
         speedScale = 1.00f;
     } else if (resolution == sf::Vector2u(1280, 720)) {
         scale = 1.0f;
-        speedScale = 10.5f;
+        speedScale = 1.5f;
     } else if (resolution == sf::Vector2u(1920, 1080)) {
         scale = 1.5f;
         speedScale = 1.75f;
