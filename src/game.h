@@ -13,19 +13,22 @@
 
 class game {
 private:
+    sf::RenderWindow window;
     settings options; // get icon, get windows size, get music, get font;
     sf::Font font;
     sf::Image icon;
     sf::Music music;
     sf::Vector2u resolution;
     sf::Clock clock; // for updating the game
+//    Metrics metrics;
     powerup Powerup;
 public:
-    explicit game(settings *opt);
+    game(settings *opt);
+    ~game();
     void gameLoop();
-    char* characterSelectScreen(sf::RenderWindow& window, const Player& player);
-    bool handleExitRequest(sf::RenderWindow& window);
-    bool gameOverScreen(sf::RenderWindow& window);
+    char* characterSelectScreen(const Player& player);
+    bool handleExitRequest();
+    bool gameOverScreen();
 };
 
 #endif //FIRE_FIGHTER_GAME_H
