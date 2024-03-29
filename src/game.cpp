@@ -25,7 +25,7 @@ game::game(settings *opt) : metrics(opt->getVector(), opt) {
 //    std::cout << options.getResolution()[0] << std::endl;
 //    std::cout << window.getSize().x << std::endl;
     player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
-    }
+}
 
 /** destructor */
 game::~game() {
@@ -93,13 +93,13 @@ void game::gameLoop() {
         }
         // Move character North
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            if (player->getPosition().y - movementSpeed >= 0) {
+            if (player->getPosition().y - movementSpeed >= window.getSize().y * 0.1f) {
                 player->move(sf::Vector2f(0.f, -movementSpeed));
             }
         }
         // Move character South
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            if (player->getPosition().y + player->getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
+            if (player->getPosition().y + player->getSize().y + movementSpeed <= window.getSize().y) {
                 player->move(sf::Vector2f(0.f, movementSpeed));
             }
         }
