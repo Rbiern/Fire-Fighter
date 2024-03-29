@@ -117,7 +117,7 @@ void game::gameLoop() {
 
         metrics.updateHealthbar(player->getLives());
 
-//        Powerup.update(deltaTime, player, window);
+        Powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, enemyWave, metrics);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
@@ -169,8 +169,8 @@ void game::gameLoop() {
         } else words++;
 
         window.clear();
-        player->draw(window);
-//        Powerup.draw(window,player);
+
+        Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave.draw(window);
         for (auto& barrier : barriers) {
@@ -178,6 +178,7 @@ void game::gameLoop() {
             barrier.draw(window);
         }
         metrics.draw(window);
+        player->draw(window);
         window.display();
     }
 }
