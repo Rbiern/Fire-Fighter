@@ -2,7 +2,8 @@
 
 /** constructor */
 game::game(settings *opt) {
-    options = *opt;             // get settings object that was created in UI class
+    // settings
+    options = *opt;
     font = options.getFont();   // load font from settings
     icon = options.getIcon();   // load icon from settings
     if (options.toggleMusic()) {// check if music is enabled, if so, load it into memory
@@ -10,22 +11,34 @@ game::game(settings *opt) {
             std::cerr << "Failed to load music" << std::endl;
         music.setLoop(true);
     }
-    resolution.x = options.getResolution()[0]; // screen resolution width
-    resolution.y = options.getResolution()[1]; // screen resolution height
+
+    // screen resolution
+    resolution.x = window.getSize().x;//options.getResolution()[0];                                 // screen resolution width
+    resolution.y = window.getSize().y;//options.getResolution()[1]; // screen resolution height
+
+
+
+    // setup window, fame rate, and icon
+    sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
+    window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
+    window.setFramerateLimit(60);
+}
+
+/** destructor */
+game::~game() {
+
 }
 
 /** run game method */
 void game::gameLoop() {
-    // setup window, fame rate, and icon
-    sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
-    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
-    window.setFramerateLimit(60);
 
     //set up enemy
     EnemyWave enemyWave(window, resolution);
     // setup metrics bar on top of the window
-    Metrics metrics(resolution, options.getFont());
+//    Metrics metrics(resolution, options.getFont());
+// metrics bar
+    Metrics metrics(resolution, font);
     metrics.setScore();
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
     // set up player and scale
@@ -53,7 +66,7 @@ void game::gameLoop() {
 
 
     // character selection screen method call
-    char* str = characterSelectScreen(window, player);
+    char* str = characterSelectScreen(player);
     if (str == NULL) return;                            // an error has occurred or user exited back to UI
     else player.setPlayerTexture(str);               // test player texture to selected file path of str
 
@@ -94,13 +107,13 @@ void game::gameLoop() {
         // when user presses exit, pop up window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = handleExitRequest(window);
+            bool flag = handleExitRequest();
             if (flag) window.close();
         }
         // when the game has ended
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = gameOverScreen(window);
+            bool flag = gameOverScreen();
             if (flag) window.close();
         }
         // have player shoot when space bar is pressed
@@ -132,7 +145,7 @@ void game::gameLoop() {
                     metrics.updateHealthbar(player.getLives());
                     //if life is 0, display gameover screen
                     if (player.getLives() <= 0) {
-                        gameOverScreen(window);
+                        gameOverScreen();
                         std::cout << "Game Over" << std::endl;
                     }
                 }
@@ -187,7 +200,7 @@ void game::gameLoop() {
  * character selection window
  * handles character selection
  * */
-char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player) {
+char* game::characterSelectScreen(const Player& player) {
     char* str;                                          // String of player texture path to return
     sf::Texture boyTexture;                             // load image of the boy droplet image
     sf::Texture girlTexture;                            // load image of the girl droplet image
@@ -206,8 +219,9 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
     sf::Sprite characterBackDrop(characterBackDropTexture); // sprites of the backdrop
 
     // Get the screen dimensions
-    float screenWidth = resolution.x;
-    float screenHeight = resolution.y;
+    float screenWidth = static_cast<float>(window.getSize().x);
+    float screenHeight = static_cast<float>(window.getSize().y);
+
     // Calculate position to center character
     boyDroplet.setPosition((screenWidth - boyDroplet.getGlobalBounds().width - 250) / 2, (screenHeight - boyDroplet.getGlobalBounds().height - 70) / 2);
     girlDroplet.setPosition((screenWidth - girlDroplet.getGlobalBounds().width + 250) / 2, (screenHeight - girlDroplet.getGlobalBounds().height - 70) / 2);
@@ -340,9 +354,9 @@ char* game::characterSelectScreen(sf::RenderWindow &window, const Player& player
 
 
 /** handle window when user presses ESC key */
-bool game::handleExitRequest(sf::RenderWindow& win) {
+bool game::handleExitRequest() {
     // Calculate button sizes and positions dynamically based on window size
-    sf::Vector2u windowSize = win.getSize();
+    sf::Vector2u windowSize = window.getSize();
     float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
     float buttonHeight = 50.f; // Fixed height for buttons
     float buttonX = (windowSize.x - buttonWidth) / 2; // Center the button on the x-axis
@@ -383,9 +397,9 @@ bool game::handleExitRequest(sf::RenderWindow& win) {
     sf::Color normalColor(100, 100, 100); // Normal state color
     sf::Color hoverColor(150, 150, 150);  // Hover state color
 
-    while (win.isOpen()) {
+    while (window.isOpen()) {
         sf::Event event;
-        while (win.pollEvent(event)) {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 return false;
             }
@@ -394,11 +408,13 @@ bool game::handleExitRequest(sf::RenderWindow& win) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (exitButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         std::cout << "Exit Game button clicked!" << std::endl;
+                        window.close();
                         return true;
                     }
 
                     if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         std::cout << "Resume Game button clicked!" << std::endl;
+                        window.close();
                         return false;
                     }
 
@@ -406,7 +422,7 @@ bool game::handleExitRequest(sf::RenderWindow& win) {
             }
         }
         // Check for hover state for exitButton
-        sf::Vector2i mousePos = sf::Mouse::getPosition(win);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             exitButton.setFillColor(hoverColor);
         } else {
@@ -420,13 +436,13 @@ bool game::handleExitRequest(sf::RenderWindow& win) {
             resumeButton.setFillColor(normalColor);
         }
 
-        win.clear();
-        win.draw(exitButton);
-        win.draw(exitButton); // Draw the exit button shape
-        win.draw(exitText); // Draw the exit button text
-        win.draw(resumeButton); // Draw the resume button shape
-        win.draw(resumeText); // Draw the resume button text
-        win.display();
+        window.clear();
+        window.draw(exitButton);
+        window.draw(exitButton); // Draw the exit button shape
+        window.draw(exitText); // Draw the exit button text
+        window.draw(resumeButton); // Draw the resume button shape
+        window.draw(resumeText); // Draw the resume button text
+        window.display();
     }
 }
 
@@ -434,7 +450,7 @@ bool game::handleExitRequest(sf::RenderWindow& win) {
  * handle window when game is over
  * creates a message on window upon game over
  * */
-bool game::gameOverScreen(sf::RenderWindow &win) {
+bool game::gameOverScreen() {
 // Load a texture from a file
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("../../resource/img/set-on-fire_1920.jpg")) {
@@ -446,11 +462,11 @@ bool game::gameOverScreen(sf::RenderWindow &win) {
     backgroundSprite.setTexture(backgroundTexture);
     // Optionally, scale the sprite to fit the window size
     backgroundSprite.setScale(
-            float(win.getSize().x) / backgroundTexture.getSize().x,
-            float(win.getSize().y) / backgroundTexture.getSize().y);
+            float(window.getSize().x) / backgroundTexture.getSize().x,
+            float(window.getSize().y) / backgroundTexture.getSize().y);
 
     // Calculate button sizes and positions dynamically based on window size
-    sf::Vector2u windowSize = win.getSize();
+    sf::Vector2u windowSize = window.getSize();
     float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
     float buttonHeight = 50.f; // Fixed height for buttons
     float buttonX = (windowSize.x - buttonWidth) / 2; // Center the button on the x-axis
@@ -501,11 +517,11 @@ bool game::gameOverScreen(sf::RenderWindow &win) {
     // Position the text at the top center of the window
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width/2.0f, textRect.top);
-    text.setPosition(sf::Vector2f(win.getSize().x/2.0f, 20.f));
+    text.setPosition(sf::Vector2f(window.getSize().x / 2.0f, 20.f));
 
-    while (win.isOpen()) {
+    while (window.isOpen()) {
         sf::Event event;
-        while (win.pollEvent(event)) {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 return false;
             }
@@ -526,7 +542,7 @@ bool game::gameOverScreen(sf::RenderWindow &win) {
             }
         }
         // Check for hover state for exitButton
-        sf::Vector2i mousePos = sf::Mouse::getPosition(win);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         if (exitButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             exitButton.setFillColor(hoverColor);
         } else {
@@ -540,14 +556,14 @@ bool game::gameOverScreen(sf::RenderWindow &win) {
             resumeButton.setFillColor(normalColor);
         }
 
-        win.clear();
-        win.draw(backgroundSprite);
-        win.draw(exitButton);
-        win.draw(exitButton); // Draw the exit button shape
-        win.draw(exitText); // Draw the exit button text
-        win.draw(resumeButton); // Draw the resume button shape
-        win.draw(resumeText); // Draw the resume button text
-        win.draw(text);
-        win.display();
+        window.clear();
+        window.draw(backgroundSprite);
+        window.draw(exitButton);
+        window.draw(exitButton); // Draw the exit button shape
+        window.draw(exitText); // Draw the exit button text
+        window.draw(resumeButton); // Draw the resume button shape
+        window.draw(resumeText); // Draw the resume button text
+        window.draw(text);
+        window.display();
     }
 }
