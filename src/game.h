@@ -22,11 +22,12 @@ private:
     sf::Clock clock; // for updating the game
 //    Metrics metrics;
     powerup Powerup;
+    Player* player;
 public:
     game(settings *opt);
     ~game();
     void gameLoop();
-    char* characterSelectScreen(const Player& player);
+    char* characterSelectScreen(const Player* player);
     bool handleExitRequest();
     bool gameOverScreen();
 };
