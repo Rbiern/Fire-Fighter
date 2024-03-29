@@ -1,7 +1,7 @@
 #include "game.h"
 
 /** constructor */
-game::game(settings *opt) : metrics(opt->getVector(), opt) {
+game::game(settings *opt) {
     // settings
     options = *opt;
     font = options.getFont();   // load font from settings
@@ -12,15 +12,18 @@ game::game(settings *opt) : metrics(opt->getVector(), opt) {
         music.setLoop(true);
     }
 
-    // screen resolution
-    resolution = opt->getVector();
-    player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
 
     // setup window, fame rate, and icon
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
+    // screen resolution
+    resolution.x = options.getResolution()[0]; // screen resolution width
+    resolution.y = options.getResolution()[1]; // screen resolution height
+    std::cout << options.getResolution()[0] << std::endl;
+    std::cout << window.getSize().x << std::endl;
+    player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
 }
 
 /** destructor */
@@ -30,9 +33,13 @@ game::~game() {
 
 /** run game method */
 void game::gameLoop() {
+
     //set up enemy
     EnemyWave enemyWave(window, resolution);
     // setup metrics bar on top of the window
+//    Metrics metrics(resolution, options.getFont());
+// metrics bar
+    Metrics metrics(options.getVector(), &options);
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
 
 
@@ -64,6 +71,8 @@ void game::gameLoop() {
     sf::Clock shootCooldown; // for shooting cool down
     bool canShoot = true;
     float movementSpeed = 0.5f;
+
+
 
     // The message to display on window bar
     std::string message = "                      Place your AD here                      ";
@@ -115,7 +124,9 @@ void game::gameLoop() {
             canShoot = true;
         }
 
-        metrics.updateHealthbar(player->getLives());
+        int lives = player->getLives();
+        metrics.updateHealthbar(lives);
+//        metrics.setEnemyKilled(Enemy::getTotalDeath());
 
         Powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, enemyWave, metrics);
@@ -169,7 +180,7 @@ void game::gameLoop() {
         } else words++;
 
         window.clear();
-
+        player->draw(window);
         Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave.draw(window);
@@ -178,11 +189,9 @@ void game::gameLoop() {
             barrier.draw(window);
         }
         metrics.draw(window);
-        player->draw(window);
         window.display();
     }
 }
-
 
 /**
  * character selection window
