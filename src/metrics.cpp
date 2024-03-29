@@ -95,8 +95,8 @@ void Metrics::increaseScore(int points) {
     score += points;
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
     roundText.setString(options->getLanguage()[23]+ std::to_string(enemySum/ (score/10)));
-    enemyKilledText.setString(options->getLanguage()[24] + std::to_string(score/10));
-    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemySum++));
+    enemyKilledText.setString(options->getLanguage()[24] + std::to_string(score/points));
+    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemySum--));
 }
 
 int Metrics::getScore() const {
