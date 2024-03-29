@@ -1,7 +1,7 @@
 #include "game.h"
 
 /** constructor */
-game::game(settings *opt) {
+game::game(settings *opt) : metrics(opt->getVector(), opt) {
     // settings
     options = *opt;
     font = options.getFont();   // load font from settings
@@ -12,18 +12,15 @@ game::game(settings *opt) {
         music.setLoop(true);
     }
 
+    // screen resolution
+    resolution = opt->getVector();
+    player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
 
     // setup window, fame rate, and icon
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
-    // screen resolution
-    resolution.x = options.getResolution()[0]; // screen resolution width
-    resolution.y = options.getResolution()[1]; // screen resolution height
-    std::cout << options.getResolution()[0] << std::endl;
-    std::cout << window.getSize().x << std::endl;
-    player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
 }
 
 /** destructor */
@@ -33,14 +30,9 @@ game::~game() {
 
 /** run game method */
 void game::gameLoop() {
-
     //set up enemy
     EnemyWave enemyWave(window, resolution);
     // setup metrics bar on top of the window
-//    Metrics metrics(resolution, options.getFont());
-// metrics bar
-    Metrics metrics(resolution, font);
-    metrics.setScore();
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
 
 
@@ -72,8 +64,6 @@ void game::gameLoop() {
     sf::Clock shootCooldown; // for shooting cool down
     bool canShoot = true;
     float movementSpeed = 0.5f;
-
-
 
     // The message to display on window bar
     std::string message = "                      Place your AD here                      ";
@@ -125,11 +115,9 @@ void game::gameLoop() {
             canShoot = true;
         }
 
-        int lives = player->getLives();
-        metrics.updateHealthbar(lives);
-        metrics.setEnemyKilled(Enemy::getTotalDeath());
+        metrics.updateHealthbar(player->getLives());
 
-        Powerup.update(deltaTime, player, window);
+//        Powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, enemyWave, metrics);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
@@ -182,7 +170,7 @@ void game::gameLoop() {
 
         window.clear();
         player->draw(window);
-        Powerup.draw(window,player);
+//        Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave.draw(window);
         for (auto& barrier : barriers) {
@@ -356,14 +344,17 @@ char* game::characterSelectScreen(const Player* player) {
 bool game::handleExitRequest() {
     // Calculate button sizes and positions dynamically based on window size
     sf::Vector2u windowSize = window.getSize();
-    float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
+    float buttonWidth = windowSize.x * 0.25f; // Buttons are 30% of window width
     float buttonHeight = 50.f; // Fixed height for buttons
+    buttonWidth = options.widthScaling(buttonWidth);
+    buttonHeight = options.heightScaling(buttonHeight);
     float buttonX = (windowSize.x - buttonWidth) / 2; // Center the button on the x-axis
     float exitButtonY = windowSize.y * 0.3f; // Exit button at 30% of window height
     float resumeButtonY = windowSize.y * 0.5f; // Resume button at 50% of window height
 
+
     // Setup the rectangle shape for buttons
-    sf::RectangleShape exitButton(sf::Vector2f(buttonWidth, buttonHeight));
+    sf::RectangleShape exitButton(sf::Vector2f(buttonWidth,  buttonHeight));
     exitButton.setFillColor(sf::Color(100, 100, 100));
     exitButton.setPosition(buttonX, exitButtonY);
     exitButton.setOutlineThickness(2);
@@ -378,16 +369,16 @@ bool game::handleExitRequest() {
     // Setup the text for buttons
     sf::Text exitText;
     exitText.setFont(font);
-    exitText.setString("Exit Game");
-    exitText.setCharacterSize(24);
+    exitText.setString(options.getLanguage()[20]);
+    exitText.setCharacterSize(options.widthScaling(24));
     exitText.setFillColor(sf::Color::White);
     // Center text on its button
     exitText.setPosition(buttonX + (buttonWidth - exitText.getLocalBounds().width) / 2, exitButtonY + (buttonHeight - exitText.getLocalBounds().height) / 2);
 
     sf::Text resumeText;
     resumeText.setFont(font);
-    resumeText.setString("Resume Game");
-    resumeText.setCharacterSize(24);
+    resumeText.setString(options.getLanguage()[21]);
+    resumeText.setCharacterSize(options.widthScaling(24));
     resumeText.setFillColor(sf::Color::White);
     // Center text on its button
     resumeText.setPosition(buttonX + (buttonWidth - resumeText.getLocalBounds().width) / 2, resumeButtonY + (buttonHeight - resumeText.getLocalBounds().height) / 2);
