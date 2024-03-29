@@ -12,22 +12,23 @@ game::game(settings *opt) {
         music.setLoop(true);
     }
 
-    // screen resolution
-    resolution.x = window.getSize().x;//options.getResolution()[0];                                 // screen resolution width
-    resolution.y = window.getSize().y;//options.getResolution()[1]; // screen resolution height
-
-
 
     // setup window, fame rate, and icon
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
+    // screen resolution
+    resolution.x = options.getResolution()[0]; // screen resolution width
+    resolution.y = options.getResolution()[1]; // screen resolution height
+    std::cout << options.getResolution()[0] << std::endl;
+    std::cout << window.getSize().x << std::endl;
+    player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
 }
 
 /** destructor */
 game::~game() {
-
+    delete player;
 }
 
 /** run game method */
@@ -41,8 +42,6 @@ void game::gameLoop() {
     Metrics metrics(resolution, font);
     metrics.setScore();
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
-    // set up player and scale
-    Player player(window.getSize().x-100.f, window.getSize().y -100.0f,resolution);
 
 
     // barrier setup
@@ -68,7 +67,7 @@ void game::gameLoop() {
     // character selection screen method call
     char* str = characterSelectScreen(player);
     if (str == NULL) return;                            // an error has occurred or user exited back to UI
-    else player.setPlayerTexture(str);               // test player texture to selected file path of str
+    else player->setPlayerTexture(str);               // test player texture to selected file path of str
 
     sf::Clock shootCooldown; // for shooting cool down
     bool canShoot = true;
@@ -94,14 +93,14 @@ void game::gameLoop() {
         }
         // Move character North
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            if (player.getPosition().y - movementSpeed >= 0) {
-                player.move(sf::Vector2f(0.f, -movementSpeed));
+            if (player->getPosition().y - movementSpeed >= 0) {
+                player->move(sf::Vector2f(0.f, -movementSpeed));
             }
         }
         // Move character South
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            if (player.getPosition().y + player.getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
-                player.move(sf::Vector2f(0.f, movementSpeed));
+            if (player->getPosition().y + player->getSize().y + movementSpeed <= window.getSize().y) { // 아래로 이동 가능한 경우에만 이동
+                player->move(sf::Vector2f(0.f, movementSpeed));
             }
         }
         // when user presses exit, pop up window
@@ -118,7 +117,7 @@ void game::gameLoop() {
         }
         // have player shoot when space bar is pressed
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && canShoot) {
-            player.shoot();
+            player->shoot();
             shootCooldown.restart();
             canShoot = false;
         }
@@ -126,12 +125,12 @@ void game::gameLoop() {
             canShoot = true;
         }
 
-        int lives = player.getLives();
+        int lives = player->getLives();
         metrics.updateHealthbar(lives);
         metrics.setEnemyKilled(Enemy::getTotalDeath());
 
         Powerup.update(deltaTime, player, window);
-        player.updateBullets(deltaTime, enemyWave, metrics);
+        player->updateBullets(deltaTime, enemyWave, metrics);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
@@ -139,12 +138,12 @@ void game::gameLoop() {
         for (int i = 0; i < enemyWave.getRows(); ++i) {
             for (int j = 0; j < enemyWave.getColumns(); ++j) {
                 Enemy &enemy = enemyWave.getEnemy(i, j);
-                if (enemy.getIsAlive() && player.isCollidingWithEnemy(enemy.getSprite())) {
+                if (enemy.getIsAlive() && player->isCollidingWithEnemy(enemy.getSprite())) {
                     enemy.kill();
-                    player.decreaseLife();
-                    metrics.updateHealthbar(player.getLives());
+                    player->decreaseLife();
+                    metrics.updateHealthbar(player->getLives());
                     //if life is 0, display gameover screen
-                    if (player.getLives() <= 0) {
+                    if (player->getLives() <= 0) {
                         gameOverScreen();
                         std::cout << "Game Over" << std::endl;
                     }
@@ -167,7 +166,7 @@ void game::gameLoop() {
 
         /** when bullet hits barrier, the barrier shrinks */
         for (auto& barrier : barriers) {
-            player.updateBarrier(deltaTime, barrier, resolution);
+            player->updateBarrier(deltaTime, barrier, resolution);
         }
 
         enemyWave.draw(window);
@@ -182,9 +181,9 @@ void game::gameLoop() {
         } else words++;
 
         window.clear();
-        player.draw(window);
+        player->draw(window);
         Powerup.draw(window,player);
-        player.drawBullets(window);
+        player->drawBullets(window);
         enemyWave.draw(window);
         for (auto& barrier : barriers) {
             barrier.setTexture("../../resource/img/iceBlock.png");
@@ -200,7 +199,7 @@ void game::gameLoop() {
  * character selection window
  * handles character selection
  * */
-char* game::characterSelectScreen(const Player& player) {
+char* game::characterSelectScreen(const Player* player) {
     char* str;                                          // String of player texture path to return
     sf::Texture boyTexture;                             // load image of the boy droplet image
     sf::Texture girlTexture;                            // load image of the girl droplet image
