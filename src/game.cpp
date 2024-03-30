@@ -50,7 +50,7 @@ void game::gameLoop() {
     float barrierX = (window.getSize().x - 100) / 1.5f; // Place the barriers shifted to the right side
     float barrierY = (window.getSize().y) / 4.0f; // Calculate the startY position for the first barrier based on resolution
     float barrierSpacing = 150.0f; // Default spacing
-    
+
     for (int i = 0; i < 3; ++i) {
         barriers.emplace_back(barrierX, barrierY + i * barrierSpacing, window, resolution);
     }
@@ -148,10 +148,41 @@ void game::gameLoop() {
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime);
-        //Check enemy collides with player
+
+        //check enemy's bullet collide with player
         for (int i = 0; i < enemyWave.getRows(); ++i) {
             for (int j = 0; j < enemyWave.getColumns(); ++j) {
                 Enemy &enemy = enemyWave.getEnemy(i, j);
+                auto& bullets = enemy.getBullets();
+                auto bulletIt = bullets.begin();
+                while (bulletIt != bullets.end()) {
+                    bool bulletRemoved = false;
+                    if (bulletIt->getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
+                        player->decreaseLife();
+                        bulletIt = bullets.erase(bulletIt);
+                        bulletRemoved = true;
+                        if (player->getLives() <= 0) {
+                            gameOverScreen();
+                            std::cout << "Game Over" << std::endl;
+                            return;
+                        }
+                    }
+                    //If enemy's bullet collide with barrier, it shrinks
+                    if (!bulletRemoved) {
+                        for (auto& barrier : barriers) {
+                            if (barrier.bulletCollision(bulletIt->getSprite())) {
+                                barrier.shrink(resolution);
+                                bulletIt = bullets.erase(bulletIt);
+                                bulletRemoved = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!bulletRemoved) {
+                        ++bulletIt;
+                    }
+                }
+                //Check enemy collides with player
                 if (enemy.getIsAlive() && player->isCollidingWithEnemy(enemy.getSprite())) {
                     enemy.kill();
                     player->decreaseLife();
@@ -164,7 +195,7 @@ void game::gameLoop() {
                 }
             }
         }
-         /** when enemy collides barrier, the barrier shrinks */
+        /** when enemy collides barrier, the barrier shrinks */
         for (auto& barrier : barriers) {
             barrier.updateBarrier(enemyWave, resolution);
         }
