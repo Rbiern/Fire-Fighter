@@ -23,6 +23,7 @@ public:
     void shoot(); // Function to make the enemy shoot
     std::vector<Bullet>& getBullets(); // Function to get the bullets shot by the enemy
 
+
 private:
     sf::Sprite sprite;
     sf::Texture texture;
@@ -36,7 +37,7 @@ private:
 
 class EnemyWave {
 public:
-    EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution);
+    EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight);
     void update(sf::Time deltaTime);
     void draw(sf::RenderWindow& window);
     void removeEnemy(int row, int column);
@@ -44,10 +45,12 @@ public:
     int getRows() const;
     int getColumns() const;
     void adjustSpacingForResolution(const sf::Vector2u& resolution);
+    sf::RenderWindow& window;
 
     //enemy count
     void enemyHit(int row, int column); // Method to call when an enemy is hit
     int getTotalSpawned() const { return totalSpawned; }
+    void update(sf::Time deltaTime, float metricsBarHeight);
 
 
 private:
