@@ -37,7 +37,8 @@ game::~game() {
 void game::gameLoop() {
 
     //set up enemy
-    EnemyWave enemyWave(window, resolution);
+    float metricsBarHeight = 100.0f; // Example height, adjust as needed
+    EnemyWave enemyWave(window, resolution, metricsBarHeight);
     // setup metrics bar on top of the window
 //    Metrics metrics(resolution, options.getFont());
 // metrics bar
@@ -147,7 +148,7 @@ void game::gameLoop() {
         player->updateBullets(deltaTime, enemyWave, metrics);
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
-        enemyWave.update(deltaTime);
+        enemyWave.update(deltaTime, metricsBarHeight);
 
         //check enemy's bullet collide with player
         for (int i = 0; i < enemyWave.getRows(); ++i) {
