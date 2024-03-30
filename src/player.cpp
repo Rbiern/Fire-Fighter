@@ -130,7 +130,12 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics&
         }
     }
 }
-
+/**
+ * Updates the bullets for collisions with barriers and shrinks the barrier upon collision.
+ * @param delta time
+ * @param barrier barrier
+ * @param resolution resolution
+ */
 void Player::updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution) {
     for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
         bulletIt->update(delta, "player");
@@ -144,19 +149,33 @@ void Player::updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vec
         }
     }
 }
-
+/**
+ * Draws all bullets shot by the player on the specified render window.
+ * @param window
+ */
 void Player::drawBullets(sf::RenderWindow& window) {
     for (auto& bullet : bullets) {
         window.draw(bullet.getSprite());
     }
 }
+/**
+ * Destructor that cleans up resources, specifically deleting any dynamically allocated memory to prevent memory leaks.
+ */
 Player::~Player() {
     delete options;
 }
 
+/**
+ * Sets the texture of the player's sprite based on the provided file path.
+ * @param str file path
+ */
 void Player::setPlayerTexture(char* str) {
     this->setTexture(str);
 }
+/**
+ * Adjusts the player's scale and speed based on the game's resolution to ensure consistent gameplay across different resolutions.
+ * @param resolution array of resolution
+ */
 void Player::adjustForResolution(const sf::Vector2u& resolution) {
     float scale = 1.0f;
     float speedScale = 1.0f;
@@ -179,6 +198,10 @@ void Player::adjustForResolution(const sf::Vector2u& resolution) {
 
     movementSpeed *= speedScale;
 }
+/**
+ * Sets the scale of the player's sprite to a specified factor.
+ * @param scaleFactor scale factor
+ */
 void Player::setScale(float scaleFactor) {
     sprite.setScale(scaleFactor, scaleFactor);
 }
