@@ -1,5 +1,5 @@
 // Enemy.cpp
-#include "Enemy.h"
+#include "enemy.h"
 #include <cmath>
 #include <iostream>
 
@@ -108,10 +108,10 @@ void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
         // Optionally adjust based on resolution dimensions, or keep base values
     }
 }
-EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution)
-        : waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
-          rows(8), columns(4), spacingX(100.0f), spacingY(70.0f),
-          startX(0.0f), startY(75.0f) {
+EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight)
+        : window(window),waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
+          rows(5), columns(4), spacingX(100.0f), spacingY(70.0f),
+          startX(0.0f),  startY(75.0f + metricsBarHeight) {
     adjustSpacingForResolution(resolution); // Adjust spacing based on resolution
     enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, resolution)));
     for (int i = 0; i < rows; ++i) {
@@ -125,13 +125,18 @@ EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution)
     }
 }
 
-void EnemyWave::update(sf::Time deltaTime) {
+void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
     wavePhase += deltaTime.asSeconds();
+    float screenLimit = window.getSize().y - metricsBarHeight; // Calculate screen limit considering metrics bar
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
-            enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, startY + i * spacingY + waveOffset);
-            enemyGrid[i][j].update(deltaTime);
+            float newPositionY = startY + i * spacingY + waveOffset;
+            if (newPositionY + enemyGrid[i][j].getGlobalBounds().height > screenLimit) {
+                newPositionY = screenLimit - enemyGrid[i][j].getGlobalBounds().height; // Adjust position to stay within screen
+            }
+            enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, newPositionY);
+            // No change to the horizontal movement logic
         }
     }
 }
