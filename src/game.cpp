@@ -46,7 +46,7 @@ void game::gameLoop() {
 
 
     // barrier setup
-    // need tp adjust based on res
+    // need to adjust position based on res
     float barrierX = (window.getSize().x - 100) / 1.5f; // Place the barriers shifted to the right side
     float barrierY = (window.getSize().y) / 4.0f; // Calculate the startY position for the first barrier based on resolution
     float barrierSpacing = 150.0f; // Default spacing
