@@ -1,4 +1,5 @@
 #include "game.h"
+#include <random>
 
 /** constructor */
 game::game(settings *opt) : metrics(opt->getVector(), opt) {
@@ -123,6 +124,28 @@ void game::gameLoop() {
         }
         if (shootCooldown.getElapsedTime().asSeconds() > 0.5f) {
             canShoot = true;
+        }
+
+        // Update enemy movement and shooting
+        for (int i = 0; i < enemyWave.getRows(); ++i) {
+            for (int j = 0; j < enemyWave.getColumns(); ++j) {
+                enemyWave.getEnemy(i, j).update(deltaTime);
+
+                // Check if the enemy has no other enemy on its right
+                bool hasEnemyOnRight = (j < enemyWave.getColumns() - 1) && enemyWave.getEnemy(i, j+1).getIsAlive();
+
+                // Get a random shoot interval between 1 and 3 seconds
+                static std::vector<sf::Clock> enemyShootClocks(enemyWave.getRows()); // Static to persist between frames
+                static std::random_device rd;
+                static std::mt19937 gen(rd());
+                static std::uniform_int_distribution<> dis(2, 13);
+
+                // Check if enough time has passed since the last shot for this enemy
+                if (!hasEnemyOnRight && enemyShootClocks[i].getElapsedTime().asSeconds() >= dis(gen)) {
+                    enemyWave.getEnemy(i, j).shoot();
+                    enemyShootClocks[i].restart(); // Reset the shoot timer
+                }
+            }
         }
 
         int lives = player->getLives();
