@@ -23,6 +23,8 @@ private:
     Metrics metrics;
     powerup Powerup;
     Player* player;
+    std::vector<Barrier> barriers;
+
 public:
     explicit game(settings *opt);
     ~game();
