@@ -26,13 +26,20 @@ void Enemy::update(const sf::Time& deltaTime) {
     sprite.move(moveDistance, 0);
     if (sprite.getPosition().x > screenWidth) {
         sprite.setPosition(-sprite.getGlobalBounds().width, sprite.getPosition().y);
-
+    }
+    // Update the position of enemy bullets
+    for (auto& bullet : bullets) {
+        bullet.update(deltaTime,"enemy");
     }
 }
 
 void Enemy::draw(sf::RenderWindow& window) {
     if (isAlive) {
         window.draw(sprite);
+        // Draw enemy bullets on the screen
+        for (auto& bullet : bullets) {
+            bullet.draw(window);
+        }
     }
 }
 
@@ -151,6 +158,17 @@ int EnemyWave::getColumns() const {
 bool Enemy::getIsAlive() const {
     return isAlive; // Assuming 'isAlive' is a boolean member variable indicating the alive status.
 }
+
+void Enemy::shoot() {
+    // Create a new bullet at the position of the enemy
+    Bullet enemyBullet(getPosition().x, getPosition().y, "enemy");
+    bullets.push_back(enemyBullet);
+}
+
+std::vector<Bullet>& Enemy::getBullets() {
+    return bullets;
+}
+
 const sf::Sprite& Enemy::getSprite() const {
     return sprite;
 }
