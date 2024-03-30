@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include "bullet.h"
 
 class Enemy {
 public:
@@ -19,10 +20,13 @@ public:
     bool getIsAlive() const;
     static int getTotalDeath();
     const sf::Sprite &getSprite() const;
+    void shoot(); // Function to make the enemy shoot
+    std::vector<Bullet>& getBullets(); // Function to get the bullets shot by the enemy
 
 private:
     sf::Sprite sprite;
     sf::Texture texture;
+    std::vector<Bullet> bullets; // Store enemy bullets
     float movementSpeed;
     unsigned int screenWidth;
     bool isAlive;
