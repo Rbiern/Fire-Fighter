@@ -97,7 +97,7 @@ sf::Vector2f Player::getSize() const {
  */
 void Player::shoot() {
     //new bullet's starting posiiton
-    Bullet newBullet(getPosition().x - getSize().x / 2, getPosition().y + getSize().y / 2);
+    Bullet newBullet(getPosition().x - getSize().x / 2, getPosition().y + getSize().y / 2, "player");
     bullets.push_back(newBullet);
     if (options->toggleSounds()) {
         shootSound.play();
@@ -109,7 +109,7 @@ void Player::shoot() {
  */
 void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics) {
     for (auto& bullet : bullets) {
-        bullet.update(delta);
+        bullet.update(delta, "player");
     }
     auto bulletIt = bullets.begin();
     while (bulletIt != bullets.end()) {
@@ -133,7 +133,7 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics&
 
 void Player::updateBarrier(const sf::Time delta, Barrier& barrier, const sf::Vector2u& resolution) {
     for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
-        bulletIt->update(delta);
+        bulletIt->update(delta, "player");
 
         if (barrier.bulletCollision(bulletIt->getSprite())) {
             bulletIt = bullets.erase(bulletIt);
