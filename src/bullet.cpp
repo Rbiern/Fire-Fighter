@@ -4,7 +4,7 @@
 Bullet::Bullet(float startX, float startY, const std::string& type) {
     loadTexture(type);
     sprite.setPosition(startX, startY);
-    sprite.setScale(0.2f,0.2f);
+    sprite.setScale(0.5f,0.5f);
     speed = 300.f;
 }
 
