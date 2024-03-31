@@ -155,7 +155,7 @@ void Player::updateBarrier(const sf::Time delta, Barrier& barrier) {
  */
 void Player::drawBullets(sf::RenderWindow& window) {
     for (auto& bullet : bullets) {
-        window.draw(bullet.getSprite());
+        bullet.draw(window,"player");
     }
 }
 /**
