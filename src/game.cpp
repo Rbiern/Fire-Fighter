@@ -36,41 +36,30 @@ game::~game() {
 
 /** run game method */
 void game::gameLoop() {
+    // character selection screen method call
+    char* str = characterSelectScreen();
+    if (str == NULL) return;                            // an error has occurred or user exited back to UI
+    else player->setPlayerTexture(str);               // test player texture to selected file path of str
 
+    spetsnaz:
     //set up enemy
     float metricsBarHeight = 100.0f; // Example height, adjust as needed
     EnemyWave enemyWave(window, resolution, metricsBarHeight);
     // setup metrics bar on top of the window
-//    Metrics metrics(resolution, options.getFont());
-// metrics bar
-//    Metrics metrics(options.getVector(), &options);
     metrics.setEnemyCount(enemyWave.getTotalSpawned());
-
-
     // barrier setup
     for (int i = 0; i < 3; ++i) {
         barriers.push_back(Barrier((window.getSize().x - 100) / 1.5f, ((window.getSize().y) / 4.0f) + i * barrier->getBarrierSpacing(), window, options));
     }
-
-
-    // character selection screen method call
-    char* str = characterSelectScreen(player);
-    if (str == NULL) return;                            // an error has occurred or user exited back to UI
-    else player->setPlayerTexture(str);               // test player texture to selected file path of str
-
     sf::Clock shootCooldown; // for shooting cool down
     bool canShoot = true;
     float movementSpeed = 0.5f;
-
-
-
     // The message to display on window bar
     std::string message = "                      Place your AD here                      ";
     int messageLength = message.length(); int words = 0; int startPos = 0;
-
     // start the music if it is enabled
     if (options.toggleMusic()) music.play();
-
+    bool restFlag = false;
 /** main game loop */
     while (window.isOpen()) {
         sf::Event event{};
@@ -95,14 +84,16 @@ void game::gameLoop() {
         // when user presses exit, pop up window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = handleExitRequest();
-            if (flag) window.close();
+            bool flag = gameOverScreen();
+            if (!flag) restFlag = true;
+            window.close();
         }
         // when the game has ended
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
             if (options.toggleMusic()) music.stop();
             bool flag = gameOverScreen();
-            if (flag) window.close();
+            if (!flag) restFlag = true;
+            window.close();
         }
         // have player shoot when space bar is pressed
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && canShoot) {
@@ -159,9 +150,10 @@ void game::gameLoop() {
                         bulletIt = bullets.erase(bulletIt);
                         bulletRemoved = true;
                         if (player->getLives() <= 0) {
-                            gameOverScreen();
+                            bool flag = gameOverScreen();
+                            if (!flag) restFlag = true;
+                            window.close();
                             std::cout << "Game Over" << std::endl;
-                            return;
                         }
                     }
                     //If enemy's bullet collide with barrier, it shrinks
@@ -186,7 +178,9 @@ void game::gameLoop() {
                     metrics.updateHealthbar(player->getLives());
                     //if life is 0, display gameover screen
                     if (player->getLives() <= 0) {
-                        gameOverScreen();
+                        bool flag = gameOverScreen();
+                        if (!flag) restFlag = true;
+                        window.close();
                         std::cout << "Game Over" << std::endl;
                     }
                 }
@@ -226,13 +220,22 @@ void game::gameLoop() {
         metrics.draw(window);
         window.display();
     }
+
+    if (restFlag) {
+        sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
+        window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0],options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
+        window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
+        window.setFramerateLimit(60);
+        metrics.reset();
+        goto spetsnaz;
+    }
 }
 
 /**
  * character selection window
  * handles character selection
  * */
-char* game::characterSelectScreen(const Player* player) {
+char* game::characterSelectScreen() {
     char* str;                                          // String of player texture path to return
     sf::Texture boyTexture;                             // load image of the boy droplet image
     sf::Texture girlTexture;                            // load image of the girl droplet image
@@ -249,51 +252,57 @@ char* game::characterSelectScreen(const Player* player) {
     sf::Sprite boyDroplet(boyTexture);          // sprite of the boy player
     sf::Sprite girlDroplet(girlTexture);        // sprite of the girl player
     sf::Sprite characterBackDrop(characterBackDropTexture); // sprites of the backdrop
+    boyDroplet.setScale(options.widthScaling(3), options.heightScaling(3));
+    girlDroplet.setScale(options.widthScaling(3), options.heightScaling(3));
+    characterBackDrop.setScale(options.widthScaling(3), options.heightScaling(3));
 
     // Get the screen dimensions
     float screenWidth = static_cast<float>(window.getSize().x);
     float screenHeight = static_cast<float>(window.getSize().y);
 
-    // Calculate position to center character
-    boyDroplet.setPosition((screenWidth - boyDroplet.getGlobalBounds().width - 250) / 2, (screenHeight - boyDroplet.getGlobalBounds().height - 70) / 2);
-    girlDroplet.setPosition((screenWidth - girlDroplet.getGlobalBounds().width + 250) / 2, (screenHeight - girlDroplet.getGlobalBounds().height - 70) / 2);
-
     // Create boy select button
-    sf::RectangleShape selectBoyButton(sf::Vector2f(200.f, 50.f));
+    sf::RectangleShape selectBoyButton(sf::Vector2f(options.widthScaling(200.f), options.heightScaling(50.f)));
     selectBoyButton.setFillColor(sf::Color::Blue);
-    selectBoyButton.setPosition((screenWidth - selectBoyButton.getSize().x * 2 - 50) / 2, screenHeight / 2); // Position first button to the left of center
+    selectBoyButton.setPosition((screenWidth - selectBoyButton.getSize().x * 2 - 50) / 2, screenHeight * 0.6); // Position first button to the left of center
     selectBoyButton.setOutlineThickness(2);
     selectBoyButton.setOutlineColor(sf::Color::White);
     // Create boy select button text
     sf::String s1 = options.getLanguage()[16];
-    sf::Text text1(s1, font, 20);
+    sf::Text text1(s1, font, options.widthScaling(28));
     text1.setPosition(selectBoyButton.getPosition().x + (selectBoyButton.getSize().x - text1.getLocalBounds().width) / 2, selectBoyButton.getPosition().y + (selectBoyButton.getSize().y - text1.getLocalBounds().height) / 2);
     text1.setFillColor(sf::Color(235, 70, 60));
     // Create girl select button
-    sf::RectangleShape selectGirlButton(sf::Vector2f(200.f, 50.f));
+    sf::RectangleShape selectGirlButton(sf::Vector2f(options.widthScaling(200.f), options.heightScaling(50.f)));
     selectGirlButton.setFillColor(sf::Color::Blue);
-    selectGirlButton.setPosition(selectBoyButton.getPosition().x + selectBoyButton.getSize().x + 50, screenHeight / 2); // Position second button to the right of first button
+    selectGirlButton.setPosition(selectBoyButton.getPosition().x + selectBoyButton.getSize().x + 50, screenHeight * 0.6); // Position second button to the right of first button
     selectGirlButton.setOutlineThickness(2);
     selectGirlButton.setOutlineColor(sf::Color::White);
     // Create girl select button text
     sf::String s2 = options.getLanguage()[15];
-    sf::Text text2(s2, font, 20);
+    sf::Text text2(s2, font, options.widthScaling(28));
     text2.setPosition(selectGirlButton.getPosition().x + (selectGirlButton.getSize().x - text2.getLocalBounds().width) / 2, selectGirlButton.getPosition().y + (selectGirlButton.getSize().y - text2.getLocalBounds().height) / 2);
     text2.setFillColor(sf::Color(235, 70, 60));
+
+    // Calculate position to center character
+    boyDroplet.setPosition(selectBoyButton.getPosition().x + ((selectBoyButton.getGlobalBounds().width/2) - (boyDroplet.getGlobalBounds().width/2)), selectBoyButton.getPosition().y - (boyDroplet.getGlobalBounds().height * 1.5));
+    girlDroplet.setPosition((selectGirlButton.getPosition().x + (selectGirlButton.getGlobalBounds().width/2) - (girlDroplet.getGlobalBounds().width/2)), selectGirlButton.getPosition().y - (girlDroplet.getGlobalBounds().height * 1.5));
+
+
+
     // create text at top of screen
     sf::String s3 = options.getLanguage()[13];
-    sf::Text chooseText(s3, font, 50);
+    sf::Text chooseText(s3, font, options.widthScaling(70));
     chooseText.setPosition((screenWidth - chooseText.getLocalBounds().width) / 2, 50); // Position text at the top center
     chooseText.setFillColor(sf::Color(235, 70, 60));
     // Create "Go Back" button
-    sf::RectangleShape backButton(sf::Vector2f(150.f, 50.f));
+    sf::RectangleShape backButton(sf::Vector2f(options.widthScaling(150.f), options.heightScaling(50.f)));
     backButton.setFillColor(sf::Color(54, 207, 213));
     backButton.setPosition(screenWidth - backButton.getSize().x - 20, 20); // Position button at the top right
     backButton.setOutlineThickness(2);
     backButton.setOutlineColor(sf::Color::White);
     // create go back text on go back button
     sf::String s4 = options.getLanguage()[14];
-    sf::Text backText(s4, font, 20);
+    sf::Text backText(s4, font, options.widthScaling(28));
     backText.setPosition(backButton.getPosition().x + (backButton.getSize().x - backText.getLocalBounds().width) / 2, backButton.getPosition().y + (backButton.getSize().y - backText.getLocalBounds().height) / 2);
     backText.setFillColor(sf::Color(235, 70, 60));
 
@@ -362,10 +371,10 @@ char* game::characterSelectScreen(const Player* player) {
 
         // Draw elements
         if (hoverFlagBoy) {
-            characterBackDrop.setPosition((screenWidth - characterBackDrop.getGlobalBounds().width - 250) / 2, (screenHeight - characterBackDrop.getGlobalBounds().height - 70) / 2);
+            characterBackDrop.setPosition(boyDroplet.getPosition().x - (characterBackDrop.getGlobalBounds().width * 0.35), boyDroplet.getPosition().y - characterBackDrop.getGlobalBounds().height * 0.25);
             window.draw(characterBackDrop);
         } else if (hoverFlagGirl) {
-            characterBackDrop.setPosition((screenWidth - characterBackDrop.getGlobalBounds().width + 250) / 2, (screenHeight - characterBackDrop.getGlobalBounds().height - 70) / 2);
+            characterBackDrop.setPosition(girlDroplet.getPosition().x - (characterBackDrop.getGlobalBounds().width * 0.35), girlDroplet.getPosition().y - characterBackDrop.getGlobalBounds().height * 0.25);
             window.draw(characterBackDrop);
         }
         window.draw(boyDroplet);
@@ -443,13 +452,11 @@ bool game::handleExitRequest() {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (exitButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         std::cout << "Exit Game button clicked!" << std::endl;
-                        window.close();
                         return true;
                     }
 
                     if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         std::cout << "Resume Game button clicked!" << std::endl;
-                        window.close();
                         return false;
                     }
 
@@ -472,11 +479,20 @@ bool game::handleExitRequest() {
         }
 
         window.clear();
+        metrics.draw(window);
+        player->draw(window);
+        Powerup.draw(window,player);
+        player->drawBullets(window);
+        for(auto& barrier : barriers) {
+            barrier.setTexture("../../resource/img/iceBlock.png");
+            barrier.draw(window);
+        }
         window.draw(exitButton);
         window.draw(exitButton); // Draw the exit button shape
         window.draw(exitText); // Draw the exit button text
         window.draw(resumeButton); // Draw the resume button shape
         window.draw(resumeText); // Draw the resume button text
+
         window.display();
     }
 }
@@ -494,49 +510,40 @@ bool game::gameOverScreen() {
 
     // Create a sprite that will have the texture of the background
     sf::Sprite backgroundSprite;
-    backgroundSprite.setTexture(backgroundTexture);
+//    backgroundSprite.setTexture(backgroundTexture);
     // Optionally, scale the sprite to fit the window size
     backgroundSprite.setScale(
             float(window.getSize().x) / backgroundTexture.getSize().x,
             float(window.getSize().y) / backgroundTexture.getSize().y);
 
-    // Calculate button sizes and positions dynamically based on window size
-    sf::Vector2u windowSize = window.getSize();
-    float buttonWidth = windowSize.x * 0.5f; // Buttons are 50% of window width
-    float buttonHeight = 50.f; // Fixed height for buttons
-    float buttonX = (windowSize.x - buttonWidth) / 2; // Center the button on the x-axis
-    float exitButtonY = windowSize.y * 0.3f; // Exit button at 30% of window height
-    float resumeButtonY = windowSize.y * 0.5f; // Resume button at 50% of window height
+    // Get the screen dimensions
+    float screenWidth = static_cast<float>(window.getSize().x);
+    float screenHeight = static_cast<float>(window.getSize().y);
 
-    // Setup the rectangle shape for buttons
-    sf::RectangleShape exitButton(sf::Vector2f(buttonWidth, buttonHeight));
-    exitButton.setFillColor(sf::Color(100, 100, 100));
-    exitButton.setPosition(buttonX, exitButtonY);
+
+    // Create boy select button
+    sf::RectangleShape exitButton(sf::Vector2f(options.widthScaling(200.f), options.heightScaling(50.f)));
+    exitButton.setFillColor(sf::Color::Blue);
+    exitButton.setPosition((screenWidth - exitButton.getSize().x * 2 - 50) / 2, screenHeight * 0.7); // Position first button to the left of center
     exitButton.setOutlineThickness(2);
     exitButton.setOutlineColor(sf::Color::White);
-
-    sf::RectangleShape resumeButton(sf::Vector2f(buttonWidth, buttonHeight));
-    resumeButton.setFillColor(sf::Color(100, 100, 100));
-    resumeButton.setPosition(buttonX, resumeButtonY);
+    // Create girl select button
+    sf::RectangleShape resumeButton(sf::Vector2f(options.widthScaling(200.f), options.heightScaling(50.f)));
+    resumeButton.setFillColor(sf::Color::Blue);
+    resumeButton.setPosition(exitButton.getPosition().x + exitButton.getSize().x + 50, screenHeight * 0.7); // Position second button to the right of first button
     resumeButton.setOutlineThickness(2);
     resumeButton.setOutlineColor(sf::Color::White);
+    // Create boy select button text
+    sf::String s1 = options.getLanguage()[17];
+    sf::Text exitText(s1, font, options.widthScaling(28));
+    exitText.setPosition(exitButton.getPosition().x + (exitButton.getSize().x - exitText.getLocalBounds().width) / 2, exitButton.getPosition().y + (exitButton.getSize().y - exitText.getLocalBounds().height) / 2);
+    exitText.setFillColor(sf::Color(235, 70, 60));
 
-    // Setup the text for buttons
-    sf::Text exitText;
-    exitText.setFont(font);
-    exitText.setString("Exit");
-    exitText.setCharacterSize(24);
-    exitText.setFillColor(sf::Color::White);
-    // Center text on its button
-    exitText.setPosition(buttonX + (buttonWidth - exitText.getLocalBounds().width) / 2, exitButtonY + (buttonHeight - exitText.getLocalBounds().height) / 2);
-
-    sf::Text resumeText;
-    resumeText.setFont(font);
-    resumeText.setString("Retry");
-    resumeText.setCharacterSize(24);
-    resumeText.setFillColor(sf::Color::White);
-    // Center text on its button
-    resumeText.setPosition(buttonX + (buttonWidth - resumeText.getLocalBounds().width) / 2, resumeButtonY + (buttonHeight - resumeText.getLocalBounds().height) / 2);
+    // Create girl select button text
+    sf::String s2 = options.getLanguage()[18];
+    sf::Text resumeText(s2, font, options.widthScaling(28));
+    resumeText.setPosition(resumeButton.getPosition().x + (resumeButton.getSize().x - resumeText.getLocalBounds().width) / 2, resumeButton.getPosition().y + (resumeButton.getSize().y - resumeText.getLocalBounds().height) / 2);
+    resumeText.setFillColor(sf::Color(235, 70, 60));
 
     // Colors for normal and hover states
     sf::Color normalColor(100, 100, 100); // Normal state color
@@ -545,8 +552,8 @@ bool game::gameOverScreen() {
     // Create a text object
     sf::Text text;
     text.setFont(font); // Set the font to our loaded font
-    text.setString("You Lost"); // Set the text string
-    text.setCharacterSize(48); // Set the text size
+    text.setString(options.getLanguage()[19]); // Set the text string
+    text.setCharacterSize(options.widthScaling(48)); // Set the text size
     text.setFillColor(sf::Color::Red); // Set the text color
 
     // Position the text at the top center of the window
@@ -569,7 +576,7 @@ bool game::gameOverScreen() {
                     }
 
                     if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
-                        std::cout << "Resume Game button clicked!" << std::endl;
+                        std::cout << "Retry Game button clicked!" << std::endl;
                         return false;
                     }
 
@@ -599,6 +606,7 @@ bool game::gameOverScreen() {
         window.draw(resumeButton); // Draw the resume button shape
         window.draw(resumeText); // Draw the resume button text
         window.draw(text);
+        metrics.drawFinalScore(window);
         window.display();
     }
 }
