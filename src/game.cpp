@@ -129,7 +129,7 @@ void game::gameLoop() {
                 static std::uniform_int_distribution<> dis(2, 13);
 
                 // Check if enough time has passed since the last shot for this enemy
-                if (!hasEnemyOnRight && enemyShootClocks[i].getElapsedTime().asSeconds() >= dis(gen)) {
+                if (!hasEnemyOnRight && enemyShootClocks[i].getElapsedTime().asSeconds() >= dis(gen) &&  enemyWave.getEnemy(i, j).getIsAlive() ) {
                     enemyWave.getEnemy(i, j).shoot();
                     enemyShootClocks[i].restart(); // Reset the shoot timer
                 }
