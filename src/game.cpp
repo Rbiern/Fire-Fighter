@@ -27,11 +27,13 @@ game::game(settings *opt) : metrics(opt->getVector(), opt) {
 //    std::cout << window.getSize().x << std::endl;
     player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
     barrier = new Barrier((window.getSize().x - 100) / 1.7f, (window.getSize().y) / 4.0f, window, options);
+    enemyWave = new EnemyWave(window, sf::Vector2u(800, 600), 100.0f);
 }
 
 /** destructor */
 game::~game() {
     delete player;
+    delete enemyWave;
 }
 
 /** run game method */
@@ -579,7 +581,6 @@ bool game::gameOverScreen() {
 
                     if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         player->setLives(3);
-                        metrics.reset();
                         std::cout << "Retry Game button clicked!" << std::endl;
                         return false;
                     }
