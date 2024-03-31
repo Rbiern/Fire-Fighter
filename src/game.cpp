@@ -26,6 +26,7 @@ game::game(settings *opt) : metrics(opt->getVector(), opt) {
 //    std::cout << options.getResolution()[0] << std::endl;
 //    std::cout << window.getSize().x << std::endl;
     player = new Player(window.getSize().x-100,window.getSize().y/2,resolution);
+    barrier = new Barrier((window.getSize().x - 100) / 1.7f, (window.getSize().y) / 4.0f, window, options);
 }
 
 /** destructor */
@@ -47,13 +48,8 @@ void game::gameLoop() {
 
 
     // barrier setup
-    // need to adjust position based on res
-    float barrierX = (window.getSize().x - 100) / 1.5f; // Place the barriers shifted to the right side
-    float barrierY = (window.getSize().y) / 4.0f; // Calculate the startY position for the first barrier based on resolution
-    float barrierSpacing = 150.0f; // Default spacing
-
     for (int i = 0; i < 3; ++i) {
-        barriers.emplace_back(barrierX, barrierY + i * barrierSpacing, window, resolution);
+        barriers.push_back(Barrier((window.getSize().x - 100) / 1.5f, ((window.getSize().y) / 4.0f) + i * barrier->getBarrierSpacing(), window, options));
     }
 
 
@@ -196,14 +192,15 @@ void game::gameLoop() {
                 }
             }
         }
-        /** when enemy collides barrier, the barrier shrinks */
-        for (auto& barrier : barriers) {
-            barrier.updateBarrier(enemyWave, resolution);
-        }
+        
+//        /** when enemy collides barrier, the barrier shrinks */
+//        for (auto& barrier : barriers) {
+//            barrier.updateBarrier(enemyWave, resolution);
+//        }
 
         /** when bullet hits barrier, the barrier shrinks */
         for (auto& barrier : barriers) {
-            player->updateBarrier(deltaTime, barrier, resolution);
+            player->updateBarrier(deltaTime, barrier);
         }
 
         enemyWave.draw(window);
@@ -222,7 +219,7 @@ void game::gameLoop() {
         Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave.draw(window);
-        for (auto& barrier : barriers) {
+        for(auto& barrier : barriers) {
             barrier.setTexture("../../resource/img/iceBlock.png");
             barrier.draw(window);
         }
