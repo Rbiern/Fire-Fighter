@@ -36,10 +36,10 @@ void Enemy::update(const sf::Time& deltaTime) {
 void Enemy::draw(sf::RenderWindow& window) {
     if (isAlive) {
         window.draw(sprite);
-        // Draw enemy bullets on the screen
-        for (auto& bullet : bullets) {
-            bullet.draw(window);
-        }
+    }
+    // Draw enemy bullets on the screen
+    for (auto& bullet : bullets) {
+        bullet.draw(window);
     }
 }
 
