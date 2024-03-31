@@ -21,21 +21,19 @@ ui::~ui() {
 /** main UI menu loop */
 void ui::displayMenu() {
     // Calculate button dimensions based on window size
-    // done this way to account for rendering the window at higher resolution hen your device monitor
-    float windowWidth = static_cast<float>(window.getSize().x);
-    float windowHeight = static_cast<float>(window.getSize().y);
-    // Calculate button positions
-    float startX = (windowWidth - ((windowWidth / 5.f) * 3)) / 2.f;
+    float windowWidth = (window.getSize().x / 3) * 0.6f;
+    float windowHeight = (window.getSize().y / 4) * 0.4f;
+    float totalButtonWidth = windowWidth * 3;
 
-    //Create settings button
-    sf::ConvexShape settingsbutton = createButtonShape(windowWidth, startX);
-    settingsbutton.setPosition(windowWidth / 5.f, windowHeight - 75.f);
-    // Create quit button
-    sf::ConvexShape quitButton = createButtonShape(windowWidth, startX);
-    quitButton.setPosition(startX + (windowWidth / 5.f), windowHeight - 75.f);
     // Create new game button
-    sf::ConvexShape newGameButton = createButtonShape(windowWidth, startX);
-    newGameButton.setPosition(startX - (windowWidth / 5.f), windowHeight - 75.f);
+    sf::ConvexShape newGameButton = createButtonShape(windowWidth, windowHeight);
+    newGameButton.setPosition((window.getSize().x - totalButtonWidth) / 2, window.getSize().y * 0.9 - windowHeight / 2);
+    //Create settings button
+    sf::ConvexShape settingsbutton = createButtonShape(windowWidth, windowHeight);
+    settingsbutton.setPosition(newGameButton.getPosition().x + windowWidth, window.getSize().y * 0.9 - windowHeight / 2);
+    // Create quit button
+    sf::ConvexShape quitButton = createButtonShape(windowWidth, windowHeight);
+    quitButton.setPosition(settingsbutton.getPosition().x + windowWidth, window.getSize().y * 0.9 - windowHeight / 2);
 
     // Create the separationLine2 from the bottom-right of the New Game button to the top-right of the New Game button
     sf::VertexArray separationLine1(sf::Lines, 2);
@@ -53,20 +51,21 @@ void ui::displayMenu() {
 
     // Create new game button text
     sf::String newGameString = options.getLanguage()[0];
-    sf::Text newGameText(newGameString, font, 20);
+    sf::Text newGameText(newGameString, font, options.widthScaling(26));
     newGameText.setFillColor(sf::Color(235, 70, 60));
-    newGameText.setPosition(settingsbutton.getPosition().x, settingsbutton.getPosition().y + 20);
+    newGameText.setPosition(newGameButton.getPosition().x + (newGameText.getLocalBounds().width / 4), newGameButton.getPosition().y + newGameText.getLocalBounds().height * 1.5);
     // Create settings button text
     sf::String settingsString = options.getLanguage()[1];
-    sf::Text settingsText(settingsString, font, 20);
+    sf::Text settingsText(settingsString, font, options.widthScaling(26));
     settingsText.setFillColor(sf::Color(235, 70, 60));
-    settingsText.setPosition(quitButton.getPosition().x + 5, quitButton.getPosition().y + 20);
+    settingsText.setPosition(settingsbutton.getPosition().x + (settingsText.getLocalBounds().width / 4), settingsbutton.getPosition().y + settingsText.getLocalBounds().height * 1.5);
     // Create quit button text
     sf::String quitString = options.getLanguage()[2];
-    sf::Text quitText(quitString, font, 20);
+    sf::Text quitText(quitString, font, options.widthScaling(26));
     quitText.setFillColor(sf::Color(235, 70, 60));
-    quitText.setPosition(quitButton.getPosition().x + (windowWidth / 5.f) + 20, newGameButton.getPosition().y + 20);
+    quitText.setPosition(quitButton.getPosition().x + (quitText.getLocalBounds().width), settingsbutton.getPosition().y + settingsText.getLocalBounds().height * 1.5);
 
+    // set up background image
     sf::Sprite background(backgroundImage);
     background.setTexture(backgroundImage);
     background.setScale(window.getSize().x / background.getLocalBounds().width, window.getSize().y / background.getLocalBounds().height);
@@ -183,13 +182,13 @@ void ui::_init() {
 }
 
 /** help create the button shapes on screen */
-sf::ConvexShape ui::createButtonShape(float windowWidth, float startX) {
+sf::ConvexShape ui::createButtonShape(float width, float height) {
     sf::ConvexShape parallelogram;
     parallelogram.setPointCount(4);
-    parallelogram.setPoint(0, sf::Vector2f(startX, 0.f));
-    parallelogram.setPoint(1, sf::Vector2f(startX + (windowWidth / 5.f), 0.f));
-    parallelogram.setPoint(2, sf::Vector2f(startX + (windowWidth / 5.f) - 50.f, 55.f));
-    parallelogram.setPoint(3, sf::Vector2f(startX - 50.f, 55.f));
+    parallelogram.setPoint(0, sf::Vector2f(0, 0));
+    parallelogram.setPoint(1, sf::Vector2f(width, 0));
+    parallelogram.setPoint(2, sf::Vector2f(width * 0.8f, height));
+    parallelogram.setPoint(3, sf::Vector2f(-width * 0.2f, height));
     parallelogram.setFillColor(sf::Color(54, 207, 213));
     return parallelogram;
 }
