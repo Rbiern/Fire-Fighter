@@ -17,7 +17,8 @@ void Bullet::update(const sf::Time& delta, const std::string& type) {
     }
 }
 
-void Bullet::draw(sf::RenderWindow& window) {
+void Bullet::draw(sf::RenderWindow& window, const std::string &type) {
+    loadTexture(type);
     window.draw(sprite);
 }
 
