@@ -40,13 +40,8 @@ void Barrier::shrink() {
 
 void Barrier::reset(const sf::Vector2u& resolution) {
 
-    // Calculate the ratio of the current resolution to the reference resolution
-    float widthRatio = resolution.x / referenceWidth;
-    float heightRatio = resolution.y / referenceHeight;
+    adjustForResolution(resolution);
 
-    size = 3.5f * std::min(widthRatio, heightRatio);
-    sf::Vector2f scale(size, size);
-    sprite.setScale(scale);
 }
 
 void Barrier::adjustForResolution(const sf::Vector2u& resolution) {
