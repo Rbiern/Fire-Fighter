@@ -576,6 +576,7 @@ bool game::gameOverScreen() {
 
                     if (resumeButton.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))) {
                         player->setLives(3);
+                        metrics.reset();
                         std::cout << "Retry Game button clicked!" << std::endl;
                         return false;
                     }
