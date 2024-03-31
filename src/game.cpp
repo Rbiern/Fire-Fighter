@@ -84,9 +84,8 @@ void game::gameLoop() {
         // when user presses exit, pop up window
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             if (options.toggleMusic()) music.stop();
-            bool flag = gameOverScreen();
-            if (!flag) restFlag = true;
-            window.close();
+            bool flag = handleExitRequest();
+            if (flag) window.close();
         }
         // when the game has ended
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
