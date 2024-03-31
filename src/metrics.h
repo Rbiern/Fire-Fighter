@@ -28,9 +28,11 @@ public:
     Metrics(sf::Vector2u windowSize, settings* opt);
     ~Metrics();
     void draw(sf::RenderTarget& target);
+    void drawFinalScore(sf::RenderTarget& target);
     void updateHealthbar(int lives);
     void setEnemyCount(int enemyCount);
     void increaseScore(int points);
+    void reset();
     int getScore() const;
 };
 
