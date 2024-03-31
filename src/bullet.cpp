@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Bullet.h"
+#include "bullet.h"
 
 Bullet::Bullet(float startX, float startY, const std::string& type) {
     loadTexture(type);
