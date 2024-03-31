@@ -132,6 +132,9 @@ void game::gameLoop() {
 
         Powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, enemyWave, metrics);
+        if (enemyWave.allEnemiesDead()) {
+            enemyWave.respawnEnemies(); // Respawn with increased speed
+        }
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
         enemyWave.update(deltaTime, metricsBarHeight);
