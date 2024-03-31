@@ -86,6 +86,16 @@ void Metrics::draw(sf::RenderTarget& target) {
     target.draw(enemiesRemainingText);
 }
 
+void Metrics::drawFinalScore(sf::RenderTarget& target) {
+    scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (scoreText.getLocalBounds().height * 5));
+    roundText.setPosition(((windowSize.x * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (roundText.getLocalBounds().height * 2));
+    enemyKilledText.setPosition(((windowSize.x * 0.5f) - (enemyKilledText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (enemyKilledText.getLocalBounds().height * 0.01));
+
+    target.draw(scoreText);
+    target.draw(roundText);
+    target.draw(enemyKilledText);
+}
+
 void Metrics::setEnemyCount(int enemyCount) {
     enemySum = enemyCount;
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemyCount));
@@ -94,13 +104,30 @@ void Metrics::setEnemyCount(int enemyCount) {
 void Metrics::increaseScore(int points) {
     score += points;
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
-    roundText.setString(options->getLanguage()[24]+ std::to_string(enemySum/ (score/10)));
+    roundText.setString(options->getLanguage()[24]+ std::to_string((score/points) / enemySum));
     enemyKilledText.setString(options->getLanguage()[23] + std::to_string(score/points));
-    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemySum--));
+    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string((score/points) % enemySum));
+}
+
+void Metrics::reset() {
+    float infoBarHeight = windowSize.y * 0.1f;
+    healthBar.setTexture(life3Texture);
+
+    scoreText.setString(options->getLanguage()[22] + std::to_string(score));
+    scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
+
+
+    enemyKilledText.setString(options->getLanguage()[23]+ std::to_string(score));
+    enemyKilledText.setPosition((((windowSize.x/2) * 0.6f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
+
+    roundText.setString(options->getLanguage()[24] + std::to_string(score));
+    roundText.setPosition((((windowSize.x/2) * 1.25f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
+
+    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
+    enemiesRemainingText.setPosition((((windowSize.x/2) * 1.7f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
+    score = 0;
 }
 
 int Metrics::getScore() const {
     return score;
 }
-
-
