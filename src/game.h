@@ -25,6 +25,7 @@ private:
     Player* player;
     Barrier* barrier;
     std::vector<Barrier> barriers;
+    EnemyWave* enemyWave;
 
 public:
     explicit game(settings *opt);
