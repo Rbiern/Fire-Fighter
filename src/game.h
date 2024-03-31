@@ -30,7 +30,7 @@ public:
     explicit game(settings *opt);
     ~game();
     void gameLoop();
-    char* characterSelectScreen(const Player* player);
+    char* characterSelectScreen();
     bool handleExitRequest();
     bool gameOverScreen();
 };
