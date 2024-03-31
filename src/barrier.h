@@ -4,51 +4,46 @@
 #include "entity.h"
 #include "enemy.h"
 #include "bullet.h"
+#include "settings.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
 class Barrier : public Entity {
 private:
     float size;
-//    float xPosition;
-//    float yPosition;
+    float barrierX;
+    float barrierY;
+    float scaleFactor;
     float barrierSpacing;
+    float minimumSize;
+    const float referenceWidth;
+    const float referenceHeight;
+    settings gameSettings;
+
+
 
 
 public:
-    Barrier(float startX, float startY, sf::RenderWindow& window, const sf::Vector2u& resolution);
-    bool enemyCollision(const Enemy& enemy) const;
+
+
+    Barrier(float barrierX, float barrierY, sf::RenderWindow& window, settings gameSettings);
+//    bool enemyCollision(const sf::Sprite& enemySprite) const;
     bool bulletCollision(const sf::Sprite& bulletSprite) const;
 
-    void shrink(const sf::Vector2u& resolution);
+    void shrink();
     void reset(const sf::Vector2u& resolution);
     void spawn(float newX, float newY);
     void draw(sf::RenderWindow& window);
+    float getBarrierSpacing();
     void adjustForResolution(const sf::Vector2u& resolution);
-    float adjustSpacingForResolution(const sf::Vector2u& resolution);
-    void setUpBarrier(sf::RenderWindow& window, const sf::Vector2u& resolution);
-    void updateBarrier(EnemyWave enemyWave, const sf::Vector2u& resolution);
+    void adjustSpacingForResolution(const sf::RenderWindow& window, const sf::Vector2u& resolution);
+//    void updateBarrier(EnemyWave enemyWave, const sf::Vector2u& resolution);
 
     std::vector<Barrier> barriers;
     sf::Vector2f getSize() const;
     sf::Vector2f getPosition() const;
 
     virtual ~Barrier();
-
 };
-
-//class BarrierWave {
-//private:
-//    int barrierRows;
-//    int barrierColumns;
-//    float size;
-//    float barrierSpacing;
-//    std::vector<std::vector<Barrier>> barriers;
-//public:
-//    BarrierWave(sf::RenderWindow& window, const sf::Vector2u& resolution);
-//    void adjustForResolution(const sf::Vector2u& resolution);
-//    float adjustSpacingForResolution(const sf::Vector2u& resolution);
-//    void draw(sf::RenderWindow& window);
-//};
 
 #endif //FIRE_FIGHTER_BARRIER_H
