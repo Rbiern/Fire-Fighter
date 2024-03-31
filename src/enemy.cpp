@@ -39,7 +39,7 @@ void Enemy::draw(sf::RenderWindow& window) {
     }
     // Draw enemy bullets on the screen
     for (auto& bullet : bullets) {
-        bullet.draw(window);
+        bullet.draw(window, "enemy");
     }
 }
 
