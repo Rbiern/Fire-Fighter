@@ -22,17 +22,17 @@ Metrics::Metrics(sf::Vector2u windowSize, settings* opt) : score(0), windowSize(
     scoreText.setString(opt->getLanguage()[22] + std::to_string(score));
     scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
 
-    roundText.setFont(font);
-    roundText.setCharacterSize(opt->heightScaling(30));
-    roundText.setFillColor(sf::Color::White);
-    roundText.setString(opt->getLanguage()[23]+ std::to_string(score));
-    roundText.setPosition((((windowSize.x/2) * 0.6f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
-
     enemyKilledText.setFont(font);
     enemyKilledText.setCharacterSize(opt->heightScaling(30));
     enemyKilledText.setFillColor(sf::Color::White);
-    enemyKilledText.setString(opt->getLanguage()[24] + std::to_string(score));
-    enemyKilledText.setPosition((((windowSize.x/2) * 1.25f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
+    enemyKilledText.setString(opt->getLanguage()[23]+ std::to_string(score));
+    enemyKilledText.setPosition((((windowSize.x/2) * 0.6f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
+
+    roundText.setFont(font);
+    roundText.setCharacterSize(opt->heightScaling(30));
+    roundText.setFillColor(sf::Color::White);
+    roundText.setString(opt->getLanguage()[24] + std::to_string(score));
+    roundText.setPosition((((windowSize.x/2) * 1.25f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
 
     enemiesRemainingText.setFont(font);
     enemiesRemainingText.setCharacterSize(opt->heightScaling(30));
@@ -94,8 +94,8 @@ void Metrics::setEnemyCount(int enemyCount) {
 void Metrics::increaseScore(int points) {
     score += points;
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
-    roundText.setString(options->getLanguage()[23]+ std::to_string(enemySum/ (score/10)));
-    enemyKilledText.setString(options->getLanguage()[24] + std::to_string(score/points));
+    roundText.setString(options->getLanguage()[24]+ std::to_string(enemySum/ (score/10)));
+    enemyKilledText.setString(options->getLanguage()[23] + std::to_string(score/points));
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemySum--));
 }
 
