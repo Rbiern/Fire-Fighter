@@ -22,16 +22,18 @@ public:
     const sf::Sprite &getSprite() const;
     void shoot(); // Function to make the enemy shoot
     std::vector<Bullet>& getBullets(); // Function to get the bullets shot by the enemy
+    void setIsAlive(bool alive); // Set alive status
+    void increaseSpeed(float factor); // Increase movement speed
 
 
 private:
     sf::Sprite sprite;
     sf::Texture texture;
-    std::vector<Bullet> bullets; // Store enemy bullets
+    std::vector<Bullet> bullets;
     float movementSpeed;
     unsigned int screenWidth;
     bool isAlive;
-    static int totalDeath; // Already correct
+    static int totalDeath;
 
 };
 
@@ -46,6 +48,9 @@ public:
     int getColumns() const;
     void adjustSpacingForResolution(const sf::Vector2u& resolution);
     sf::RenderWindow& window;
+    void respawnEnemies();
+    bool allEnemiesDead() const;
+
 
     //enemy count
     void enemyHit(int row, int column); // Method to call when an enemy is hit
