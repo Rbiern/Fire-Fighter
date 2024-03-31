@@ -23,6 +23,7 @@ private:
     Metrics metrics;
     powerup Powerup;
     Player* player;
+    Barrier* barrier;
     std::vector<Barrier> barriers;
 
 public:
