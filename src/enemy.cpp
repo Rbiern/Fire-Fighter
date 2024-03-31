@@ -177,3 +177,34 @@ std::vector<Bullet>& Enemy::getBullets() {
 const sf::Sprite& Enemy::getSprite() const {
     return sprite;
 }
+
+bool EnemyWave::allEnemiesDead() const {
+    for (const auto& row : enemyGrid) {
+        for (const auto& enemy : row) {
+            if (enemy.getIsAlive()) {
+                return false; // If any enemy is alive, return false
+            }
+        }
+    }
+    return true; // All enemies are dead
+}
+
+void EnemyWave::respawnEnemies() {
+    float speedIncreaseFactor = 2.0f; //enemy speed increase factor
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            float positionX = startX + j * spacingX;
+            float positionY = startY + i * spacingY;
+            enemyGrid[i][j].setPosition(positionX, positionY);
+            enemyGrid[i][j].setIsAlive(true);
+            enemyGrid[i][j].increaseSpeed(speedIncreaseFactor);
+        }
+    }
+}
+void Enemy::setIsAlive(bool alive) {
+    isAlive = alive;
+}
+
+void Enemy::increaseSpeed(float factor) {
+    movementSpeed *= factor;
+}
