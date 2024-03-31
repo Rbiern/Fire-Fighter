@@ -5,14 +5,10 @@ size(1.0f), scaleFactor(1.0f), referenceWidth(1280.0f), referenceHeight(720.0f),
     this->setTexture("../../resource/img/iceBlock.png");
     this->setPosition(barrierX, barrierY);
 
-    sf::Vector2u resolution = gameSettings.getVector();
+    resolution = gameSettings.getVector();
     adjustForResolution(resolution);
     adjustSpacingForResolution(window, resolution);
 }
-
-//bool Barrier::enemyCollision(const sf::Sprite& enemySprite) const {
-//    return sprite.getGlobalBounds().intersects(enemySprite.getGlobalBounds());
-//}
 
 bool Barrier::bulletCollision(const sf::Sprite& bulletSprite) const {
     return sprite.getGlobalBounds().intersects(bulletSprite.getGlobalBounds());
@@ -39,10 +35,16 @@ void Barrier::shrink() {
 }
 
 void Barrier::reset(const sf::Vector2u& resolution) {
-
     adjustForResolution(resolution);
-
 }
+
+//void Barrier::respawn(const sf::Vector2f& position, const sf::Vector2u& resolution) {
+//
+//    setPosition(position); // Set the position of the barrier
+//    reset(resolution); // Reset the barrier size based on the resolution
+//
+//}
+
 
 void Barrier::adjustForResolution(const sf::Vector2u& resolution) {
 
@@ -90,20 +92,6 @@ void Barrier::draw(sf::RenderWindow& window) {
 float Barrier::getBarrierSpacing() {
     return barrierSpacing;
 }
-
-//void Barrier::updateBarrier(EnemyWave enemyWave, const sf::Vector2u& resolution) {
-//    for (int i = 0; i < enemyWave.getRows(); ++i) {
-//        for (int j = 0; j < enemyWave.getColumns(); ++j) {
-//            Enemy &enemy = enemyWave.getEnemy(i, j);
-//            if (enemy.getIsAlive() && enemyCollision(enemy.getSprite())) {
-//                enemy.kill();
-//                enemyWave.removeEnemy(i,j);
-//                shrink(resolution);
-//                // also kill the enemy
-//            }
-//        }
-//    }
-//}
 
 sf::Vector2f Barrier::getSize() const {
     return sprite.getGlobalBounds().getSize();
