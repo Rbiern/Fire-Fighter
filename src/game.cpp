@@ -168,7 +168,7 @@ void game::gameLoop() {
                     if (!bulletRemoved) {
                         for (auto& barrier : barriers) {
                             if (barrier.bulletCollision(bulletIt->getSprite())) {
-                                barrier.shrink(resolution);
+                                barrier.shrink();
                                 bulletIt = bullets.erase(bulletIt);
                                 bulletRemoved = true;
                                 break;
@@ -192,7 +192,7 @@ void game::gameLoop() {
                 }
             }
         }
-        
+
 //        /** when enemy collides barrier, the barrier shrinks */
 //        for (auto& barrier : barriers) {
 //            barrier.updateBarrier(enemyWave, resolution);
