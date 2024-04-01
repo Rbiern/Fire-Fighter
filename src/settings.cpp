@@ -443,6 +443,14 @@ sf::Vector2u settings::getVector() {
     return vector;
 }
 
+void settings::userScreenInfo(int x, int y) {
+    if (resolution[0] != x && resolution[1] != y) {
+        res.uniqueRes[0] = x;
+        res.uniqueRes[1] = y;
+        resolution = res.uniqueRes;
+    }
+}
+
 /** Helper method for checking if the parallelogram button is pressed */
 bool settings::isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
