@@ -85,7 +85,10 @@ float Player::getSpeed() const {
  * @return true if player collide with enemy
  */
 bool Player::isCollidingWithEnemy(const sf::Sprite& enemySprite) const {
-    return sprite.getGlobalBounds().intersects(enemySprite.getGlobalBounds());
+    // Check if the x positions overlap
+    return playerBounds.left < enemyBounds.left + enemyBounds.width &&
+           playerBounds.left + playerBounds.width > enemyBounds.left;
+
 }
 /**
  * get size of player's bulletSprite
