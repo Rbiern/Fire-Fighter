@@ -1,7 +1,7 @@
 #include "settings.h"
 
 /** constructor */
-settings::settings() {
+Settings::Settings() {
     std::ifstream file("../../config/settings.txt");             // Open the file
     char idx = 0;
     if (!file.is_open()) {
@@ -43,10 +43,10 @@ settings::settings() {
 }
 
 /** destructor */
-settings::~settings() = default;
+Settings::~Settings() = default;
 
 /** main settings window loop */
-void settings::openSettings() {
+void Settings::openSettings() {
     // Create the window
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(fullscreen ? fullScreenMode : sf::VideoMode(resolution[0], resolution[1]), "Fire Fighter", fullscreen || resolution[0] >= fullScreenMode.width ? sf::Style::Fullscreen : sf::Style::Default);
@@ -400,48 +400,48 @@ void settings::openSettings() {
     }
 }
 
-int *settings::getResolution() {
+int *Settings::getResolution() {
     return resolution;
 }
 
-sf::String * settings::getLanguage() {
+sf::String * Settings::getLanguage() {
     return language;
 }
 
-bool settings::toggleMusic() const {
+bool Settings::toggleMusic() const {
     return music;
 }
 
-bool settings::isFullScreen() const {
+bool Settings::isFullScreen() const {
     return fullscreen;
 }
 
-sf::Font settings::getFont() {
+sf::Font Settings::getFont() {
     return font;
 }
 
-sf::Image settings::getIcon() {
+sf::Image Settings::getIcon() {
     return icon;
 }
 
-bool settings::toggleSounds() const {
+bool Settings::toggleSounds() const {
     return soundEffects;
 }
 
-float settings::widthScaling(float x) {
+float Settings::widthScaling(float x) {
     return x * ((float)resolution[0]/1280.f);
 }
 
-float settings::heightScaling(float y) {
+float Settings::heightScaling(float y) {
     return y * ((float)resolution[1]/720.f);
 }
 
-sf::Vector2u settings::getVector() {
+sf::Vector2u Settings::getVector() {
     sf::Vector2u vector(resolution[0], resolution[1]);
     return vector;
 }
 
-void settings::userScreenInfo(int x, int y) {
+void Settings::userScreenInfo(int x, int y) {
     if (resolution[0] != x && resolution[1] != y) {
         res.uniqueRes[0] = x;
         res.uniqueRes[1] = y;
@@ -450,19 +450,19 @@ void settings::userScreenInfo(int x, int y) {
 }
 
 /** Helper method for checking if the parallelogram button is pressed */
-bool settings::isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
+bool Settings::isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
     return buttonBounds.contains(mousePosition);
 }
 
 /** Helper method for checking if the rectangle button is pressed */
-bool settings::isButtonPressed(const sf::RectangleShape& button, const sf::Vector2f& mousePosition) {
+bool Settings::isButtonPressed(const sf::RectangleShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
     return buttonBounds.contains(mousePosition);
 }
 
 /** Helper method to create a parallelogram shape */
-sf::ConvexShape settings::createParallelogram(float width, float height) {
+sf::ConvexShape Settings::createParallelogram(float width, float height) {
     sf::ConvexShape parallelogram;
     parallelogram.setPointCount(4);
     parallelogram.setPoint(0, sf::Vector2f(0, 0));
@@ -476,7 +476,7 @@ sf::ConvexShape settings::createParallelogram(float width, float height) {
 }
 
 /** Helper method to create a rectangle shape */
-sf::RectangleShape settings::createRectangle(float width, float height) {
+sf::RectangleShape Settings::createRectangle(float width, float height) {
     sf::RectangleShape button(sf::Vector2f(width, height));
     button.setFillColor(sf::Color(54, 207, 213));
     button.setOutlineThickness(2);
