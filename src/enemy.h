@@ -24,7 +24,7 @@ public:
     std::vector<Bullet>& getBullets(); // Function to get the bullets shot by the enemy
     void setIsAlive(bool alive); // Set alive status
     void increaseSpeed(float factor); // Increase movement speed
-
+    bool hasMovedRight = false;
 
 private:
     sf::Sprite sprite;
@@ -50,7 +50,6 @@ public:
     sf::RenderWindow& window;
     void respawnEnemies();
     bool allEnemiesDead() const;
-
 
     //enemy count
     void enemyHit(int row, int column); // Method to call when an enemy is hit
