@@ -4,7 +4,7 @@
  * Constructor of a Barrier object.
  * @param gameSettings The game settings that are set by the user.
  */
-Barrier::Barrier(settings gameSettings) {
+Barrier::Barrier(Settings gameSettings) {
     // Set default size
     size = 1.0f;
 
