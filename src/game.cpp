@@ -18,7 +18,7 @@ game::game(settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barr
     window.setFramerateLimit(60);
 
     player = new Player(resolution.x * 0.93f ,resolution.y / 2,resolution);
-    enemyWave = new EnemyWave(window, sf::Vector2u(800, 600), 100.0f);
+    enemyWave = new EnemyWave(window, options.getVector(), options.getVector().y *0.1f);
 }
 
 /** destructor */
@@ -52,8 +52,7 @@ void game::gameLoop() {
 
     //set up enemy
     float metricsBarHeight = 100.0f;                                // Example height, adjust as needed
-    EnemyWave enemyWave(window, resolution, metricsBarHeight);
-    metrics.setEnemyCount(enemyWave.getTotalSpawned());             // setup metrics bar on top of the window
+    metrics.setEnemyCount(enemyWave->getTotalSpawned());             // setup metrics bar on top of the window
 
     sf::Clock shootCooldown;                                        // for shooting cool down
     bool canShoot = true;
@@ -133,22 +132,22 @@ void game::gameLoop() {
         }
 
         // Update enemy movement and shooting
-        for (int i = 0; i < enemyWave.getRows(); ++i) {
-            for (int j = 0; j < enemyWave.getColumns(); ++j) {
-                enemyWave.getEnemy(i, j).update(deltaTime);
+        for (int i = 0; i < enemyWave->getRows(); ++i) {
+            for (int j = 0; j < enemyWave->getColumns(); ++j) {
+                enemyWave->getEnemy(i, j).update(deltaTime);
 
                 // Check if the enemy has no other enemy on its right
-                bool hasEnemyOnRight = (j < enemyWave.getColumns() - 1) && enemyWave.getEnemy(i, j+1).getIsAlive();
+                bool hasEnemyOnRight = (j < enemyWave->getColumns() - 1) && enemyWave->getEnemy(i, j+1).getIsAlive();
 
                 // Get a random shoot interval between 1 and 3 seconds
-                static std::vector<sf::Clock> enemyShootClocks(enemyWave.getRows()); // Static to persist between frames
+                static std::vector<sf::Clock> enemyShootClocks(enemyWave->getRows()); // Static to persist between frames
                 static std::random_device rd;
                 static std::mt19937 gen(rd());
                 static std::uniform_int_distribution<> dis(2, 13);
 
                 // Check if enough time has passed since the last shot for this enemy
-                if (!hasEnemyOnRight && enemyShootClocks[i].getElapsedTime().asSeconds() >= dis(gen) &&  enemyWave.getEnemy(i, j).getIsAlive() ) {
-                    enemyWave.getEnemy(i, j).shoot();
+                if (!hasEnemyOnRight && enemyShootClocks[i].getElapsedTime().asSeconds() >= dis(gen) &&  enemyWave->getEnemy(i, j).getIsAlive() ) {
+                    enemyWave->getEnemy(i, j).shoot();
                     enemyShootClocks[i].restart(); // Reset the shoot timer
                 }
             }
@@ -158,18 +157,18 @@ void game::gameLoop() {
         metrics.updateHealthbar(lives);
 
         powerup.update(deltaTime, player, window);
-        player->updateBullets(deltaTime, enemyWave, metrics);
-        if (enemyWave.allEnemiesDead()) {
-            enemyWave.respawnEnemies(); // Respawn with increased speed
+        player->updateBullets(deltaTime, *enemyWave, metrics);
+        if (enemyWave->allEnemiesDead()) {
+            enemyWave->respawnEnemies(); // Respawn with increased speed
         }
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
-        enemyWave.update(deltaTime, metricsBarHeight);
+        enemyWave->update(deltaTime, metricsBarHeight);
 
         //check enemy's bullet collide with player
-        for (int i = 0; i < enemyWave.getRows(); ++i) {
-            for (int j = 0; j < enemyWave.getColumns(); ++j) {
-                Enemy &enemy = enemyWave.getEnemy(i, j);
+        for (int i = 0; i < enemyWave->getRows(); ++i) {
+            for (int j = 0; j < enemyWave->getColumns(); ++j) {
+                Enemy &enemy = enemyWave->getEnemy(i, j);
                 auto& bullets = enemy.getBullets();
                 auto bulletIt = bullets.begin();
                 while (bulletIt != bullets.end()) {
@@ -259,14 +258,14 @@ void game::gameLoop() {
         player->updateBarrier(deltaTime, barrier1);
         player->updateBarrier(deltaTime, barrier2);
         player->updateBarrier(deltaTime, barrier3);
-        enemyWave.draw(window);
+        enemyWave->draw(window);
         /** end of enemy stuff */
 
         window.clear();
         player->draw(window);
         powerup.draw(window,player);
         player->drawBullets(window);
-        enemyWave.draw(window);
+        enemyWave->draw(window);
         barrier1.draw(window);
         barrier2.draw(window);
         barrier3.draw(window);
