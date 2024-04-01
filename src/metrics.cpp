@@ -1,5 +1,10 @@
 #include "metrics.h"
 
+/**
+ * Constructor of Metrics.
+ * @param windowSize The size of the game window.
+ * @param opt Optional settings for customizing the Metrics object.
+ */
 Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(windowSize) {
     // Calculate the infoBar height as 10% of the window's height
     float infoBarHeight = windowSize.y * 0.1f;
@@ -18,43 +23,50 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
     infoBar.setFillColor(sf::Color(100, 100, 100)); // Set the infoBar to be blue
     infoBar.setPosition(0, 0); // Set the position to the top-left corner
 
+    // Create a separation line below the infoBar
     separationLine.setSize(sf::Vector2f(windowSize.x, 2));
     separationLine.setFillColor(sf::Color::White);
     separationLine.setPosition(0, infoBarHeight - 3);
 
-    options = opt;
-    font = opt->getFont();
+    options = opt; // Assign optional settings
+    font = opt->getFont(); // Get font from settings
 
+    // Initialize and position the score text
     scoreText.setFont(font);
     scoreText.setCharacterSize(opt->heightScaling(20));
     scoreText.setFillColor(sf::Color::White);
     scoreText.setString(opt->getLanguage()[22] + std::to_string(score));
     scoreText.setPosition(((windowSize.x * 0.3f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
 
+    // Initialize and position the enemy killed text
     enemyKilledText.setFont(font);
     enemyKilledText.setCharacterSize(opt->heightScaling(20));
     enemyKilledText.setFillColor(sf::Color::White);
     enemyKilledText.setString(opt->getLanguage()[23]+ std::to_string(score));
     enemyKilledText.setPosition((((windowSize.x) * 0.4f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
-
+    
+    // Initialize and position the round text
     roundText.setFont(font);
     roundText.setCharacterSize(opt->heightScaling(20));
     roundText.setFillColor(sf::Color::White);
     roundText.setString(opt->getLanguage()[24] + std::to_string(score));
     roundText.setPosition((((windowSize.x) * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
 
+    // Initialize and position the enemies remaining text
     enemiesRemainingText.setFont(font);
     enemiesRemainingText.setCharacterSize(opt->heightScaling(20));
     enemiesRemainingText.setFillColor(sf::Color::White);
     enemiesRemainingText.setString(opt->getLanguage()[25] + std::to_string(score));
     enemiesRemainingText.setPosition((((windowSize.x) * 0.65f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 
+    // Initialize and position the highest score text
     highestScoreText.setFont(font);
     highestScoreText.setCharacterSize(opt->heightScaling(20));
     highestScoreText.setFillColor(sf::Color::White);
     highestScoreText.setString("Highest Score" + std::to_string(score));
     highestScoreText.setPosition((((windowSize.x) * 0.8f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
     
+    // Load life counter textures and set up health bar sprite
     if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
         !life2Texture.loadFromFile("../../resource/img/2.png") ||
         !life1Texture.loadFromFile("../../resource/img/1.png") ||
@@ -67,8 +79,15 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
     healthBar.setPosition(windowSize.x * 0.03, (infoBarHeight/2) - (life3Texture.getSize().y / 2));
 }
 
+/**
+ * Destructor of metrics.
+ */
 Metrics::~Metrics() = default;
 
+/**
+ * Update the health bar based on the player's remaining lives.
+ * @param lives The number of lives remaining for the player.
+ */
 void Metrics::updateHealthbar(int lives){
     switch (lives) {
         case 3:
@@ -88,6 +107,10 @@ void Metrics::updateHealthbar(int lives){
     }
 }
 
+/**
+ * Draw the metrics elements on the specified render target.
+ * @param window The render target (SFML RenderTarget) to draw the metrics elements on.
+ */
 void Metrics::draw(sf::RenderTarget& window) {
     window.draw(infoBar);
     window.draw(separationLine);
@@ -99,22 +122,36 @@ void Metrics::draw(sf::RenderTarget& window) {
     window.draw(highestScoreText);
 }
 
+/**
+ * Draw the final score elements on the specified render target.
+ * @param window The render target (SFML RenderTarget) to draw the final score elements on.
+ */
 void Metrics::drawFinalScore(sf::RenderTarget& window) {
+    // Position the score text, roundtext, enemy killed text, and highest score text
     scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (scoreText.getLocalBounds().height * 5));
     roundText.setPosition(((windowSize.x * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (roundText.getLocalBounds().height * 3));
     enemyKilledText.setPosition(((windowSize.x * 0.5f) - (enemyKilledText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (enemyKilledText.getLocalBounds().height * 6));
     highestScoreText.setPosition(((windowSize.x * 0.5f) - (highestScoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (highestScoreText.getLocalBounds().height * 1));
+
     window.draw(scoreText);
     window.draw(roundText);
     window.draw(enemyKilledText);
     window.draw(highestScoreText);
 }
 
+/**
+ * Set the count of remaining enemies and updates the corresponding text.
+ * @param enemyCount The count of remaining enemies.
+ */
 void Metrics::setEnemyCount(int enemyCount) {
     enemySum = enemyCount;
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemyCount));
 }
 
+/**
+ * Increases the score by the specified points and updates the corresponding texts.
+ * @param points The points to be added to the score.
+ */
 void Metrics::increaseScore(int points) {
     score += points;
     updateHighestScore();
@@ -140,12 +177,18 @@ void Metrics::updateHighestScore() {
         }
     }
 }
-
+/**
+ * Return the highest score.
+ * @return highestScore The current highest score.
+ */
 int Metrics::getHighestScore() const {
     // Simply return the highest score
     return highestScore;
 }
 
+/**
+ * Resets the metrics to their default state.
+ */
 void Metrics::reset() {
     score = 0;
     float infoBarHeight = windowSize.y * 0.1f;
@@ -168,6 +211,10 @@ void Metrics::reset() {
     
 }
 
+/**
+ * Calculate the current stage based on the score and number of enemies.
+ * @return The current stage number.
+ */
 int Metrics::getStage() {
     return (score/10) / enemySum + 1;
 }
