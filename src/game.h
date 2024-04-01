@@ -10,6 +10,7 @@
 #include "powerup.h"
 #include "barrier.h"
 #include "metrics.h"
+#include "enemywave.h"
 
 class game {
 private:
