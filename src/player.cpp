@@ -15,7 +15,7 @@ Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Ent
         std::cerr << "Shoot sound could not be loaded" << std::endl;
     }
     shootSound.setBuffer(shootBuffer);
-    options = new settings();
+    options = new Settings();
     lives = 3;
 
     sprite.setScale(options->widthScaling(1.5f), options->heightScaling(1.5f));
