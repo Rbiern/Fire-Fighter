@@ -1,6 +1,8 @@
 /**
  * @file Barrier.h
  * @brief Declaration of the Barrier class.
+ * 
+ * This file contains the declaration of the Barrier class, which represents a barrier object in the game.
  */
 
 #ifndef FIRE_FIGHTER_BARRIER_H
@@ -16,7 +18,9 @@
  * @class Barrier
  * @brief Represents a barrier object in the game.
  *
- * The Barrier class is responsible for
+ * The Barrier class is responsible for managing the properties and behavior of a barrier object
+ * within the game environment. Barriers are typically used to provide protection or obstacles
+ * for the player or other game elements.
  */
 class Barrier {
 
