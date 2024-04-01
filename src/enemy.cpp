@@ -9,6 +9,9 @@ Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vec
     adjustForResolution(resolution);
     res1.x = resolution.x;
     res1.y = resolution.y;
+
+sprite.setScale(1.f * ((float)resolution.x/1280.f), 1.f * ((float)resolution.y/720.f));
+    movementSpeed *= (1.0f * ((float)resolution.x/1280.f));
 }
 
 int Enemy::totalDeath = 0;
@@ -58,28 +61,7 @@ sf::Vector2f Enemy::getPosition() const {
 void Enemy::setPosition(float x, float y) {
     sprite.setPosition(x, y);
 }
-void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
-    float scale = 1.0f;
-    float speedScale = 1.0f;
 
-    if (resolution == sf::Vector2u(640, 360)) {
-        scale = 0.3f;
-        speedScale = 0.5f;
-    } else if (resolution == sf::Vector2u(1280, 720)) {
-        scale = 1.0f;
-        speedScale = 1.5f;
-    } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 1.5f;
-        speedScale = 1.75f;
-    } else if (resolution == sf::Vector2u(3840, 2160)) {
-        scale = 2.0f;
-        speedScale = 2.0f;
-    }
-
-    sprite.setScale(scale, scale);
-
-    movementSpeed *= speedScale;
-}
 sf::FloatRect Enemy::getGlobalBounds() const {
     return sprite.getGlobalBounds();
 }
