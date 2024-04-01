@@ -1,40 +1,43 @@
-#include "barrier.h"
+#include "bullet.h"
 
-Barrier::Barrier(settings gameSettings) {
-    size = 1.0f;
-    if (!iceBlockTexture.loadFromFile("../../resource/img/iceBlock.png")) {
-        std::cerr << "Failed to load background image!" << std::endl;
+Bullet::Bullet(float startX, float startY, const std::string& type, sf::Vector2u res) {
+    loadTexture(type);
+    bulletSprite.setTexture(bulletTexture);
+    bulletSprite.setPosition(startX, startY);
+    bulletSprite.setScale(0.5f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
+    speed = 300.f;
+}
+
+Bullet::~Bullet() = default;
+
+void Bullet::update(const sf::Time& delta, const std::string& type) {
+    if (type == "enemy"){
+        bulletSprite.move(speed * delta.asSeconds(), 0);
     }
-    iceBlockSprite.setTexture(iceBlockTexture);
-    iceBlockSprite.setScale(gameSettings.widthScaling(1.5), gameSettings.heightScaling(1.5));
-}
-
-Barrier::~Barrier() = default;
-
-void Barrier::setPosition(int posX, int posY) {
-    iceBlockSprite.setPosition(posX, posY);
-}
-
-bool Barrier::bulletCollision(const sf::Sprite& bulletSprite) const {
-    return iceBlockSprite.getGlobalBounds().intersects(bulletSprite.getGlobalBounds());
-}
-
-void Barrier::shrink() {
-    // Apply the scaling factor to the size
-    size -= 0.35f;
-    // Ensure size doesn't go below a certain minimum value
-    if (size < 0.29f) {
-        size = 0.f;  // barrier disappears
+    else if(type == "player"){
+        bulletSprite.move(-speed * delta.asSeconds(), 0);
     }
-    // Resize the barrier sprite
-    iceBlockSprite.setScale(gameSettings.widthScaling(1.5) * size, gameSettings.heightScaling(1.5) * size);
 }
 
-void Barrier::reset() {
-    size = 1.0f;
-    iceBlockSprite.setScale(gameSettings.widthScaling(1.4), gameSettings.heightScaling(1.4));
+void Bullet::draw(sf::RenderWindow& window, const std::string &type) {
+    loadTexture(type);
+    window.draw(bulletSprite);
 }
 
-void Barrier::draw(sf::RenderWindow& window) {
-    window.draw(iceBlockSprite);
+sf::FloatRect Bullet::getGlobalBounds() const {
+    return bulletSprite.getGlobalBounds();
+}
+
+const sf::Sprite& Bullet::getSprite() const {
+    return bulletSprite;
+}
+
+void Bullet::loadTexture(const std::string &type) {
+    if (type =="player" && !bulletTexture.loadFromFile("../../resource/img/water-bullet.png")) {
+        std::cerr << "Failed to load player's bullet texture" << std::endl;
+    }
+    else if(type =="enemy" && !bulletTexture.loadFromFile("../../resource/img/fireball.png")) {
+        std::cerr << "Failed to load enemy's bullet texture" << std::endl;
+    }
+    bulletSprite.setTexture(bulletTexture);
 }
