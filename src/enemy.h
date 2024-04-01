@@ -1,9 +1,10 @@
-// Enemy.h
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
 #include "bullet.h"
+#include <cmath>
+#include <iostream>
 
 class Enemy {
 public:
