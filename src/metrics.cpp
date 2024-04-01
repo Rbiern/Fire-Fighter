@@ -40,7 +40,6 @@ Metrics::Metrics(sf::Vector2u windowSize, settings* opt) : score(0), windowSize(
     enemiesRemainingText.setString(opt->getLanguage()[25] + std::to_string(score));
     enemiesRemainingText.setPosition((((windowSize.x/2) * 1.7f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 
-
     if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
         !life2Texture.loadFromFile("../../resource/img/2.png") ||
         !life1Texture.loadFromFile("../../resource/img/1.png") ||
@@ -53,9 +52,7 @@ Metrics::Metrics(sf::Vector2u windowSize, settings* opt) : score(0), windowSize(
     healthBar.setPosition(windowSize.x * 0.03, (infoBarHeight/2) - (life3Texture.getSize().y / 2));
 }
 
-Metrics::~Metrics() {
-
-}
+Metrics::~Metrics() = default;
 
 void Metrics::updateHealthbar(int lives){
     switch (lives) {
@@ -76,24 +73,23 @@ void Metrics::updateHealthbar(int lives){
     }
 }
 
-void Metrics::draw(sf::RenderTarget& target) {
-    target.draw(infoBar);
-    target.draw(separationLine);
-    target.draw(scoreText);
-    target.draw(roundText);
-    target.draw(healthBar);
-    target.draw(enemyKilledText);
-    target.draw(enemiesRemainingText);
+void Metrics::draw(sf::RenderTarget& window) {
+    window.draw(infoBar);
+    window.draw(separationLine);
+    window.draw(scoreText);
+    window.draw(roundText);
+    window.draw(healthBar);
+    window.draw(enemyKilledText);
+    window.draw(enemiesRemainingText);
 }
 
-void Metrics::drawFinalScore(sf::RenderTarget& target) {
+void Metrics::drawFinalScore(sf::RenderTarget& window) {
     scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (scoreText.getLocalBounds().height * 5));
     roundText.setPosition(((windowSize.x * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (roundText.getLocalBounds().height * 2));
     enemyKilledText.setPosition(((windowSize.x * 0.5f) - (enemyKilledText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (enemyKilledText.getLocalBounds().height * 0.01));
-
-    target.draw(scoreText);
-    target.draw(roundText);
-    target.draw(enemyKilledText);
+    window.draw(scoreText);
+    window.draw(roundText);
+    window.draw(enemyKilledText);
 }
 
 void Metrics::setEnemyCount(int enemyCount) {
@@ -103,7 +99,6 @@ void Metrics::setEnemyCount(int enemyCount) {
 
 void Metrics::increaseScore(int points) {
     score += points;
-    int tmp = enemySum;
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
     roundText.setString(options->getLanguage()[24]+ std::to_string((score/points) / enemySum));
     enemyKilledText.setString(options->getLanguage()[23] + std::to_string(score/points));
@@ -118,7 +113,6 @@ void Metrics::reset() {
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
     scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
 
-
     enemyKilledText.setString(options->getLanguage()[23]+ std::to_string(score));
     enemyKilledText.setPosition((((windowSize.x/2) * 0.6f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
 
@@ -127,9 +121,4 @@ void Metrics::reset() {
 
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
     enemiesRemainingText.setPosition((((windowSize.x/2) * 1.7f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
-
-}
-
-int Metrics::getScore() const {
-    return score;
 }
