@@ -2,11 +2,15 @@
 #define FIRE_FIGHTER_ENTITY_H
 
 #include <SFML/Graphics.hpp>
+#include "bullet.h"
+
 
 class Entity {
 protected:
     sf::Sprite sprite;
     sf::Texture texture;
+    std::vector<Bullet>  bullet;
+
 
 public:
     Entity();
