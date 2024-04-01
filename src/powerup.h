@@ -24,6 +24,8 @@ public:
     void update(const sf::Time& delta, Player* player, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window, Player* player);
     void adjustForResolution(const sf::Vector2u& resolution);
+    sf::Time timeSinceLivesLessThanThree;
+    int appearanceDelay;
 };
 
 #endif //FIRE_FIGHTER_POWERUP_H
