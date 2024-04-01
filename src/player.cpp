@@ -125,6 +125,7 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics&
                 }
             }
         }
+        //If bullet did not intersect with enemy, then move on to next bullet that player created
         if (!bulletRemoved) {
             ++bulletIt;
         }
