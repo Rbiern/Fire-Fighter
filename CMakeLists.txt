@@ -32,7 +32,9 @@ add_executable(CMakeSFMLProject
         "src/powerup.cpp"
         "src/powerup.h"
         "src/barrier.cpp"
-        "src/barrier.h")
+        "src/barrier.h"
+        "src/enemywave.cpp"
+        "src/enemywave.h")
 
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-audio)
 target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
