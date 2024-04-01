@@ -1,3 +1,8 @@
+/**
+ * @file Barrier.h
+ * @brief Declaration of the Barrier class.
+ */
+
 #ifndef FIRE_FIGHTER_BARRIER_H
 #define FIRE_FIGHTER_BARRIER_H
 
@@ -7,7 +12,78 @@
 #include "bullet.h"
 #include "settings.h"
 
+/**
+ * @class Barrier
+ * @brief Represents a barrier object in the game.
+ *
+ * The Barrier class is responsible for
+ */
 class Barrier {
+
+public:
+    /**
+     * @brief Constructs a Barrier object with given game settings.
+     *
+     * Initializes a Barrier object with default size and loads necessary resources such as textures and sound effects.
+     * The size of the Barrier is set to 1.0f by default.
+     *
+     * @param gameSettings the game settings set by the user.
+     */
+    explicit Barrier(settings gameSettings);
+
+    /**
+     * @brief Destructs a Barrier object.
+     */
+    virtual ~Barrier();
+
+    /**
+     * @brief Sets the position of the Barrier object.
+     *
+     * This function sets the position of the Barrier object by updating the position of its barrier sprite.
+     *
+     * @param posX The x-coordinate of the new position.
+     * @param posY The y-coordinate of the new position.
+     */
+    void setPosition(int posX, int posY);
+
+    /**
+     * @brief Checks for collision between the Barrier and a bullet.
+     *
+     * This function determines whether there is a collision between the Barrier and a bullet sprite.
+     * It uses the global bounding boxes of the Barrier and the bullet sprite to check for intersection.
+     *
+     * @param bulletSprite The sprite representing the bullet.
+     * @return True if there is a collision, false otherwise.
+     */
+    bool bulletCollision(const sf::Sprite& bulletSprite) const;
+
+    /**
+     * @brief Shrinks the Barrier object.
+     *
+     * This function decreases the size of the Barrier object and updates its graphical representation accordingly.
+     * If sound effect is enabled in the game settings, it plays a sound effect indicating the shrinking action.
+     * The size is reduced by a fixed scaling factor, and it is ensured that the size doesn't go below a minimum value,
+     * effectively causing the barrier to disappear when it reaches a certain size threshold.
+     */
+    void shrink();
+
+    /**
+     * @brief Resets the Barrier object to its default state.
+     *
+     * This function resets the Barrier object to its default state by setting its size back to 1.0f
+     * and scaling the barrier sprite based on the resolution from the game settings.
+     */
+    void reset();
+
+    /**
+     * @brief Draws the Barrier object.
+     *
+     * This function draws the Barrier object on the specified SFML render window.
+     *
+     * @param window The SFML render window on which to draw the Barrier.
+     */
+    void draw(sf::RenderWindow& window);
+
 private:
     settings gameSettings;
     sf::Texture iceBlockTexture;
@@ -16,14 +92,6 @@ private:
     sf::SoundBuffer shrinkBuffer;
     sf::Sound shrinkSound;
 
-public:
-    explicit Barrier(settings gameSettings);
-    virtual ~Barrier();
-    void setPosition(int posX, int posY);
-    bool bulletCollision(const sf::Sprite& bulletSprite) const;
-    void shrink();
-    void reset();
-    void draw(sf::RenderWindow& window);
 };
 
 #endif //FIRE_FIGHTER_BARRIER_H
