@@ -5,7 +5,6 @@ Powerup::Powerup() {
         std::cerr << "Failed to load powerup texture" << std::endl;
     }
     sprite.setTexture(texture);
-    resolution = gameSettings.getVector();
     sprite.setScale(gameSettings.widthScaling(1.f), gameSettings.heightScaling(1.f));
     reset();
 }
