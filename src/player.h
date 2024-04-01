@@ -139,17 +139,12 @@ private:
     std::vector<Bullet> bullets; ///< Container for bullets fired by the player.
     settings *options; ///< Pointer to game settings, used for sound toggling.
 
-    /**
-     * @brief Sets the scale factor for the player's bulletSprite.
-     * @param scaleFactor The factor by which to scale the bulletSprite.
-     */
-    void setScale(float scaleFactor);
+//    /**
+//     * @brief Sets the scale factor for the player's bulletSprite.
+//     * @param scaleFactor The factor by which to scale the bulletSprite.
+//     */
+//    void setScale(float scaleFactor);
 
-    /**
-     * @brief Adjusts the player's bulletSprite and speed based on the game's resolution.
-     * @param resolution The current game screen resolution.
-     */
-    void adjustForResolution(const sf::Vector2u &resolution);
 };
 
 #endif //FIRE_FIGHTER_PLAYER_H
