@@ -122,3 +122,7 @@ void Metrics::reset() {
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
     enemiesRemainingText.setPosition((((windowSize.x/2) * 1.7f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 }
+
+int Metrics::getStage() {
+    return (score/10) / enemySum;
+}
