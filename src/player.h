@@ -1,10 +1,8 @@
 #ifndef FIRE_FIGHTER_PLAYER_H
 #define FIRE_FIGHTER_PLAYER_H
 
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include "entity.h"
-#include "bullet.h"
 #include <SFML/Audio.hpp>
 #include "settings.h"
 #include "barrier.h"
@@ -140,7 +138,7 @@ private:
     int lives; ///< The number of lives the player has.
     sf::SoundBuffer shootBuffer; ///< Buffer for the shooting sound effect.
     sf::Sound shootSound; ///< Sound effect for shooting.
-    std::vector<Bullet> bullets; ///< Container for bullets fired by the player.
+//    std::vector<Bullet> bullets; ///< Container for bullets fired by the player.
     Settings *options; ///< Pointer to game settings, used for sound toggling.
 };
 
