@@ -23,8 +23,17 @@ game::game(settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barr
 
 /** destructor */
 game::~game() {
-    delete player;
-    delete enemyWave;
+    if (window.isOpen()) {
+        window.close();
+    }
+    if (player != nullptr) {
+        delete player;
+        player = nullptr;
+    }
+    if (enemyWave != nullptr) {
+        delete enemyWave;
+        enemyWave = nullptr;
+    }
 }
 
 /** run game method */
