@@ -1,6 +1,6 @@
 #include "powerup.h"
 
-powerup::powerup() {
+Powerup::Powerup() {
     if (!texture.loadFromFile("../../resource/img/life.png")) {
         std::cerr << "Failed to load powerup texture" << std::endl;
     }
@@ -10,9 +10,9 @@ powerup::powerup() {
     reset();
 }
 
-powerup::~powerup() = default;
+Powerup::~Powerup() = default;
 
-void powerup::reset() {
+void Powerup::reset() {
     // Randomize starting position
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -29,7 +29,7 @@ void powerup::reset() {
     timeSinceLivesLessThanThree = sf::Time::Zero;
 }
 
-void powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& window) {
+void Powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& window) {
     if (!collected && player->getLives() < 3) { // Only update if lives < 3
         timeSinceLivesLessThanThree += delta;
 
@@ -74,13 +74,13 @@ void powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& wi
     }
 }
 
-void powerup::draw(sf::RenderWindow& window, Player* player) {
+void Powerup::draw(sf::RenderWindow& window, Player* player) {
     if (!collected && player->getLives() < 3 && timeSinceLivesLessThanThree >= sf::seconds(appearanceDelay)) { // Only draw if lives < 3 and it's time to show the powerup
         window.draw(sprite);
     }
 }
 
-void powerup::adjustForResolution(const sf::Vector2u& resolution) {
+void Powerup::adjustForResolution(const sf::Vector2u& resolution) {
 
     float scale = 0.5f;
 
