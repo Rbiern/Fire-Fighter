@@ -32,6 +32,7 @@ public:
     void updateHealthbar(int lives);
     void setEnemyCount(int enemyCount);
     void increaseScore(int points);
+    int getStage();
     void reset();
 };
 
