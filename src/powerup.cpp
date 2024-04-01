@@ -26,15 +26,15 @@ void Powerup::reset() {
 
     // Reset the timer for appearance delay
     appearanceDelay = std::uniform_int_distribution<int>(2, 10)(gen);
-    timeSinceLivesLessThanThree = sf::Time::Zero;
+    time = sf::Time::Zero;
 }
 
 void Powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& window) {
     if (!collected && player->getLives() < 3) { // Only update if lives < 3
-        timeSinceLivesLessThanThree += delta;
+        time += delta;
 
         // Check if it's time to show the powerup
-        if (timeSinceLivesLessThanThree >= sf::seconds(appearanceDelay)) {
+        if (time >= sf::seconds(appearanceDelay)) {
             // Move the powerup
             sprite.move(direction * speed * delta.asSeconds());
 
@@ -75,7 +75,7 @@ void Powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& wi
 }
 
 void Powerup::draw(sf::RenderWindow& window, Player* player) {
-    if (!collected && player->getLives() < 3 && timeSinceLivesLessThanThree >= sf::seconds(appearanceDelay)) { // Only draw if lives < 3 and it's time to show the powerup
+    if (!collected && player->getLives() < 3 && time >= sf::seconds(appearanceDelay)) { // Only draw if lives < 3 and it's time to show the powerup
         window.draw(sprite);
     }
 }
