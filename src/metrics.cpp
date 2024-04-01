@@ -1,6 +1,6 @@
 #include "metrics.h"
 
-Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0)), windowSize(windowSize) {
+Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(windowSize) {
     // Calculate the infoBar height as 10% of the window's height
     float infoBarHeight = windowSize.y * 0.1f;
 
