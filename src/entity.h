@@ -11,7 +11,6 @@ protected:
     sf::Texture texture;
     std::vector<Bullet>  bullet;
 
-
 public:
     Entity();
     virtual ~Entity() {}
@@ -23,14 +22,10 @@ public:
 
     sf::Sprite& getSprite();
 
-    void draw(sf::RenderWindow& window) const {
-        window.draw(sprite);
-    }
+    void draw(sf::RenderWindow& window) const;
     bool setTexture(const std::string& texturePath);
 
-    void setScale(float scaleX, float scaleY) {
-        sprite.setScale(scaleX, scaleY);
-    }
+    void setScale(float scaleX, float scaleY);
 };
 
 #endif //FIRE_FIGHTER_ENTITY_H
