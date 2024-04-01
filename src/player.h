@@ -138,13 +138,6 @@ private:
     sf::Sound shootSound; ///< Sound effect for shooting.
     std::vector<Bullet> bullets; ///< Container for bullets fired by the player.
     settings *options; ///< Pointer to game settings, used for sound toggling.
-
-//    /**
-//     * @brief Sets the scale factor for the player's bulletSprite.
-//     * @param scaleFactor The factor by which to scale the bulletSprite.
-//     */
-//    void setScale(float scaleFactor);
-
 };
 
 #endif //FIRE_FIGHTER_PLAYER_H
