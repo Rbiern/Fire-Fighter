@@ -155,13 +155,13 @@ void Metrics::reset() {
     scoreText.setPosition(((windowSize.x * 0.3f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
 
     enemyKilledText.setString(options->getLanguage()[23]+ std::to_string(score));
-    enemyKilledText.setPosition((((windowSize.x/2) * 0.4f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
+    enemyKilledText.setPosition((((windowSize.x) * 0.4f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
 
     roundText.setString(options->getLanguage()[24] + std::to_string(score));
-    roundText.setPosition((((windowSize.x/2) * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
+    roundText.setPosition((((windowSize.x) * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
 
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
-    enemiesRemainingText.setPosition((((windowSize.x/2) * 0.65f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
+    enemiesRemainingText.setPosition((((windowSize.x) * 0.65f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 
     highestScoreText.setString("Highest Score:" + std::to_string(score));
     highestScoreText.setPosition((((windowSize.x) * 0.8f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
