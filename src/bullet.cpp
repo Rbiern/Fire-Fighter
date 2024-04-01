@@ -46,7 +46,6 @@ void Bullet::update(const sf::Time& delta, const std::string& type) {
 
 /**
  * Draw the bullet sprite.
-
  * @param window The SFML render window to draw the bullet on.
  * @param type The type of bullet ("player" or "enemy").
  */
