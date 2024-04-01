@@ -62,7 +62,7 @@ void Game::gameLoop() {
 
     /********************************************/
     // Create the rounded rectangle shape (using a simple rectangle for demonstration)
-    sf::RectangleShape roundedRect(sf::Vector2f(300, 100)); // Set the size of your button
+    sf::RectangleShape roundedRect(sf::Vector2f(options.widthScaling(300), options.heightScaling(100))); // Set the size of your button
     roundedRect.setFillColor(sf::Color(231, 76, 60)); // Button color
     roundedRect.setOutlineColor(sf::Color(150, 40, 27)); // Outline color
 
@@ -71,7 +71,7 @@ void Game::gameLoop() {
     roundedRect.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     // Create the stageText
-    sf::Text stageText("Stage: 1", font, 50); // Adjust the size accordingly
+    sf::Text stageText("Stage: 1", font, options.widthScaling(50); // Adjust the size accordingly
     stageText.setFillColor(sf::Color::White); // Text color
 
     // Center the stageText on the button
