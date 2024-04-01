@@ -227,6 +227,7 @@ void Enemy::shoot() {
     // Create a new bullet at the position of the enemy
     Bullet enemyBullet(getPosition().x, getPosition().y, "enemy", res1);
     bullets.push_back(enemyBullet);
+    removeBullet(enemyBullet);
 }
 
 std::vector<Bullet>& Enemy::getBullets() {
@@ -266,4 +267,11 @@ void Enemy::setIsAlive(bool alive) {
 
 void Enemy::increaseSpeed(float factor) {
     movementSpeed *= factor;
+}
+void Enemy::removeBullet(Bullet bullet) {
+    for (int i = bullets.size() - 1; i >= 0; --i) {
+        if (bullets[i].getGlobalBounds().getPosition().x > res1.x) {
+            bullets.erase(bullets.begin() + i);
+        }
+    }
 }
