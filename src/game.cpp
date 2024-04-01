@@ -157,7 +157,7 @@ void game::gameLoop() {
         int lives = player->getLives();
         metrics.updateHealthbar(lives);
 
-        powerup.update(deltaTime, player, window);
+        Powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, enemyWave, metrics);
         if (enemyWave.allEnemiesDead()) {
             enemyWave.respawnEnemies(); // Respawn with increased speed
@@ -264,7 +264,7 @@ void game::gameLoop() {
 
         window.clear();
         player->draw(window);
-        powerup.draw(window,player);
+        Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave.draw(window);
         barrier1.draw(window);
@@ -285,7 +285,8 @@ void game::gameLoop() {
         barrier1.reset();
         barrier2.reset();
         barrier3.reset();
-        powerup.reset();
+        Powerup.reset();
+        player->reset();
         goto spetsnaz;
     }
 }
@@ -523,7 +524,7 @@ bool game::handleExitRequest() {
         window.clear();
         metrics.draw(window);
         player->draw(window);
-        powerup.draw(window,player);
+        Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave->draw(window);
         barrier1.draw(window);
