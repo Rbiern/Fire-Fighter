@@ -1,6 +1,5 @@
 /**
  * @file Barrier.h
- * @author Chaewon Eom, Robert Andrew Biernacki
  * @brief Declaration of the Barrier class.
  */
 
@@ -36,9 +35,6 @@ public:
 
     /**
      * @brief Destructs a Barrier object.
-     *
-     * This destructor is defaulted, meaning it does not have custom cleanup operations.
-     * It will automatically release resources and memory allocated by the Barrier class.
      */
     ~Barrier();
 
@@ -82,7 +78,7 @@ public:
     void reset();
 
     /**
-     * @brief Draws the Barrier object on the specified render window.
+     * @brief Draws the Barrier object.
      *
      * This function draws the Barrier object on the specified SFML render window.
      *
@@ -91,12 +87,12 @@ public:
     void draw(sf::RenderWindow& window);
 
 private:
-    Settings gameSettings; /**< The settings object used for game configuration.*/
-    sf::Texture iceBlockTexture; /**< The texture for the ice block barrier.*/
-    sf::Sprite iceBlockSprite; /**< The sprite representing the ice block barrier.*/
-    float size; /**< The size of the barrier.*/
-    sf::SoundBuffer shrinkBuffer; /**< The sound buffer for the shrink effect.*/
-    sf::Sound shrinkSound; /**< The sound object for the shrink effect.*/
+    Settings gameSettings;
+    sf::Texture iceBlockTexture;
+    sf::Sprite iceBlockSprite;
+    float size;
+    sf::SoundBuffer shrinkBuffer;
+    sf::Sound shrinkSound;
 
 };
 
