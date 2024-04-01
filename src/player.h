@@ -27,7 +27,7 @@ public:
      * @brief Constructs a Player object with initial position and game resolution.
      * @param startX Starting X coordinate of the player.
      * @param startY Starting Y coordinate of the player.
-     * @param resolution The current game screen resolution, used for scaling the player's sprite.
+     * @param resolution The current game screen resolution, used for scaling the player's bulletSprite.
      *
      * Initializes player's properties such as movement speed, health, and sets up the sound effects for shooting.
      */
@@ -73,7 +73,7 @@ public:
     void move(const sf::Vector2f& direction);
 
     /**
-     * @brief Draws the player sprite on the specified window.
+     * @brief Draws the player bulletSprite on the specified window.
      * @param window The render window to draw the player on.
      */
     void draw(sf::RenderWindow& window);
@@ -91,8 +91,8 @@ public:
     float getSpeed() const;
 
     /**
-     * @brief Gets the size of the player's sprite.
-     * @return The size of the player's sprite as an sf::Vector2f.
+     * @brief Gets the size of the player's bulletSprite.
+     * @return The size of the player's bulletSprite as an sf::Vector2f.
      */
     sf::Vector2f getSize() const;
 
@@ -119,14 +119,14 @@ public:
     void increaseLife();
 
     /**
-     * @brief Checks for collision between the player and an enemy sprite.
-     * @param enemySprite The sprite of the enemy to check for collision.
-     * @return True if the player is colliding with the enemy sprite, false otherwise.
+     * @brief Checks for collision between the player and an enemy bulletSprite.
+     * @param enemySprite The bulletSprite of the enemy to check for collision.
+     * @return True if the player is colliding with the enemy bulletSprite, false otherwise.
      */
     bool isCollidingWithEnemy(const sf::Sprite& enemySprite) const;
 
     /**
-     * @brief Sets the texture for the player's sprite.
+     * @brief Sets the texture for the player's bulletSprite.
      * @param t The file path to the texture.
      */
     void setPlayerTexture(char *t);
@@ -140,13 +140,13 @@ private:
     settings *options; ///< Pointer to game settings, used for sound toggling.
 
     /**
-     * @brief Sets the scale factor for the player's sprite.
-     * @param scaleFactor The factor by which to scale the sprite.
+     * @brief Sets the scale factor for the player's bulletSprite.
+     * @param scaleFactor The factor by which to scale the bulletSprite.
      */
     void setScale(float scaleFactor);
 
     /**
-     * @brief Adjusts the player's sprite and speed based on the game's resolution.
+     * @brief Adjusts the player's bulletSprite and speed based on the game's resolution.
      * @param resolution The current game screen resolution.
      */
     void adjustForResolution(const sf::Vector2u &resolution);
