@@ -14,10 +14,9 @@ private:
     sf::Vector2f direction;
     bool collected;
     std::mt19937 gen;
-//    Player* player;
-
 public:
     powerup();
+    ~powerup();
     void reset();
     void update(const sf::Time& delta, Player* player, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window, Player* player);
