@@ -7,17 +7,17 @@
 #include "settings.h"
 #include "game.h"
 
-class ui {
+class Ui {
 private:
-    game* startGame;
+    Game* startGame;
     sf::RenderWindow window;
-    settings options;
+    Settings options;
     sf::Texture backgroundImage;
     sf::Font font;
     sf::Music music;
 public:
-    ui();
-    ~ui();
+    Ui();
+    ~Ui();
     void displayMenu();
 private:
     void _init();
