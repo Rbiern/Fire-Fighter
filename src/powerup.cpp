@@ -1,36 +1,52 @@
 #include "powerup.h"
 
+/**
+ * Constructor of the Powerup object.
+ */
 Powerup::Powerup() {
+    // Load file and print error message if fails
     if (!texture.loadFromFile("../../resource/img/life.png")) {
         std::cerr << "Failed to load powerup texture" << std::endl;
     }
+
+    // Set the texture for the powerup sprite
     sprite.setTexture(texture);
+
+    // Adjust sprite scale based on resolution from game settings
     sprite.setScale(gameSettings.widthScaling(1.f), gameSettings.heightScaling(1.f));
+
+    // Reset the powerup
     reset();
 }
 
+/**
+ * Destructor of a Powerup object.
+ */
 Powerup::~Powerup() = default;
 
+/**
+ * Reset the Powerup object to its initial state.
+ */
 void Powerup::reset() {
     // Randomize starting position
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> disY(100.f, 300.f); // Adjust Y range as needed
-    sprite.setPosition(-sprite.getGlobalBounds().width, disY(gen));
+    sprite.setPosition(-sprite.getGlobalBounds().width, disY(gen)); // Set random Y position
 
     // Randomize speed and direction
     speed = 150.f; // Adjust speed as needed
     direction = sf::Vector2f(1.f, 0.f); // Start moving right
-    collected = false;
+    collected = false; // Reset collected status
 
     // Reset the timer for appearance delay
-    appearanceDelay = std::uniform_int_distribution<int>(2, 10)(gen);
-    time = sf::Time::Zero;
+    appearanceDelay = std::uniform_int_distribution<int>(2, 10)(gen); // Set random delay between 2~10 sec
+    time = sf::Time::Zero; // Reset timer
 }
 
 void Powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& window) {
     if (!collected && player->getLives() < 3) { // Only update if lives < 3
-        time += delta;
+        time += delta; // Increment time with elapsed delta time
 
         // Check if it's time to show the powerup
         if (time >= sf::seconds(appearanceDelay)) {
@@ -40,7 +56,7 @@ void Powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& wi
             // Check collision with player
             if (sprite.getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
                 std::cout << "lives before: " << player->getLives() << std::endl;
-                player->increaseLife();
+                player->increaseLife(); // Increase player's life
                 std::cout << "lives after: " << player->getLives() << std::endl;
                 collected = true;
             }
@@ -73,6 +89,11 @@ void Powerup::update(const sf::Time& delta, Player* player, sf::RenderWindow& wi
     }
 }
 
+/**
+ * Draw the Powerup object on the specified render window.
+ * @param window The SFML render window to draw the powerup on.
+ * @param player A pointer to the Player object for condition checking.
+ */
 void Powerup::draw(sf::RenderWindow& window, Player* player) {
     if (!collected && player->getLives() < 3 && time >= sf::seconds(appearanceDelay)) { // Only draw if lives < 3 and it's time to show the powerup
         window.draw(sprite);
