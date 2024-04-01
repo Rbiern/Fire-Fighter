@@ -7,7 +7,7 @@
 #include <string>
 #include <bitset>
 
-class settings {
+class Settings {
 private:
     class resolutionPairs {
     public:
@@ -34,8 +34,8 @@ private:
         sf::String Mandarin[26] = {L"\u65B0\u6E38\u620F", L"\u8BBE\u7F6E", L"\u8F9E\u804C", L"\u5168\u5C4F", L"\u97F3\u4E50", L"\u58F0\u97F3\u7279\u6548", L"\u56DE\u8F6C", L"\u5728", L"\u79BB\u5F00", L"\u9009\u62E9\u8BED\u8A00", L"\u9009\u62E9\u5206\u8FA8\u7387", L"\u7533\u8BF7", L"\u53D6\u6D88", L"\u9009\u62E9\u4E00\u4E2A\u89D2\u8272", L"\u56DE\u53BB", L"\u6C34\u5973\u5B69", L"\u706B\u5973\u5B69", L"\u51FA\u53E3", L"\u91CD\u8BD5", L"\u6E38\u620F\u7ED3\u675F\uFF01", L"\u9000\u51FA\u6E38\u620F", L"\u5206\u6570\uFF1A", L"\u6740\u6B7B\u7684\u654C\u4EBA\uFF1A", L"\u9636\u6BB5\uFF1A", L"\u6b8b\u654c\u0020\u003a\u0020"};
     }lang;
 public:
-    settings();
-    ~settings();
+    Settings();
+    ~Settings();
     void openSettings();
     int* getResolution();
     bool isFullScreen() const;
