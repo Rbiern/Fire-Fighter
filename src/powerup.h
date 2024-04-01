@@ -2,6 +2,7 @@
 #define FIRE_FIGHTER_POWERUP_H
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <random>
 #include "player.h"
 
@@ -13,7 +14,7 @@ private:
     sf::Vector2f direction;
     bool collected;
     std::mt19937 gen;
-    Player* player;
+//    Player* player;
 
 public:
     powerup();
