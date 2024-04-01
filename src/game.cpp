@@ -78,7 +78,7 @@ void game::gameLoop() {
     // Center the stageText on the button
     sf::FloatRect textRect = stageText.getLocalBounds();
     stageText.setOrigin(textRect.left + textRect.width / 2.0f,
-                   textRect.top  + textRect.height / 2.0f);
+                        textRect.top  + textRect.height / 2.0f);
     stageText.setPosition(roundedRect.getPosition());
 
     sf::Clock clock2;
@@ -157,7 +157,7 @@ void game::gameLoop() {
         int lives = player->getLives();
         metrics.updateHealthbar(lives);
 
-        Powerup.update(deltaTime, player, window);
+        powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, enemyWave, metrics);
         if (enemyWave.allEnemiesDead()) {
             enemyWave.respawnEnemies(); // Respawn with increased speed
@@ -188,23 +188,23 @@ void game::gameLoop() {
                     //If enemy's bullet collide with barrier, it shrinks
                     if (!bulletRemoved) {
                         if (barrier1.bulletCollision(bulletIt->getSprite())) {
-                                barrier1.shrink();
-                                bulletIt = bullets.erase(bulletIt);
-                                bulletRemoved = true;
-                                break;
-                            }
-                            if (barrier2.bulletCollision(bulletIt->getSprite())) {
+                            barrier1.shrink();
+                            bulletIt = bullets.erase(bulletIt);
+                            bulletRemoved = true;
+                            break;
+                        }
+                        if (barrier2.bulletCollision(bulletIt->getSprite())) {
                             barrier2.shrink();
                             bulletIt = bullets.erase(bulletIt);
                             bulletRemoved = true;
                             break;
-                            }
-                            if (barrier3.bulletCollision(bulletIt->getSprite())) {
+                        }
+                        if (barrier3.bulletCollision(bulletIt->getSprite())) {
                             barrier3.shrink();
                             bulletIt = bullets.erase(bulletIt);
                             bulletRemoved = true;
                             break;
-                            }
+                        }
                     }
                     if (!bulletRemoved) {
                         ++bulletIt;
@@ -264,7 +264,7 @@ void game::gameLoop() {
 
         window.clear();
         player->draw(window);
-        Powerup.draw(window,player);
+        powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave.draw(window);
         barrier1.draw(window);
@@ -285,7 +285,7 @@ void game::gameLoop() {
         barrier1.reset();
         barrier2.reset();
         barrier3.reset();
-        Powerup.reset();
+        powerup.reset();
         goto spetsnaz;
     }
 }
@@ -523,7 +523,7 @@ bool game::handleExitRequest() {
         window.clear();
         metrics.draw(window);
         player->draw(window);
-        Powerup.draw(window,player);
+        powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave->draw(window);
         barrier1.draw(window);
