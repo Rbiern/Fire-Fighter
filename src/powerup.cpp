@@ -6,7 +6,7 @@ powerup::powerup() {
     }
     sprite.setTexture(texture);
     resolution = gameSettings.getVector();
-    adjustForResolution(resolution)
+    adjustForResolution(resolution);
     reset();
 }
 
