@@ -6,6 +6,7 @@
 #include "bullet.h"
 #include "settings.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 class Barrier : public Entity {
@@ -20,6 +21,8 @@ private:
     const float referenceHeight;
     settings gameSettings;
     sf::Vector2u resolution;
+    sf::SoundBuffer shrinkBuffer;
+    sf::Sound shrinkSound;
 
 public:
     Barrier(float barrierX, float barrierY, sf::RenderWindow& window, settings gameSettings);
