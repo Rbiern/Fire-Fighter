@@ -174,3 +174,11 @@ Player::~Player() {
 void Player::setPlayerTexture(char* str) {
     this->setTexture(str);
 }
+
+/**
+ * reset player's position and lives
+ */
+void Player::reset() {
+    setLives(3);
+    setPosition(options->getResolution()[0]* 0.93f ,options->getResolution()[1] / 2);
+}
