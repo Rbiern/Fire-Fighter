@@ -1,14 +1,14 @@
 #include "ui.h"
 
 /** constructor */
-ui::ui() {
+Ui::Ui() {
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
     window.create((options.isFullScreen()) ? fullScreenMode : sf::VideoMode(options.getResolution()[0], options.getResolution()[1]), "Fire Fighter", (options.isFullScreen() || options.getResolution()[0] >= fullScreenMode.width) ? sf::Style::Fullscreen : sf::Style::Default);
     _init();
 }
 
 /** destructor */
-ui::~ui() {
+Ui::~Ui() {
     if (window.isOpen()) {      // Close the SFML window if it's open
         window.close();
     }
@@ -19,7 +19,7 @@ ui::~ui() {
 }
 
 /** main UI menu loop */
-void ui::displayMenu() {
+void Ui::displayMenu() {
     // Calculate button dimensions based on window size
     float windowWidth = (window.getSize().x / 3) * 0.6f;
     float windowHeight = (window.getSize().y / 4) * 0.4f;
@@ -110,7 +110,7 @@ void ui::displayMenu() {
             if (options.toggleMusic()) music.pause();
             window.close();
 
-            startGame = new game(&options);
+            startGame = new Game(&options);
             startGame->gameLoop();
             delete(startGame);
             startGame = nullptr;
@@ -167,7 +167,7 @@ void ui::displayMenu() {
  * helper method to help initialize ui variables, it is also need to reload changed values from settings
  * returns false if successful, otherwise returns true
  * */
-void ui::_init() {
+void Ui::_init() {
     sf::Image icon = options.getIcon();                                                             // Load icon image
     window.setFramerateLimit(60);                                                              // set frame rate
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());     // Set the window icon
@@ -183,7 +183,7 @@ void ui::_init() {
 }
 
 /** help create the button shapes on screen */
-sf::ConvexShape ui::createButtonShape(float width, float height) {
+sf::ConvexShape Ui::createButtonShape(float width, float height) {
     sf::ConvexShape parallelogram;
     parallelogram.setPointCount(4);
     parallelogram.setPoint(0, sf::Vector2f(0, 0));
