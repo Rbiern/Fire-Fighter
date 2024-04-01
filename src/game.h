@@ -21,12 +21,12 @@ private:
     sf::Vector2u resolution;
     sf::Clock clock; // for updating the game
     Metrics metrics;
+    Barrier barrier1;
+    Barrier barrier2;
+    Barrier barrier3;
     powerup Powerup;
     Player* player;
-    Barrier* barrier;
-    std::vector<Barrier> barriers;
     EnemyWave* enemyWave;
-
 public:
     explicit game(settings *opt);
     ~game();
