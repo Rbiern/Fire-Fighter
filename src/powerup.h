@@ -6,7 +6,7 @@
 #include <random>
 #include "player.h"
 
-class powerup {
+class Powerup {
 private:
     sf::Texture texture;
     sf::Sprite sprite;
@@ -18,8 +18,8 @@ private:
     settings gameSettings;
 
 public:
-    powerup();
-    ~powerup();
+    explicit Powerup();
+    virtual ~Powerup();
     void reset();
     void update(const sf::Time& delta, Player* player, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window, Player* player);
