@@ -4,6 +4,8 @@
 #include <string>
 #include "bullet.h"
 #include "enemy.h"
+#include <cmath>
+#include <iostream>
 
 class EnemyWave {
 public:
