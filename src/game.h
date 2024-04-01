@@ -12,10 +12,10 @@
 #include "metrics.h"
 #include "enemywave.h"
 
-class game {
+class Game {
 private:
     sf::RenderWindow window;
-    settings options; // get icon, get windows size, get music, get font;
+    Settings options; // get icon, get windows size, get music, get font;
     sf::Font font;
     sf::Image icon;
     sf::Music music;
@@ -28,9 +28,10 @@ private:
     Powerup powerup;
     Player* player;
     EnemyWave* enemyWave;
+
 public:
-    explicit game(settings *opt);
-    ~game();
+    explicit Game(Settings *opt);
+    ~Game();
     void gameLoop();
     char* characterSelectScreen();
     bool handleExitRequest();
