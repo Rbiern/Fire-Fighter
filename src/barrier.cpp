@@ -5,6 +5,10 @@ Barrier::Barrier(settings gameSettings) {
     if (!iceBlockTexture.loadFromFile("../../resource/img/iceBlock.png")) {
         std::cerr << "Failed to load background image!" << std::endl;
     }
+    if (!shrinkBuffer.loadFromFile("../../resource/sounds/melt.mp3")) {
+        std::cerr << "Shrink sound could not be loaded" << std::endl;
+    }
+    shrinkSound.setBuffer(shrinkBuffer);
     iceBlockSprite.setTexture(iceBlockTexture);
     iceBlockSprite.setScale(gameSettings.widthScaling(1.5), gameSettings.heightScaling(1.5));
 }
@@ -20,6 +24,9 @@ bool Barrier::bulletCollision(const sf::Sprite& bulletSprite) const {
 }
 
 void Barrier::shrink() {
+    if (gameSettings.toggleSounds()) {
+        shrinkSound.play();
+    }
     // Apply the scaling factor to the size
     size -= 0.35f;
     // Ensure size doesn't go below a certain minimum value
