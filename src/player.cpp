@@ -20,7 +20,7 @@ Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Ent
     adjustForResolution(resolution);
 }
 
-//move player's sprite
+//move player's bulletSprite
 void Player::move(const sf::Vector2f& direction) {
     sprite.move(direction * movementSpeed);
 }
@@ -79,15 +79,15 @@ float Player::getSpeed() const {
 }
 /**
  * check player has collide with enemy
- * @param enemySprite enemy's sprite
+ * @param enemySprite enemy's bulletSprite
  * @return true if player collide with enemy
  */
 bool Player::isCollidingWithEnemy(const sf::Sprite& enemySprite) const {
     return sprite.getGlobalBounds().intersects(enemySprite.getGlobalBounds());
 }
 /**
- * get size of player's sprite
- * @return size of player's sprite
+ * get size of player's bulletSprite
+ * @return size of player's bulletSprite
  */
 sf::Vector2f Player::getSize() const {
     return sprite.getGlobalBounds().getSize();
@@ -97,7 +97,7 @@ sf::Vector2f Player::getSize() const {
  */
 void Player::shoot() {
     //new bullet's starting posiiton
-    Bullet newBullet(getPosition().x - getSize().x / 2, getPosition().y + getSize().y / 2, "player");
+    Bullet newBullet(getPosition().x - getSize().x / 2, getPosition().y + getSize().y / 2, "player", options->getVector());
     bullets.push_back(newBullet);
     if (options->toggleSounds()) {
         shootSound.play();
@@ -125,7 +125,6 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics&
                 }
             }
         }
-        //If bullet did not intersect with enemy, then move on to next bullet that player created
         if (!bulletRemoved) {
             ++bulletIt;
         }
@@ -167,7 +166,7 @@ Player::~Player() {
 }
 
 /**
- * Sets the texture of the player's sprite based on the provided file path.
+ * Sets the texture of the player's bulletSprite based on the provided file path.
  * @param str file path
  */
 void Player::setPlayerTexture(char* str) {
@@ -200,7 +199,7 @@ void Player::adjustForResolution(const sf::Vector2u& resolution) {
     movementSpeed *= speedScale;
 }
 /**
- * Sets the scale of the player's sprite to a specified factor.
+ * Sets the scale of the player's bulletSprite to a specified factor.
  * @param scaleFactor scale factor
  */
 void Player::setScale(float scaleFactor) {
