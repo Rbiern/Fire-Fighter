@@ -17,7 +17,7 @@ Game::Game(Settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barr
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr()); // Set the window icon
     window.setFramerateLimit(60);
 
-    player = new Player(resolution.x * 0.93f ,resolution.y / 2,resolution);
+    player = new Player(window);
     enemyWave = new EnemyWave(window, options.getVector(), options.getVector().y *0.1f);
 }
 
@@ -62,7 +62,7 @@ void Game::gameLoop() {
 
     /********************************************/
     // Create the rounded rectangle shape (using a simple rectangle for demonstration)
-    sf::RectangleShape roundedRect(sf::Vector2f(options.widthScaling(300), options.heightScaling(100))); // Set the size of your button
+    sf::RectangleShape roundedRect(sf::Vector2f(300, 100)); // Set the size of your button
     roundedRect.setFillColor(sf::Color(231, 76, 60)); // Button color
     roundedRect.setOutlineColor(sf::Color(150, 40, 27)); // Outline color
 
@@ -71,7 +71,7 @@ void Game::gameLoop() {
     roundedRect.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     // Create the stageText
-    sf::Text stageText("Stage: 1", font, options.widthScaling(50)); // Adjust the size accordingly
+    sf::Text stageText("Stage: 1", font, 50); // Adjust the size accordingly
     stageText.setFillColor(sf::Color::White); // Text color
 
     // Center the stageText on the button
@@ -159,7 +159,7 @@ void Game::gameLoop() {
         powerup.update(deltaTime, player, window);
         player->updateBullets(deltaTime, *enemyWave, metrics);
         if (enemyWave->allEnemiesDead()) {
-            enemyWave->respawnEnemies(); // Respawn with increased speed
+            enemyWave->respawnEnemies(0); // Respawn with increased speed
         }
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
@@ -174,7 +174,7 @@ void Game::gameLoop() {
                 while (bulletIt != bullets.end()) {
                     bool bulletRemoved = false;
                     if (bulletIt->getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
-//                        player->decreaseLife();
+                        player->decreaseLife();
                         bulletIt = bullets.erase(bulletIt);
                         bulletRemoved = true;
                         if (player->getLives() <= 0) {
@@ -285,7 +285,8 @@ void Game::gameLoop() {
         barrier2.reset();
         barrier3.reset();
         powerup.reset();
-        player->reset();
+        player->reset(window);
+        enemyWave->respawnEnemies(1);
         goto spetsnaz;
     }
 }
