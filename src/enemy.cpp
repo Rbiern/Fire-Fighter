@@ -9,9 +9,10 @@ Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vec
     res1.x = resolution.x;
     res1.y = resolution.y;
 
-sprite.setScale(1.f * ((float)resolution.x/1280.f), 1.f * ((float)resolution.y/720.f));
+    sprite.setScale(1.f * ((float)resolution.x/1280.f), 1.f * ((float)resolution.y/720.f));
     movementSpeed *= (1.0f * ((float)resolution.x/1280.f));
 }
+
 
 int Enemy::totalDeath = 0;
 
@@ -35,6 +36,8 @@ void Enemy::update(const sf::Time& deltaTime) {
     for (auto& bullet : bullets) {
         bullet.update(deltaTime,"enemy");
     }
+    //if bullet goes off screen
+    removeBullet();
 }
 
 void Enemy::draw(sf::RenderWindow& window) {
@@ -60,7 +63,6 @@ sf::Vector2f Enemy::getPosition() const {
 void Enemy::setPosition(float x, float y) {
     sprite.setPosition(x, y);
 }
-
 sf::FloatRect Enemy::getGlobalBounds() const {
     return sprite.getGlobalBounds();
 }
@@ -68,6 +70,7 @@ void EnemyWave::removeEnemy(int row, int column) {
     // Remove enemy at specified position
     enemyGrid[row].erase(enemyGrid[row].begin() + column);
 }
+
 
 sf::Vector2u Enemy::getSize() const {
     return texture.getSize();
@@ -184,7 +187,7 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
 void EnemyWave::draw(sf::RenderWindow& window) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            enemyGrid[i][j].draw(window);
+                enemyGrid[i][j].draw(window);
         }
     }
 }
@@ -208,7 +211,6 @@ void Enemy::shoot() {
     // Create a new bullet at the position of the enemy
     Bullet enemyBullet(getPosition().x, getPosition().y, "enemy", res1);
     bullets.push_back(enemyBullet);
-    removeBullet(enemyBullet);
 }
 
 std::vector<Bullet>& Enemy::getBullets() {
@@ -239,6 +241,7 @@ void EnemyWave::respawnEnemies() {
             enemyGrid[i][j].setPosition(positionX, positionY);
             enemyGrid[i][j].setIsAlive(true);
             enemyGrid[i][j].increaseSpeed(speedIncreaseFactor);
+
         }
     }
 }
@@ -249,7 +252,7 @@ void Enemy::setIsAlive(bool alive) {
 void Enemy::increaseSpeed(float factor) {
     movementSpeed *= factor;
 }
-void Enemy::removeBullet(Bullet bullet) {
+void Enemy::removeBullet() {
     for (int i = bullets.size() - 1; i >= 0; --i) {
         if (bullets[i].getGlobalBounds().getPosition().x > res1.x) {
             bullets.erase(bullets.begin() + i);
