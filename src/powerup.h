@@ -15,7 +15,7 @@ private:
     bool collected;
     std::mt19937 gen;
     sf::Vector2u resolution;
-    settings gameSettings;
+    Settings gameSettings;
 public:
     explicit Powerup();
     virtual ~Powerup();
