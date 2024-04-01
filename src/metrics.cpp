@@ -103,13 +103,15 @@ void Metrics::setEnemyCount(int enemyCount) {
 
 void Metrics::increaseScore(int points) {
     score += points;
+    int tmp = enemySum;
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
     roundText.setString(options->getLanguage()[24]+ std::to_string((score/points) / enemySum));
     enemyKilledText.setString(options->getLanguage()[23] + std::to_string(score/points));
-    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(enemySum - (score/points)));
+    enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string((enemySum - (score/points) % enemySum)));
 }
 
 void Metrics::reset() {
+    score = 0;
     float infoBarHeight = windowSize.y * 0.1f;
     healthBar.setTexture(life3Texture);
 
@@ -125,7 +127,7 @@ void Metrics::reset() {
 
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
     enemiesRemainingText.setPosition((((windowSize.x/2) * 1.7f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
-    score = 0;
+
 }
 
 int Metrics::getScore() const {
