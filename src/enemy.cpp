@@ -53,14 +53,8 @@ void Enemy::setTexture(const std::string& texturePath) {
     sprite.setTexture(texture);
 }
 
-sf::Vector2f Enemy::getPosition() const {
-    return sprite.getPosition();
-}
 
 
-void Enemy::setPosition(float x, float y) {
-    sprite.setPosition(x, y);
-}
 sf::FloatRect Enemy::getGlobalBounds() const {
     return sprite.getGlobalBounds();
 }
@@ -84,9 +78,9 @@ std::vector<Bullet>& Enemy::getBullets() {
     return bullets;
 }
 
-const sf::Sprite& Enemy::getSprite() const {
-    return sprite;
-}
+//const sf::Sprite& Enemy::getSprite() const {
+//    return sprite;
+//}
 
 
 void Enemy::setIsAlive(bool alive) {
