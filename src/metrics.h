@@ -8,6 +8,7 @@
 
 class Metrics {
 private:
+    int highestScore;
     sf::RectangleShape infoBar;
     sf::RectangleShape separationLine;
     sf::Font font;
@@ -16,6 +17,7 @@ private:
     sf::Text roundText;
     sf::Text enemyKilledText;
     sf::Text enemiesRemainingText;
+    sf::Text highestScoreText;
     Settings* options;
     int score;
     int enemySum;
@@ -32,6 +34,8 @@ public:
     void updateHealthbar(int lives);
     void setEnemyCount(int enemyCount);
     void increaseScore(int points);
+    void updateHighestScore();
+    int getHighestScore() const;
     int getStage();
     void reset();
 };
