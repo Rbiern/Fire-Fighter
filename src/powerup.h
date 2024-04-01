@@ -19,8 +19,8 @@ private:
     sf::Time time;
     int appearanceDelay;
 public:
-    explicit Powerup();
-    virtual ~Powerup();
+    Powerup();
+    ~Powerup();
     void reset();
     void update(const sf::Time& delta, Player* player, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window, Player* player);
