@@ -71,7 +71,7 @@ void Game::gameLoop() {
     roundedRect.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     // Create the stageText
-    sf::Text stageText("Stage: 1", font, options.widthScaling(50); // Adjust the size accordingly
+    sf::Text stageText("Stage: 1", font, options.widthScaling(50)); // Adjust the size accordingly
     stageText.setFillColor(sf::Color::White); // Text color
 
     // Center the stageText on the button
