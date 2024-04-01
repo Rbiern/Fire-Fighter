@@ -1,7 +1,5 @@
-// Enemy.cpp
 #include "enemy.h"
-#include <cmath>
-#include <iostream>
+
 
 Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution)
         : movementSpeed(3.0f), screenWidth(screenWidth),isAlive(true) {
