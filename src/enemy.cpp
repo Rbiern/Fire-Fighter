@@ -4,7 +4,7 @@
 #include <iostream>
 
 Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution)
-        : movementSpeed(5.0f), screenWidth(screenWidth),isAlive(true) {
+        : movementSpeed(3.0f), screenWidth(screenWidth),isAlive(true) {
     setPosition(startX, startY);
     adjustForResolution(resolution);
 }
@@ -61,8 +61,8 @@ void Enemy::adjustForResolution(const sf::Vector2u& resolution) {
     float speedScale = 1.0f;
 
     if (resolution == sf::Vector2u(640, 360)) {
-        scale = 0.5f;
-        speedScale = 1.00f;
+        scale = 0.3f;
+        speedScale = 0.5f;
     } else if (resolution == sf::Vector2u(1280, 720)) {
         scale = 1.0f;
         speedScale = 1.5f;
@@ -126,20 +126,77 @@ EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, f
 }
 
 void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
-    wavePhase += deltaTime.asSeconds();
-    float screenLimit = window.getSize().y - metricsBarHeight; // Calculate screen limit considering metrics bar
+    float screenLimit = window.getSize().y - metricsBarHeight;
+    float moveRightDistance = 50.0f;
+    static bool movingDown = true;
+    static bool hasMovedRightAfterReach = false;
+    static bool firstUpdate = true;
+
+    bool bottomReached = false;
+    bool topReached = false;
+
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
-            float newPositionY = startY + i * spacingY + waveOffset;
-            if (newPositionY + enemyGrid[i][j].getGlobalBounds().height > screenLimit) {
-                newPositionY = screenLimit - enemyGrid[i][j].getGlobalBounds().height; // Adjust position to stay within screen
+            Enemy& enemy = enemyGrid[i][j];
+            if (enemy.getPosition().y + enemy.getGlobalBounds().height > window.getSize().y) {
+                bottomReached = true;
+                break;
             }
-            enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, newPositionY);
-            // No change to the horizontal movement logic
+            if (enemy.getPosition().y <= metricsBarHeight) {
+                topReached = true;
+                break;
+            }
+        }
+        if (bottomReached || topReached) break;
+    }
+
+    if (firstUpdate) {
+        movingDown = true;
+        firstUpdate = false;
+    } else if ((bottomReached || topReached) && !hasMovedRightAfterReach) {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                Enemy& enemy = enemyGrid[i][j];
+                enemy.setPosition(enemy.getPosition().x + moveRightDistance, enemy.getPosition().y);
+            }
+        }
+        hasMovedRightAfterReach = true;
+        movingDown = !movingDown;
+    } else {
+        float moveDistance = movingDown ? 1 : -1;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                Enemy& enemy = enemyGrid[i][j];
+                enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + moveDistance);
+            }
+        }
+        if (hasMovedRightAfterReach && (bottomReached || topReached)) {
+            hasMovedRightAfterReach = false;
         }
     }
 }
+
+
+
+
+
+
+
+//void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
+//    wavePhase += deltaTime.asSeconds();
+//    float screenLimit = window.getSize().y - metricsBarHeight; // Calculate screen limit considering metrics bar
+//    for (int i = 0; i < rows; ++i) {
+//        for (int j = 0; j < columns; ++j) {
+//            float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
+//            float newPositionY = startY + i * spacingY + waveOffset;
+//            if (newPositionY + enemyGrid[i][j].getGlobalBounds().height > screenLimit) {
+//                newPositionY = screenLimit - enemyGrid[i][j].getGlobalBounds().height; // Adjust position to stay within screen
+//            }
+//            enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, newPositionY);
+//            // No change to the horizontal movement logic
+//        }
+//    }
+//}
 
 void EnemyWave::draw(sf::RenderWindow& window) {
     for (int i = 0; i < rows; ++i) {
