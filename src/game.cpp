@@ -61,6 +61,33 @@ void game::gameLoop() {
     if (options.toggleMusic()) music.play();                        // start the music if it is enabled
     bool restFlag = false;
 
+    /********************************************/
+    // Create the rounded rectangle shape (using a simple rectangle for demonstration)
+    sf::RectangleShape roundedRect(sf::Vector2f(300, 100)); // Set the size of your button
+    roundedRect.setFillColor(sf::Color(231, 76, 60)); // Button color
+    roundedRect.setOutlineColor(sf::Color(150, 40, 27)); // Outline color
+
+    // Center the button on the screen
+    roundedRect.setOrigin(roundedRect.getSize() / 2.f);
+    roundedRect.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+
+    // Create the stageText
+    sf::Text stageText("Stage: 0", font, 50); // Adjust the size accordingly
+    stageText.setFillColor(sf::Color::White); // Text color
+
+    // Center the stageText on the button
+    sf::FloatRect textRect = stageText.getLocalBounds();
+    stageText.setOrigin(textRect.left + textRect.width / 2.0f,
+                   textRect.top  + textRect.height / 2.0f);
+    stageText.setPosition(roundedRect.getPosition());
+
+    sf::Clock clock2;
+    float time = 0;
+    int stage = -1;
+    const float fadeInDuration = 1.0f; // Duration of the fade in seconds
+    const float fadeOutDuration = 1.0f; // Duration of the fade out in seconds
+
+/****************************/
 /** main game loop */
     while (window.isOpen()) {
         sf::Event event{};
@@ -199,6 +226,30 @@ void game::gameLoop() {
             }
         }
 
+
+        // display next stage
+        time += clock2.restart().asSeconds();
+        float alpha = 0;
+        if (stage < metrics.getStage()) {
+            alpha = 255 * (time / fadeInDuration);
+            if (alpha >= 255) {
+                alpha = 255;
+                stage++; // Start fading out
+                time = 0; // Reset timer for fade out
+                stageText.setString("Stage: " + std::to_string(metrics.getStage()));
+            }
+        } else {
+            alpha = 255 - (255 * (time / fadeOutDuration));
+            if (alpha <= 0) {
+                alpha = 0;
+            }
+        }
+        // Apply the alpha to the fill, outline, and stageText colors
+        roundedRect.setFillColor(sf::Color(roundedRect.getFillColor().r, roundedRect.getFillColor().g, roundedRect.getFillColor().b, static_cast<sf::Uint8>(alpha)));
+        roundedRect.setOutlineColor(sf::Color(roundedRect.getOutlineColor().r, roundedRect.getOutlineColor().g, roundedRect.getOutlineColor().b, static_cast<sf::Uint8>(alpha)));
+        stageText.setFillColor(sf::Color(stageText.getFillColor().r, stageText.getFillColor().g, stageText.getFillColor().b, static_cast<sf::Uint8>(alpha)));
+
+
         /** when bullet hits barrier, the barrier shrinks */
         player->updateBarrier(deltaTime, barrier1);
         player->updateBarrier(deltaTime, barrier2);
@@ -215,6 +266,8 @@ void game::gameLoop() {
         barrier2.draw(window);
         barrier3.draw(window);
         metrics.draw(window);
+        window.draw(roundedRect);
+        window.draw(stageText);
         window.display();
     }
     // check of user wants to replay the game
@@ -231,6 +284,7 @@ void game::gameLoop() {
         goto spetsnaz;
     }
 }
+
 
 /**
  * character selection window
