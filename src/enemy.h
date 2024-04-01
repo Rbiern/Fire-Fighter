@@ -25,6 +25,7 @@ public:
     void setIsAlive(bool alive); // Set alive status
     void increaseSpeed(float factor); // Increase movement speed
     bool hasMovedRight = false;
+    void removeBullet(Bullet bullet);
 
 private:
     sf::Sprite sprite;
