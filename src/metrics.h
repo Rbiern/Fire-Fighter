@@ -16,7 +16,7 @@ private:
     sf::Text roundText;
     sf::Text enemyKilledText;
     sf::Text enemiesRemainingText;
-    settings* options;
+    Settings* options;
     int score;
     int enemySum;
     sf::Texture life3Texture;
@@ -25,7 +25,7 @@ private:
     sf::Texture life0Texture;
     sf::Sprite healthBar;
 public:
-    Metrics(sf::Vector2u windowSize, settings* opt);
+    Metrics(sf::Vector2u windowSize, Settings* opt);
     ~Metrics();
     void draw(sf::RenderTarget& target);
     void drawFinalScore(sf::RenderTarget& target);
