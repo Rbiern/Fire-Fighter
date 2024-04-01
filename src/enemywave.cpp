@@ -1,7 +1,5 @@
 #include "enemywave.h"
-#include "enemy.h"
-#include <cmath>
-#include <iostream>
+
 
 EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight)
         : window(window),waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
