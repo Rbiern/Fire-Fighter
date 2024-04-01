@@ -12,6 +12,7 @@
 #include "metrics.h"
 #include <iostream>
 #include <string>
+#include "enemywave.h"
 
 /**
  * @class Player
@@ -140,7 +141,7 @@ private:
     sf::SoundBuffer shootBuffer; ///< Buffer for the shooting sound effect.
     sf::Sound shootSound; ///< Sound effect for shooting.
     std::vector<Bullet> bullets; ///< Container for bullets fired by the player.
-    Settings *options; ///< Pointer to game settings, used for sound toggling.
+    settings *options; ///< Pointer to game settings, used for sound toggling.
 };
 
 #endif //FIRE_FIGHTER_PLAYER_H
