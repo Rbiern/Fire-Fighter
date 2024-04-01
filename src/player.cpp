@@ -100,7 +100,7 @@ sf::Vector2f Player::getSize() const {
 void Player::shoot() {
     //new bullet's starting posiiton
     Bullet newBullet(getPosition().x - getSize().x / 2, getPosition().y + getSize().y / 2, "player", options->getVector());
-    bullets.push_back(newBullet);
+    bullet.push_back(newBullet);
     if (options->toggleSounds()) {
         shootSound.play();
     }
@@ -110,11 +110,11 @@ void Player::shoot() {
  * @param delta time
  */
 void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics& metrics) {
-    for (auto& bullet : bullets) {
+    for (auto& bullet : bullet) {
         bullet.update(delta, "player");
     }
-    auto bulletIt = bullets.begin();
-    while (bulletIt != bullets.end()) {
+    auto bulletIt = bullet.begin();
+    while (bulletIt != bullet.end()) {
         bool bulletRemoved = false;
         for (int i = 0; i < enemyWave.getRows() && !bulletRemoved; ++i) {
             for (int j = 0; j < enemyWave.getColumns() && !bulletRemoved; ++j) {
@@ -122,7 +122,7 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics&
                 if (enemy.getIsAlive() && bulletIt->getGlobalBounds().intersects(enemy.getGlobalBounds())) {
                     enemy.kill();
                     metrics.increaseScore(10);
-                    bulletIt = bullets.erase(bulletIt);
+                    bulletIt = bullet.erase(bulletIt);
                     bulletRemoved = true;
                 }
             }
@@ -139,11 +139,11 @@ void Player::updateBullets(const sf::Time& delta, EnemyWave& enemyWave, Metrics&
  * @param resolution resolution
  */
 void Player::updateBarrier(const sf::Time delta, Barrier& barrier) {
-    for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
+    for (auto bulletIt = bullet.begin(); bulletIt != bullet.end();) {
         bulletIt->update(delta, "player");
 
         if (barrier.bulletCollision(bulletIt->getSprite())) {
-            bulletIt = bullets.erase(bulletIt);
+            bulletIt = bullet.erase(bulletIt);
             barrier.shrink();
         }
         else {
@@ -156,7 +156,7 @@ void Player::updateBarrier(const sf::Time delta, Barrier& barrier) {
  * @param window
  */
 void Player::drawBullets(sf::RenderWindow& window) {
-    for (auto& bullet : bullets) {
+    for (auto& bullet : bullet) {
         bullet.draw(window,"player");
     }
 }
