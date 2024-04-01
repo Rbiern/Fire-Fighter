@@ -19,15 +19,10 @@ private:
     const float referenceWidth;
     const float referenceHeight;
     settings gameSettings;
-
-
-
+    sf::Vector2u resolution;
 
 public:
-
-
     Barrier(float barrierX, float barrierY, sf::RenderWindow& window, settings gameSettings);
-//    bool enemyCollision(const sf::Sprite& enemySprite) const;
     bool bulletCollision(const sf::Sprite& bulletSprite) const;
 
     void shrink();
@@ -37,7 +32,6 @@ public:
     float getBarrierSpacing();
     void adjustForResolution(const sf::Vector2u& resolution);
     void adjustSpacingForResolution(const sf::RenderWindow& window, const sf::Vector2u& resolution);
-//    void updateBarrier(EnemyWave enemyWave, const sf::Vector2u& resolution);
 
     std::vector<Barrier> barriers;
     sf::Vector2f getSize() const;
