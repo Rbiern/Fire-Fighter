@@ -1,60 +1,43 @@
-#include <iostream>
 #include "bullet.h"
 
-Bullet::Bullet(float startX, float startY, const std::string& type) {
+Bullet::Bullet(float startX, float startY, const std::string& type, sf::Vector2u res) {
     loadTexture(type);
-    sprite.setPosition(startX, startY);
-    resolution = gameSettings.getVector();
-    adjustForResolution(resolution);
+    bulletSprite.setTexture(bulletTexture);
+    bulletSprite.setPosition(startX, startY);
+    bulletSprite.setScale(0.5f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
     speed = 300.f;
 }
 
+Bullet::~Bullet() = default;
+
 void Bullet::update(const sf::Time& delta, const std::string& type) {
     if (type == "enemy"){
-        sprite.move(speed * delta.asSeconds(), 0);
+        bulletSprite.move(speed * delta.asSeconds(), 0);
     }
     else if(type == "player"){
-        sprite.move(-speed * delta.asSeconds(), 0);
+        bulletSprite.move(-speed * delta.asSeconds(), 0);
     }
 }
 
 void Bullet::draw(sf::RenderWindow& window, const std::string &type) {
     loadTexture(type);
-    window.draw(sprite);
+    window.draw(bulletSprite);
 }
 
 sf::FloatRect Bullet::getGlobalBounds() const {
-    return sprite.getGlobalBounds();
-}
-
-void Bullet::loadTexture(const std::string &type) {
-    if (type =="player" && !texture.loadFromFile("../../resource/img/water-bullet.png")) {
-        std::cerr << "Failed to load player's bullet texture" << std::endl;
-    }
-    else if(type =="enemy" && !texture.loadFromFile("../../resource/img/fireball.png")) {
-        std::cerr << "Failed to load enemy's bullet texture" << std::endl;
-    }
-    sprite.setTexture(texture);
+    return bulletSprite.getGlobalBounds();
 }
 
 const sf::Sprite& Bullet::getSprite() const {
-    return sprite;
+    return bulletSprite;
 }
 
-void Bullet::adjustForResolution(const sf::Vector2u& resolution) {
-
-    float scale = 0.2f;
-
-    if (resolution == sf::Vector2u(640, 360)) {
-        scale = 0.2f;
-    } else if (resolution == sf::Vector2u(1280, 720)) {
-        scale = 0.5f;
-    } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 0.8f;
-    } else if (resolution == sf::Vector2u(3840, 2160)) {
-        scale = 1.0f;
+void Bullet::loadTexture(const std::string &type) {
+    if (type =="player" && !bulletTexture.loadFromFile("../../resource/img/droplet.png")) {
+        std::cerr << "Failed to load player's bullet texture" << std::endl;
     }
-
-    sprite.setScale(scale,scale);
-
+    else if(type =="enemy" && !bulletTexture.loadFromFile("../../resource/img/fireball.png")) {
+        std::cerr << "Failed to load enemy's bullet texture" << std::endl;
+    }
+    bulletSprite.setTexture(bulletTexture);
 }
