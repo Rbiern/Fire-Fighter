@@ -171,6 +171,7 @@ void ui::_init() {
     sf::Image icon = options.getIcon();                                                             // Load icon image
     window.setFramerateLimit(60);                                                              // set frame rate
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());     // Set the window icon
+    options.userScreenInfo(window.getSize().x, window.getSize().y);                                 // send user screen info to settings
     font = options.getFont();                                                                       // Set the font
     if (!backgroundImage.loadFromFile("../../resource/img/menu_background.jpg")) {          // load background image for main menu
         std::cerr << "Failed to load background image!" << std::endl;
