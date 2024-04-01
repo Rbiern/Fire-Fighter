@@ -286,6 +286,7 @@ void game::gameLoop() {
         barrier2.reset();
         barrier3.reset();
         powerup.reset();
+        player->reset();
         goto spetsnaz;
     }
 }
