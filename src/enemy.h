@@ -15,6 +15,7 @@ public:
     void setPosition(float x, float y);
     sf::Vector2u getSize() const;
     sf::FloatRect getGlobalBounds() const;
+    void adjustForResolution(const sf::Vector2u& resolution);
     void kill();
     bool getIsAlive() const;
     static int getTotalDeath();
@@ -24,7 +25,7 @@ public:
     void setIsAlive(bool alive); // Set alive status
     void increaseSpeed(float factor); // Increase movement speed
     bool hasMovedRight = false;
-    void removeBullet(Bullet bullet);
+    void removeBullet();
 
 private:
     sf::Sprite sprite;
