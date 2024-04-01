@@ -17,7 +17,7 @@ private:
         int uhd[2] = {3840, 2160};
         int uniqueRes[2];
     }res;
-    int dataFromFile[7];
+    int dataFromFile[7]{};
     bool fullscreen;
     int *resolution;
     int frameRate;
