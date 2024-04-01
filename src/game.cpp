@@ -237,6 +237,11 @@ void game::gameLoop() {
                 stage++; // Start fading out
                 time = 0; // Reset timer for fade out
                 stageText.setString("Stage: " + std::to_string(metrics.getStage()));
+                if (metrics.getStage() != 0) {
+                    barrier1.reset();
+                    barrier2.reset();
+                    barrier3.reset();
+                }
             }
         } else {
             alpha = 255 - (255 * (time / fadeOutDuration));
