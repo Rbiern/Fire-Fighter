@@ -33,7 +33,6 @@ public:
     void setEnemyCount(int enemyCount);
     void increaseScore(int points);
     void reset();
-    int getScore() const;
 };
 
 #endif //FIRE_FIGHTER_METRICS_H
