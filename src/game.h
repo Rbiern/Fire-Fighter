@@ -24,7 +24,7 @@ private:
     Barrier barrier1;
     Barrier barrier2;
     Barrier barrier3;
-    powerup Powerup;
+    Powerup powerup;
     Player* player;
     EnemyWave* enemyWave;
 public:
