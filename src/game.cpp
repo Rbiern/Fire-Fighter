@@ -1,7 +1,7 @@
 #include "game.h"
 
 /** constructor */
-game::game(settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barrier2(*opt), barrier3(*opt) {
+Game::Game(Settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barrier2(*opt), barrier3(*opt) {
     options = *opt;             // settings
     font = options.getFont();   // load font from settings
     icon = options.getIcon();   // load icon from settings
@@ -22,7 +22,7 @@ game::game(settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barr
 }
 
 /** destructor */
-game::~game() {
+Game::~Game() {
     if (window.isOpen()) {
         window.close();
     }
@@ -37,7 +37,7 @@ game::~game() {
 }
 
 /** run game method */
-void game::gameLoop() {
+void Game::gameLoop() {
     char* str = characterSelectScreen();                           // character selection screen method call
     if (str == NULL) return;                                       // an error has occurred or user exited back to UI
     else player->setPlayerTexture(str);                         // test player texture to selected file path of str
@@ -295,7 +295,7 @@ void game::gameLoop() {
  * character selection window
  * handles character selection
  * */
-char* game::characterSelectScreen() {
+char* Game::characterSelectScreen() {
     char* str;                                          // String of player texture path to return
     sf::Texture boyTexture;                             // load image of the boy droplet image
     sf::Texture girlTexture;                            // load image of the girl droplet image
@@ -448,7 +448,7 @@ char* game::characterSelectScreen() {
 }
 
 /** handle window when user presses ESC key */
-bool game::handleExitRequest() {
+bool Game::handleExitRequest() {
     // Calculate button sizes and positions dynamically based on window size
     float buttonWidth = options.widthScaling(resolution.x * 0.25f);
     float buttonHeight = options.heightScaling(50.f);
@@ -542,7 +542,7 @@ bool game::handleExitRequest() {
  * handle window when game is over
  * creates a message on window upon game over
  * */
-bool game::gameOverScreen() {
+bool Game::gameOverScreen() {
     // Get the screen dimensions
     float screenWidth = static_cast<float>(window.getSize().x);
     float screenHeight = static_cast<float>(window.getSize().y);
