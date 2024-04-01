@@ -6,7 +6,7 @@ Powerup::Powerup() {
     }
     sprite.setTexture(texture);
     resolution = gameSettings.getVector();
-    adjustForResolution(resolution);
+    sprite.setScale(gameSettings.widthScaling(1.f), gameSettings.heightScaling(1.f));
     reset();
 }
 
@@ -78,22 +78,4 @@ void Powerup::draw(sf::RenderWindow& window, Player* player) {
     if (!collected && player->getLives() < 3 && timeSinceLivesLessThanThree >= sf::seconds(appearanceDelay)) { // Only draw if lives < 3 and it's time to show the powerup
         window.draw(sprite);
     }
-}
-
-void Powerup::adjustForResolution(const sf::Vector2u& resolution) {
-
-    float scale = 0.5f;
-
-    if (resolution == sf::Vector2u(640, 360)) {
-        scale = 0.5f;
-    } else if (resolution == sf::Vector2u(1280, 720)) {
-        scale = 1.0f;
-    } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 1.2f;
-    } else if (resolution == sf::Vector2u(3840, 2160)) {
-        scale = 1.5f;
-    }
-
-    sprite.setScale(scale,scale);
-
 }
