@@ -16,14 +16,14 @@ private:
     std::mt19937 gen;
     sf::Vector2u resolution;
     Settings gameSettings;
+    sf::Time time;
+    int appearanceDelay;
 public:
     explicit Powerup();
     virtual ~Powerup();
     void reset();
     void update(const sf::Time& delta, Player* player, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window, Player* player);
-    sf::Time timeSinceLivesLessThanThree;
-    int appearanceDelay;
 };
 
 #endif //FIRE_FIGHTER_POWERUP_H
