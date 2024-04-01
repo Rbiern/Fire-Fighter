@@ -31,12 +31,12 @@ public:
      *
      * @param gameSettings the game settings set by the user.
      */
-    explicit Barrier(Settings gameSettings);
+    Barrier(Settings gameSettings);
 
     /**
      * @brief Destructs a Barrier object.
      */
-    virtual ~Barrier();
+    ~Barrier();
 
     /**
      * @brief Sets the position of the Barrier object.
