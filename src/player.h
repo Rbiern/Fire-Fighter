@@ -117,7 +117,10 @@ public:
      * @brief Increases the player's life count by one, not exceeding the maximum.
      */
     void increaseLife();
-
+    /**
+     * @brief Reset player's position and lives
+     */
+    void reset();
     /**
      * @brief Checks for collision between the player and an enemy bulletSprite.
      * @param enemySprite The bulletSprite of the enemy to check for collision.
