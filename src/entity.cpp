@@ -17,11 +17,16 @@ sf::Vector2f Entity::getPosition() const {
 void Entity::setPosition(float x, float y) {
     sprite.setPosition(x, y);
 }
-
+void Entity::setScale(float scaleX, float scaleY) {
+    sprite.setScale(scaleX, scaleY);
+}
 bool Entity::setTexture(const std::string& texturePath) {
     if (texture.loadFromFile(texturePath)) {
         sprite.setTexture(texture);
         return true;
     }
     return false;
+}
+void Entity::draw(sf::RenderWindow& window) const {
+    window.draw(sprite);
 }
