@@ -7,8 +7,7 @@
  * @param startX Starting point in x coordinate
  * @param startY Starting point in y coordinate
  */
-Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Entity() {
-    this->setPosition(startX, startY);
+Player::Player(sf::RenderWindow& window): Entity() {
     movementSpeed = 3.0f;
     //water-drop sound effect
     if (!shootBuffer.loadFromFile("../../resource/sounds/water-drop.mp3")) {
@@ -17,9 +16,15 @@ Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Ent
     shootSound.setBuffer(shootBuffer);
     options = new Settings();
     lives = 3;
-
-    sprite.setScale(options->widthScaling(1.5f), options->heightScaling(1.5f));
-    movementSpeed *= options->widthScaling(1.5f);
+    //if it is 4k, scale differently
+    if(options->getVector().x == 3840){
+        sprite.setScale(options->widthScaling(0.5f), options->heightScaling(0.5f));
+        movementSpeed *= options->widthScaling(1.0f);
+    }else{
+        sprite.setScale(options->widthScaling(1.f), options->heightScaling(1.f));
+        movementSpeed *= options->widthScaling(1.5f);
+    }
+    this->setPosition(window.getSize().x *0.93 , window.getSize().y/ 2);
 }
 
 //move player's bulletSprite
@@ -183,7 +188,8 @@ void Player::setPlayerTexture(char* str) {
 /**
  * reset player's position and lives
  */
-void Player::reset() {
+void Player::reset(sf::RenderWindow& window) {
     setLives(3);
-    setPosition(options->getResolution()[0]* 0.93f ,options->getResolution()[1] / 2);
+    std::cout << options->getVector().y << std::endl;
+    this->setPosition(window.getSize().x *0.93 , window.getSize().y/ 2);
 }
