@@ -72,7 +72,7 @@ void game::gameLoop() {
     roundedRect.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     // Create the stageText
-    sf::Text stageText("Stage: 0", font, 50); // Adjust the size accordingly
+    sf::Text stageText("Stage: 1", font, 50); // Adjust the size accordingly
     stageText.setFillColor(sf::Color::White); // Text color
 
     // Center the stageText on the button
@@ -83,7 +83,7 @@ void game::gameLoop() {
 
     sf::Clock clock2;
     float time = 0;
-    int stage = -1;
+    int stage = 1;
     const float fadeInDuration = 1.0f; // Duration of the fade in seconds
     const float fadeOutDuration = 1.0f; // Duration of the fade out in seconds
 
@@ -175,7 +175,7 @@ void game::gameLoop() {
                 while (bulletIt != bullets.end()) {
                     bool bulletRemoved = false;
                     if (bulletIt->getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
-                        player->decreaseLife();
+//                        player->decreaseLife();
                         bulletIt = bullets.erase(bulletIt);
                         bulletRemoved = true;
                         if (player->getLives() <= 0) {
@@ -230,14 +230,14 @@ void game::gameLoop() {
         // display next stage
         time += clock2.restart().asSeconds();
         float alpha = 0;
-        if (stage < metrics.getStage()) {
+        if (stage <= metrics.getStage()) {
             alpha = 255 * (time / fadeInDuration);
             if (alpha >= 255) {
                 alpha = 255;
                 stage++; // Start fading out
                 time = 0; // Reset timer for fade out
                 stageText.setString("Stage: " + std::to_string(metrics.getStage()));
-                if (metrics.getStage() != 0) {
+                if (metrics.getStage() >= 1) {
                     barrier1.reset();
                     barrier2.reset();
                     barrier3.reset();
