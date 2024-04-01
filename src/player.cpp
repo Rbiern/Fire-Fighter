@@ -86,6 +86,8 @@ float Player::getSpeed() const {
  */
 bool Player::isCollidingWithEnemy(const sf::Sprite& enemySprite) const {
     // Check if the x positions overlap
+    sf::FloatRect playerBounds = sprite.getGlobalBounds();
+    sf::FloatRect enemyBounds = enemySprite.getGlobalBounds();
     return playerBounds.left < enemyBounds.left + enemyBounds.width &&
            playerBounds.left + playerBounds.width > enemyBounds.left;
 
