@@ -7,6 +7,8 @@ Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vec
         : movementSpeed(3.0f), screenWidth(screenWidth),isAlive(true) {
     setPosition(startX, startY);
     adjustForResolution(resolution);
+    res1.x = resolution.x;
+    res1.y = resolution.y;
 }
 
 int Enemy::totalDeath = 0;
@@ -134,7 +136,7 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
 
     bool bottomReached = false;
     bool topReached = false;
-    // Checking enemy is reaching top or bottom
+
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             Enemy& enemy = enemyGrid[i][j];
@@ -149,11 +151,10 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
         }
         if (bottomReached || topReached) break;
     }
-    //Enemies are moving bottom at first.
+
     if (firstUpdate) {
         movingDown = true;
         firstUpdate = false;
-    //moving enemies to the right
     } else if ((bottomReached || topReached) && !hasMovedRightAfterReach) {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
@@ -164,7 +165,6 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
         hasMovedRightAfterReach = true;
         movingDown = !movingDown;
     } else {
-        //If the enemies are not reached to the top or bottom
         float moveDistance = movingDown ? 1 : -1;
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
@@ -172,7 +172,6 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
                 enemy.setPosition(enemy.getPosition().x, enemy.getPosition().y + moveDistance);
             }
         }
-        //If enemies moved to the right, change the boolean
         if (hasMovedRightAfterReach && (bottomReached || topReached)) {
             hasMovedRightAfterReach = false;
         }
@@ -184,7 +183,6 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
 
 
 
-//This version doesn't lag
 
 //void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
 //    wavePhase += deltaTime.asSeconds();
@@ -201,7 +199,6 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
 //        }
 //    }
 //}
-
 
 void EnemyWave::draw(sf::RenderWindow& window) {
     for (int i = 0; i < rows; ++i) {
@@ -228,7 +225,7 @@ bool Enemy::getIsAlive() const {
 
 void Enemy::shoot() {
     // Create a new bullet at the position of the enemy
-    Bullet enemyBullet(getPosition().x, getPosition().y, "enemy");
+    Bullet enemyBullet(getPosition().x, getPosition().y, "enemy", res1);
     bullets.push_back(enemyBullet);
 }
 
