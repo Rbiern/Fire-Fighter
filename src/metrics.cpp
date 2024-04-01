@@ -36,35 +36,35 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
     scoreText.setCharacterSize(opt->heightScaling(20));
     scoreText.setFillColor(sf::Color::White);
     scoreText.setString(opt->getLanguage()[22] + std::to_string(score));
-    scoreText.setPosition(((windowSize.x * 0.3f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
+    scoreText.setPosition(((windowSize.x * 0.7f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
 
     // Initialize and position the enemy killed text
     enemyKilledText.setFont(font);
     enemyKilledText.setCharacterSize(opt->heightScaling(20));
     enemyKilledText.setFillColor(sf::Color::White);
     enemyKilledText.setString(opt->getLanguage()[23]+ std::to_string(score));
-    enemyKilledText.setPosition((((windowSize.x) * 0.4f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
+    enemyKilledText.setPosition((((windowSize.x) * 0.48f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
     
     // Initialize and position the round text
     roundText.setFont(font);
     roundText.setCharacterSize(opt->heightScaling(20));
     roundText.setFillColor(sf::Color::White);
     roundText.setString(opt->getLanguage()[24] + std::to_string(score));
-    roundText.setPosition((((windowSize.x) * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
+    roundText.setPosition((((windowSize.x) * 0.6f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
 
     // Initialize and position the enemies remaining text
     enemiesRemainingText.setFont(font);
     enemiesRemainingText.setCharacterSize(opt->heightScaling(20));
     enemiesRemainingText.setFillColor(sf::Color::White);
     enemiesRemainingText.setString(opt->getLanguage()[25] + std::to_string(score));
-    enemiesRemainingText.setPosition((((windowSize.x) * 0.65f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
+    enemiesRemainingText.setPosition((((windowSize.x) * 0.3f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 
     // Initialize and position the highest score text
     highestScoreText.setFont(font);
     highestScoreText.setCharacterSize(opt->heightScaling(20));
     highestScoreText.setFillColor(sf::Color::White);
     highestScoreText.setString("Highest Score" + std::to_string(score));
-    highestScoreText.setPosition((((windowSize.x) * 0.8f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
+    highestScoreText.setPosition((((windowSize.x) * 0.82f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
     
     // Load life counter textures and set up health bar sprite
     if (!life3Texture.loadFromFile("../../resource/img/3.png") ||
@@ -128,10 +128,10 @@ void Metrics::draw(sf::RenderTarget& window) {
  */
 void Metrics::drawFinalScore(sf::RenderTarget& window) {
     // Position the score text, roundtext, enemy killed text, and highest score text
-    scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (scoreText.getLocalBounds().height * 5));
-    roundText.setPosition(((windowSize.x * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (roundText.getLocalBounds().height * 3));
-    enemyKilledText.setPosition(((windowSize.x * 0.5f) - (enemyKilledText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (enemyKilledText.getLocalBounds().height * 6));
-    highestScoreText.setPosition(((windowSize.x * 0.5f) - (highestScoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (highestScoreText.getLocalBounds().height * 1));
+    scoreText.setPosition(((windowSize.x * 0.5f) - (scoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (scoreText.getLocalBounds().height * 8.5));
+    roundText.setPosition(((windowSize.x * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (roundText.getLocalBounds().height * 5));
+    enemyKilledText.setPosition(((windowSize.x * 0.5f) - (enemyKilledText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (enemyKilledText.getLocalBounds().height * 1));
+    highestScoreText.setPosition(((windowSize.x * 0.5f) - (highestScoreText.getLocalBounds().width) / 2.f), (options->getResolution()[1]/3) - (highestScoreText.getLocalBounds().height * 3));
 
     window.draw(scoreText);
     window.draw(roundText);
@@ -195,19 +195,19 @@ void Metrics::reset() {
     healthBar.setTexture(life3Texture);
 
     scoreText.setString(options->getLanguage()[22] + std::to_string(score));
-    scoreText.setPosition(((windowSize.x * 0.3f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
+    scoreText.setPosition(((windowSize.x * 0.7f) - (scoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (scoreText.getLocalBounds().height/2));
 
     enemyKilledText.setString(options->getLanguage()[23]+ std::to_string(score));
-    enemyKilledText.setPosition((((windowSize.x) * 0.4f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
+    enemyKilledText.setPosition((((windowSize.x) * 0.48f) - (enemyKilledText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemyKilledText.getLocalBounds().height/2));
 
     roundText.setString(options->getLanguage()[24] + std::to_string(score));
-    roundText.setPosition((((windowSize.x) * 0.5f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
+    roundText.setPosition((((windowSize.x) * 0.6f) - (roundText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (roundText.getLocalBounds().height/2));
 
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
-    enemiesRemainingText.setPosition((((windowSize.x) * 0.65f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
+    enemiesRemainingText.setPosition((((windowSize.x) * 0.3f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 
     highestScoreText.setString("Highest Score:" + std::to_string(score));
-    highestScoreText.setPosition((((windowSize.x) * 0.8f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
+    highestScoreText.setPosition((((windowSize.x) * 0.82f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
     
 }
 
