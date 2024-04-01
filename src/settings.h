@@ -15,6 +15,7 @@ private:
         int sd[2] = {1280, 720};
         int hd[2] = {1920, 1080};
         int uhd[2] = {3840, 2160};
+        int uniqueRes[2];
     }res;
     int dataFromFile[7];
     bool fullscreen;
@@ -46,6 +47,7 @@ public:
     float widthScaling(float x);
     float heightScaling(float y);
     sf::Vector2u getVector();
+    void userScreenInfo(int x, int y);
 private:
     bool isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition);
     bool isButtonPressed(const sf::RectangleShape& button, const sf::Vector2f& mousePosition);
