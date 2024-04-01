@@ -1,5 +1,6 @@
 /**
  * @file Barrier.h
+ * @author Chaewon Eom, Robert Andrew Biernacki
  * @brief Declaration of the Barrier class.
  */
 
