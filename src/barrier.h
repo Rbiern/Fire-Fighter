@@ -2,6 +2,7 @@
 #define FIRE_FIGHTER_BARRIER_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include "bullet.h"
 #include "settings.h"
@@ -12,6 +13,9 @@ private:
     sf::Texture iceBlockTexture;
     sf::Sprite iceBlockSprite;
     float size;
+    sf::SoundBuffer shrinkBuffer;
+    sf::Sound shrinkSound;
+
 public:
     explicit Barrier(settings gameSettings);
     virtual ~Barrier();
