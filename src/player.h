@@ -24,13 +24,9 @@ class Player : public Entity {
 public:
     /**
      * @brief Constructs a Player object with initial position and game resolution.
-     * @param startX Starting X coordinate of the player.
-     * @param startY Starting Y coordinate of the player.
-     * @param resolution The current game screen resolution, used for scaling the player's bulletSprite.
-     *
      * Initializes player's properties such as movement speed, health, and sets up the sound effects for shooting.
      */
-    Player(float startX, float startY, const sf::Vector2u& resolution);
+    Player(sf::RenderWindow& window);
 
     /**
      * @brief Destructor for Player, cleans up allocated resources.
@@ -119,7 +115,7 @@ public:
     /**
      * @brief Reset player's position and lives
      */
-    void reset();
+    void reset(sf::RenderWindow& window);
     /**
      * @brief Checks for collision between the player and an enemy bulletSprite.
      * @param enemySprite The bulletSprite of the enemy to check for collision.
@@ -138,7 +134,6 @@ private:
     int lives; ///< The number of lives the player has.
     sf::SoundBuffer shootBuffer; ///< Buffer for the shooting sound effect.
     sf::Sound shootSound; ///< Sound effect for shooting.
-//    std::vector<Bullet> bullets; ///< Container for bullets fired by the player.
     Settings *options; ///< Pointer to game settings, used for sound toggling.
 };
 
