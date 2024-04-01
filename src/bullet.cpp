@@ -4,7 +4,8 @@
 Bullet::Bullet(float startX, float startY, const std::string& type) {
     loadTexture(type);
     sprite.setPosition(startX, startY);
-    sprite.setScale(0.5f,0.5f);
+    resolution = gameSettings.getVector();
+    adjustForResolution(resolution);
     speed = 300.f;
 }
 
@@ -40,3 +41,20 @@ const sf::Sprite& Bullet::getSprite() const {
     return sprite;
 }
 
+void Bullet::adjustForResolution(const sf::Vector2u& resolution) {
+
+    float scale = 0.2f;
+
+    if (resolution == sf::Vector2u(640, 360)) {
+        scale = 0.2f;
+    } else if (resolution == sf::Vector2u(1280, 720)) {
+        scale = 0.5f;
+    } else if (resolution == sf::Vector2u(1920, 1080)) {
+        scale = 0.8f;
+    } else if (resolution == sf::Vector2u(3840, 2160)) {
+        scale = 1.0f;
+    }
+
+    sprite.setScale(scale,scale);
+
+}
