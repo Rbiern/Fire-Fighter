@@ -34,7 +34,7 @@ private:
     unsigned int screenWidth;
     bool isAlive;
     static int totalDeath;
-
+    sf::Vector2u res1;
 };
 
 class EnemyWave {
