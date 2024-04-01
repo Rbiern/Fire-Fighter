@@ -1,8 +1,6 @@
 /**
  * @file Barrier.h
  * @brief Declaration of the Barrier class.
- * 
- * This file contains the declaration of the Barrier class, which represents a barrier object in the game.
  */
 
 #ifndef FIRE_FIGHTER_BARRIER_H
@@ -33,7 +31,7 @@ public:
      *
      * @param gameSettings the game settings set by the user.
      */
-    explicit Barrier(settings gameSettings);
+    explicit Barrier(Settings gameSettings);
 
     /**
      * @brief Destructs a Barrier object.
@@ -89,7 +87,7 @@ public:
     void draw(sf::RenderWindow& window);
 
 private:
-    settings gameSettings;
+    Settings gameSettings;
     sf::Texture iceBlockTexture;
     sf::Sprite iceBlockSprite;
     float size;
