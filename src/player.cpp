@@ -174,11 +174,3 @@ Player::~Player() {
 void Player::setPlayerTexture(char* str) {
     this->setTexture(str);
 }
-
-///**
-// * Sets the scale of the player's bulletSprite to a specified factor.
-// * @param scaleFactor scale factor
-// */
-//void Player::setScale(float scaleFactor) {
-//    sprite.setScale(scaleFactor, scaleFactor);
-//}
