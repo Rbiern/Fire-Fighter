@@ -9,6 +9,8 @@ powerup::powerup() {
     reset();
 }
 
+powerup::~powerup() = default;
+
 void powerup::reset() {
     // Randomize starting position
     std::random_device rd;
