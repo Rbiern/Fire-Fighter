@@ -1,7 +1,7 @@
 #include "barrier.h"
 
 Barrier::Barrier(float barrierX, float barrierY, sf::RenderWindow& window, settings gameSettings) : Entity(),
-size(1.0f), scaleFactor(1.0f), referenceWidth(1280.0f), referenceHeight(720.0f), barrierSpacing(150.0f), gameSettings(gameSettings){
+size(1.0f), scaleFactor(1.0f), referenceWidth(1280.0f), referenceHeight(720.0f), barrierSpacing(150.0f){
     this->setTexture("../../resource/img/iceBlock.png");
     this->setPosition(barrierX, barrierY);
 
@@ -15,6 +15,12 @@ bool Barrier::bulletCollision(const sf::Sprite& bulletSprite) const {
 }
 
 void Barrier::shrink() {
+
+    if (gameSettings.toggleSounds()) {
+        shrinkBuffer.loadFromFile("../../resource/sounds/melt.mp3");
+        shrinkSound.setBuffer(shrinkBuffer);
+        shrinkSound.play();
+    }
 
     // Calculate the scaling factor based on the reference resolution
     scaleFactor = gameSettings.widthScaling(referenceWidth) / gameSettings.heightScaling(referenceHeight);
