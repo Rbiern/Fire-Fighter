@@ -1,6 +1,4 @@
 #include "powerup.h"
-#include <iostream>
-#include <random>
 
 powerup::powerup() {
     if (!texture.loadFromFile("../../resource/img/life.png")) {
