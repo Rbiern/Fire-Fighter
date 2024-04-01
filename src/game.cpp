@@ -218,6 +218,7 @@ void game::gameLoop() {
         barrier1.reset();
         barrier2.reset();
         barrier3.reset();
+        Powerup.reset();
         goto spetsnaz;
     }
 }
@@ -457,10 +458,9 @@ bool game::handleExitRequest() {
         Powerup.draw(window,player);
         player->drawBullets(window);
         enemyWave->draw(window);
-//        for(auto& barrier : barriers) {
-//            barrier.setTexture("../../resource/img/iceBlock.png");
-//            barrier.draw(window);
-//        }
+        barrier1.draw(window);
+        barrier2.draw(window);
+        barrier3.draw(window);
         window.draw(exitButton);
         window.draw(exitButton);
         window.draw(exitText);
