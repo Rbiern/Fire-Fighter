@@ -43,9 +43,7 @@ settings::settings() {
 }
 
 /** destructor */
-settings::~settings() {
-
-}
+settings::~settings() = default;
 
 /** main settings window loop */
 void settings::openSettings() {
@@ -262,10 +260,10 @@ void settings::openSettings() {
                     std::cout << "Sound Effects Button Pressed!" << std::endl;
                     soundEffects = !soundEffects;
                     soundOnOffText.setString(soundEffects ? onString : offString);
-                } else if (isButtonPressed(rotationButton, mousePosition)) {
-                    std::cout << "Rotation Button Pressed!" << std::endl;
-                    rotation = !rotation;
-                    rotationOnOffText.setString(rotation ? onString : offString);
+//                } else if (isButtonPressed(rotationButton, mousePosition)) {
+//                    std::cout << "Rotation Button Pressed!" << std::endl;
+//                    rotation = !rotation;
+//                    rotationOnOffText.setString(rotation ? onString : offString);
                 } else if (isButtonPressed(EnglishButton, mousePosition)) {
                     std::cout << "English Button Pressed!" << std::endl;
                     EnglishButton.setFillColor(pressedColor);
@@ -376,7 +374,7 @@ void settings::openSettings() {
         window.draw(fullscreenButton);
         window.draw(musicButton);
         window.draw(soundEffectsButton);
-        window.draw(rotationButton);
+//        window.draw(rotationButton);
         window.draw(selectLanguagesText);
         window.draw(selectResolutionText);
         window.draw(englishText);
@@ -385,11 +383,11 @@ void settings::openSettings() {
         window.draw(fullscreenText);
         window.draw(musicText);
         window.draw(soundEffectsText);
-        window.draw(rotationText);
+//        window.draw(rotationText);
         window.draw(screenOnOffText);
         window.draw(musicOnOffText);
         window.draw(soundOnOffText);
-        window.draw(rotationOnOffText);
+//        window.draw(rotationOnOffText);
         window.draw(dvText);
         window.draw(sdText);
         window.draw(hdText);
