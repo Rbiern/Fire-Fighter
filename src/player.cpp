@@ -17,7 +17,9 @@ Player::Player(float startX, float startY,  const sf::Vector2u& resolution): Ent
     shootSound.setBuffer(shootBuffer);
     options = new settings();
     lives = 3;
-    adjustForResolution(resolution);
+
+    sprite.setScale(options->widthScaling(1.5f), options->heightScaling(1.5f));
+    movementSpeed *= options->widthScaling(1.5f);
 }
 
 //move player's bulletSprite
@@ -172,36 +174,11 @@ Player::~Player() {
 void Player::setPlayerTexture(char* str) {
     this->setTexture(str);
 }
-/**
- * Adjusts the player's scale and speed based on the game's resolution to ensure consistent gameplay across different resolutions.
- * @param resolution array of resolution
- */
-void Player::adjustForResolution(const sf::Vector2u& resolution) {
-    float scale = 1.0f;
-    float speedScale = 1.0f;
 
-    if (resolution == sf::Vector2u(640, 360)) {
-        scale = 1.0f;
-        speedScale = 1.00f;
-    } else if (resolution == sf::Vector2u(1280, 720)) {
-        scale = 1.5f;
-        speedScale = 1.5f;
-    } else if (resolution == sf::Vector2u(1920, 1080)) {
-        scale = 2.0f;
-        speedScale = 1.75f;
-    } else if (resolution == sf::Vector2u(3840, 2160)) {
-        scale = 2.6f;
-        speedScale = 2.0f;
-    }
-
-    sprite.setScale(scale, scale);
-
-    movementSpeed *= speedScale;
-}
-/**
- * Sets the scale of the player's bulletSprite to a specified factor.
- * @param scaleFactor scale factor
- */
-void Player::setScale(float scaleFactor) {
-    sprite.setScale(scaleFactor, scaleFactor);
-}
+///**
+// * Sets the scale of the player's bulletSprite to a specified factor.
+// * @param scaleFactor scale factor
+// */
+//void Player::setScale(float scaleFactor) {
+//    sprite.setScale(scaleFactor, scaleFactor);
+//}
