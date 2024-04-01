@@ -25,7 +25,11 @@ Barrier::Barrier(Settings gameSettings) {
     iceBlockSprite.setTexture(iceBlockTexture);
 
     // Scale the bullet sprite based on resolution from game settings
-    iceBlockSprite.setScale(gameSettings.widthScaling(1.5), gameSettings.heightScaling(1.5));
+    if(gameSettings.getVector().x == 3840){
+        iceBlockSprite.setScale(gameSettings.widthScaling(0.75), gameSettings.heightScaling(0.75));
+    }else{
+        iceBlockSprite.setScale(gameSettings.widthScaling(1.5), gameSettings.heightScaling(1.5));
+    }
 }
 
 /**
@@ -70,7 +74,11 @@ void Barrier::shrink() {
     }
 
     // Resize the barrier bulletSprite
-    iceBlockSprite.setScale(gameSettings.widthScaling(1.5) * size, gameSettings.heightScaling(1.5) * size);
+    if(gameSettings.getVector().x == 3840){
+        iceBlockSprite.setScale(gameSettings.widthScaling(0.75)* size, gameSettings.heightScaling(0.75)* size);
+    }else{
+        iceBlockSprite.setScale(gameSettings.widthScaling(1.5)* size, gameSettings.heightScaling(1.5)* size);
+    }
 }
 
 /**
@@ -81,7 +89,11 @@ void Barrier::reset() {
     size = 1.0f;
 
     // Scale the bullet sprite based on resolution from game settings
-    iceBlockSprite.setScale(gameSettings.widthScaling(1.5), gameSettings.heightScaling(1.5));
+    if(gameSettings.getVector().x == 3840){
+        iceBlockSprite.setScale(gameSettings.widthScaling(0.75), gameSettings.heightScaling(0.75));
+    }else{
+        iceBlockSprite.setScale(gameSettings.widthScaling(1.5), gameSettings.heightScaling(1.5));
+    }
 }
 
 /**
