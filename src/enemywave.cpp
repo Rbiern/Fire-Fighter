@@ -3,10 +3,23 @@
 #include <cmath>
 #include <iostream>
 
-
-void EnemyWave::removeEnemy(int row, int column) {
-    enemyGrid[row].erase(enemyGrid[row].begin() + column);
+EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight)
+        : window(window),waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
+          rows(5), columns(4), spacingX(100.0f), spacingY(70.0f),
+          startX(0.0f),  startY(75.0f + metricsBarHeight) {
+    adjustSpacingForResolution(resolution); // Adjust spacing based on resolution
+    enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, resolution)));
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            float positionX = startX + j * spacingX;
+            float positionY = startY + i * spacingY;
+            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x, resolution);
+            enemyGrid[i][j].setTexture("../../resource/img/fire.png");
+            totalSpawned++;
+        }
+    }
 }
+
 
 void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
     if (resolution == sf::Vector2u(640, 360)) {
@@ -25,22 +38,7 @@ void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
 
     }
 }
-EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight)
-        : window(window),waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
-          rows(5), columns(4), spacingX(100.0f), spacingY(70.0f),
-          startX(0.0f),  startY(75.0f + metricsBarHeight) {
-    adjustSpacingForResolution(resolution); // Adjust spacing based on resolution
-    enemyGrid.resize(rows, std::vector<Enemy>(columns, Enemy(0, 0, window.getSize().x, resolution)));
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < columns; ++j) {
-            float positionX = startX + j * spacingX;
-            float positionY = startY + i * spacingY;
-            enemyGrid[i][j] = Enemy(positionX, positionY, window.getSize().x, resolution);
-            enemyGrid[i][j].setTexture("../../resource/img/fire.png");
-            totalSpawned++;
-        }
-    }
-}
+
 
 void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
     float screenLimit = window.getSize().y - metricsBarHeight;
@@ -93,21 +91,6 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
     }
 }
 
-//void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
-//    wavePhase += deltaTime.asSeconds();
-//    float screenLimit = window.getSize().y - metricsBarHeight; // Calculate screen limit considering metrics bar
-//    for (int i = 0; i < rows; ++i) {
-//        for (int j = 0; j < columns; ++j) {
-//            float waveOffset = sin(wavePhase + j * waveFrequency) * waveAmplitude;
-//            float newPositionY = startY + i * spacingY + waveOffset;
-//            if (newPositionY + enemyGrid[i][j].getGlobalBounds().height > screenLimit) {
-//                newPositionY = screenLimit - enemyGrid[i][j].getGlobalBounds().height; // Adjust position to stay within screen
-//            }
-//            enemyGrid[i][j].setPosition(enemyGrid[i][j].getPosition().x, newPositionY);
-//            // No change to the horizontal movement logic
-//        }
-//    }
-//}
 
 void EnemyWave::draw(sf::RenderWindow& window) {
     for (int i = 0; i < rows; ++i) {
@@ -138,6 +121,10 @@ bool EnemyWave::allEnemiesDead() const {
         }
     }
     return true; // All enemies are dead
+}
+
+void EnemyWave::removeEnemy(int row, int column) {
+    enemyGrid[row].erase(enemyGrid[row].begin() + column);
 }
 
 void EnemyWave::respawnEnemies() {
