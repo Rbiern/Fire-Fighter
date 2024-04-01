@@ -4,7 +4,10 @@ Bullet::Bullet(float startX, float startY, const std::string& type, sf::Vector2u
     loadTexture(type);
     bulletSprite.setTexture(bulletTexture);
     bulletSprite.setPosition(startX, startY);
-    bulletSprite.setScale(0.5f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
+    if (type == "enemy")
+        bulletSprite.setScale(0.5f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
+    else
+        bulletSprite.setScale(1.0f * ((float)res.x/1280.f), 1.0f * ((float)res.y/720.f));
     speed = 300.f;
 }
 
