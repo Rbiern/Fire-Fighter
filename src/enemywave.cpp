@@ -1,6 +1,14 @@
 #include "enemywave.h"
 
-
+    /**
+     *Constructor: Initializes an enemy wave within the game environment, setting up initial positions, spacing,
+     *and creating enemies based on the game's window size, resolution, and UI metrics bar height.
+     * @author Juyoung Lee, Sungmin Lee
+     * @param window
+     * @param resolution
+     * @param metricsBarHeight
+     * @author Juyoung Lee, Sungmin Lee
+     */
 EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight)
         : window(window),
           rows(5), columns(4), spacingX(100.0f), spacingY(70.0f),
@@ -18,7 +26,11 @@ EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, f
     }
 }
 
-
+    /**
+    * Dynamically adjusts enemy spacing based on screen resolution.
+    *
+    * @param resolution The screen resolution to adapt enemy spacing for.
+    */
 void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
     if (resolution == sf::Vector2u(640, 360)) {
         spacingX = 70.0f; // Smaller resolution, reduce spacing
@@ -37,7 +49,11 @@ void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
     }
 }
 
-
+    /**
+     *Updates the position and state of all enemies in the wave.
+     *
+     * @param metricsBarHeight The height of the metrics bar, used to prevent enemies from overlapping it.
+     */
 void EnemyWave::update(float metricsBarHeight) {
     float moveRightDistance = 50.0f;
     static bool movingDown = true;
@@ -89,7 +105,11 @@ void EnemyWave::update(float metricsBarHeight) {
     }
 }
 
-
+    /**
+     * Draws all enemies in the wave to the provided render window.
+     *
+     * @param window The window where enemies will be drawn.
+     */
 void EnemyWave::draw(sf::RenderWindow& window) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
@@ -98,18 +118,39 @@ void EnemyWave::draw(sf::RenderWindow& window) {
     }
 }
 
+    /**
+     * Accesses a specific enemy in the grid.
+     *
+     * @param row The row index of the enemy.
+     * @param column The column index of the enemy.
+     * @return Reference to the Enemy object at the specified grid location.
+     */
 Enemy& EnemyWave::getEnemy(int row, int column) {
     return enemyGrid[row][column];
 }
 
+    /**
+     * Gets the number of rows in the enemy grid.
+     *
+     * @return The total number of rows.
+     */
 int EnemyWave::getRows() const {
     return rows;
 }
-
+    /**
+    * Gets the number of columns in the enemy grid.
+    *
+    * @return The total number of columns.
+    */
 int EnemyWave::getColumns() const {
     return columns;
 }
 
+    /**
+     * Checks if all enemies in the wave are defeated.
+     *
+     * @return True if all enemies are dead, false otherwise.
+     */
 bool EnemyWave::allEnemiesDead() const {
     for (const auto& row : enemyGrid) {
         for (const auto& enemy : row) {
@@ -121,6 +162,11 @@ bool EnemyWave::allEnemiesDead() const {
     return true; // All enemies are dead
 }
 
+/**
+     * Respawns enemies with potential modifications for difficulty.
+     *
+     * @param flag Indicates how enemies should be modified on respawn.
+     */
 void EnemyWave::respawnEnemies(int flag) {
     float speedIncreaseFactor = 2.0f; //enemy speed increase factor
     for (int i = 0; i < rows; ++i) {
@@ -137,6 +183,12 @@ void EnemyWave::respawnEnemies(int flag) {
         }
     }
 }
+
+/**
+     *Retrieves the total number of enemies spawned by this wave.
+     *
+     * @return The total number of enemies spawned.
+     */
 int EnemyWave::getTotalSpawned() const {
     return totalSpawned;
 }
