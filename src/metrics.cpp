@@ -17,7 +17,7 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
     float infoBarHeight = windowSize.y * 0.1f;
 
     // Load the highest score from file
-    std::ifstream inFile("highestScore.txt");
+    std::ifstream inFile("../../config/highestScore.txt");
     if (inFile.is_open()) {
         inFile >> highestScore;
         inFile.close();
@@ -209,7 +209,7 @@ void Metrics::updateHighestScore() {
         highestScore = score;
 
         // Store the highest score in a file
-        std::ofstream outFile("highestScore.txt");
+        std::ofstream outFile("../../config/highestScore.txt");
         if (outFile.is_open()) {
             outFile << highestScore;
             outFile.close();
