@@ -1,6 +1,12 @@
 #include "enemy.h"
 
-
+/**
+ *
+ * @param startX
+ * @param startY
+ * @param screenWidth
+ * @param resolution
+ */
 Enemy::Enemy(float startX, float startY, unsigned int screenWidth, const sf::Vector2u& resolution)
         : movementSpeed(3.0f), screenWidth(screenWidth),isAlive(true) {
     setPosition(startX, startY);
@@ -27,7 +33,7 @@ void Enemy::update(const sf::Time& deltaTime) {
         sprite.setPosition(-sprite.getGlobalBounds().width, sprite.getPosition().y);
     }
     // Update the position of enemy bullets
-    for (auto& bullet : bullets) {
+    for (auto& bullet : bullet) {
         bullet.update(deltaTime,"enemy");
     }
     //if bullet goes off screen
@@ -39,7 +45,7 @@ void Enemy::draw(sf::RenderWindow& window) {
         window.draw(sprite);
     }
     // Draw enemy bullets on the screen
-    for (auto& bullet : bullets) {
+    for (auto& bullet : bullet) {
         bullet.draw(window, "enemy");
     }
 }
@@ -67,11 +73,11 @@ bool Enemy::getIsAlive() const {
 void Enemy::shoot() {
     // Create a new bullet at the position of the enemy
     Bullet enemyBullet(getPosition().x, getPosition().y, "enemy", res1);
-    bullets.push_back(enemyBullet);
+    bullet.push_back(enemyBullet);
 }
 
 std::vector<Bullet>& Enemy::getBullets() {
-    return bullets;
+    return bullet;
 }
 
 void Enemy::setIsAlive(bool alive) {
@@ -82,9 +88,9 @@ void Enemy::increaseSpeed(float factor) {
     movementSpeed *= factor;
 }
 void Enemy::removeBullet() {
-    for (int i = bullets.size() - 1; i >= 0; --i) {
-        if (bullets[i].getGlobalBounds().getPosition().x > res1.x) {
-            bullets.erase(bullets.begin() + i);
+    for (int i = bullet.size() - 1; i >= 0; --i) {
+        if (bullet[i].getGlobalBounds().getPosition().x > res1.x) {
+            bullet.erase(bullet.begin() + i);
         }
     }
 }
