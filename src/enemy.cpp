@@ -20,10 +20,6 @@ void Enemy::kill() {
     std::cout << "Enemy killed. Total deaths: " << totalDeath << std::endl;
 }
 
-int Enemy::getTotalDeath() {
-    return totalDeath;
-}
-
 void Enemy::update(const sf::Time& deltaTime) {
     float moveDistance = movementSpeed * deltaTime.asSeconds();
     sprite.move(moveDistance, 0);
@@ -77,11 +73,6 @@ void Enemy::shoot() {
 std::vector<Bullet>& Enemy::getBullets() {
     return bullets;
 }
-
-//const sf::Sprite& Enemy::getSprite() const {
-//    return sprite;
-//}
-
 
 void Enemy::setIsAlive(bool alive) {
     isAlive = alive;
