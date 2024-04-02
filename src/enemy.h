@@ -1,7 +1,6 @@
 #ifndef FIRE_FIGHTER_ENEMY_H
 #define FIRE_FIGHTER_ENEMY_H
 
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -18,7 +17,6 @@ public:
     sf::FloatRect getGlobalBounds() const;
     void kill();
     bool getIsAlive() const;
-    static int getTotalDeath();
     void shoot();
     std::vector<Bullet>& getBullets();
     void setIsAlive(bool alive);
