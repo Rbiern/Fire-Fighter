@@ -6,6 +6,13 @@
 #include <string>
 #include "settings.h"
 
+/**
+ * @author Prachi Ghevaria
+ * @brief Metrics class for managing game metrics.
+ *
+ * This class handles various game metrics such as score, health, and stage information.
+ * It also manages the display of these metrics on the game screen.
+ */
 class Metrics {
 public:
     /**
@@ -81,17 +88,32 @@ public:
     void increaseScore(int points);
 
     /**
+     * @brief Updates the new highest score if current score is greater.
+     *
+     * This function updates the new highest score if current score is greater than the highest score saved in highestScore.txt.
+     * It also stores the new highest score in the text file.
+     *
+     */
+    void updateHighestScore();
+
+    /**
+     * @brief Returns the highest score achieved.
+     *
+     * This function returns the highest score achieved by the player.
+     *
+     * @return The highest score.
+     */
+    int getHighestScore() const;
+
+    /**
      * @brief Resets the metrics to their default state.
      *
      * This function resets the metrics, including the score and various text elements,
      * to their default state. It sets the score to zero and updates the score text,
      * enemy killed text, round text, and enemies remaining text accordingly.
      */
-
-    void updateHighestScore();
-    int getHighestScore() const;
-
     void reset();
+
     /**
      * @brief Calculates the current stage based on the score and number of enemies.
      *
