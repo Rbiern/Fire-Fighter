@@ -1,9 +1,16 @@
 #include "metrics.h"
 
 /**
- * Constructor of Metrics.
+ * @brief Constructor of Metrics.
+ *
+ * Initializes a Metrics object with the given window size and optional settings.
+ * It calculates the height of the infoBar as 10% of the window's height and creates an infoBar accordingly.
+ * Various text elements such as score, enemy killed count, round number, and enemies remaining are initialized and positioned on the infoBar.
+ * Life counter textures are loaded for displaying health status, and the health bar sprite is set up accordingly.
+ *
  * @param windowSize The size of the game window.
  * @param opt Optional settings for customizing the Metrics object.
+ * @authors Prachi Ghevaria, Robert Andrew Biernacki
  */
 Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(windowSize) {
     // Calculate the infoBar height as 10% of the window's height
@@ -85,8 +92,12 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
 Metrics::~Metrics() = default;
 
 /**
- * Update the health bar based on the player's remaining lives.
- * @param lives The number of lives remaining for the player.
+ * @brief Destructor of Metrics.
+ *
+ * Default destructor for the Metrics class.
+ * This destructor is defaulted, meaning it does not have custom cleanup operations.
+ * It will automatically release resources and memory allocated by the Metrics class.
+ * @author Prachi Ghevaria
  */
 void Metrics::updateHealthbar(int lives){
     switch (lives) {
@@ -108,8 +119,13 @@ void Metrics::updateHealthbar(int lives){
 }
 
 /**
- * Draw the metrics elements on the specified render target.
+ * @brief Draw the metrics elements on the specified render target.
+ *
+ * This function draws various metrics elements, such as the infoBar, separation line, score text, round text, health bar,
+ * enemy killed text, and enemies remaining text, on the specified render target (window).
+ *
  * @param window The render target (SFML RenderTarget) to draw the metrics elements on.
+ * @author Prachi Ghevaria
  */
 void Metrics::draw(sf::RenderTarget& window) {
     window.draw(infoBar);
@@ -123,7 +139,12 @@ void Metrics::draw(sf::RenderTarget& window) {
 }
 
 /**
- * Draw the final score elements on the specified render target.
+ * @brief Draw the final score elements on the specified render target.
+ *
+ * This function draws the final score elements, including the score text, round text, and enemy killed text,
+ * at specific positions on the specified render target (window). These elements are positioned centered horizontally
+ * and vertically at one-third of the window's height.
+ *
  * @param window The render target (SFML RenderTarget) to draw the final score elements on.
  */
 void Metrics::drawFinalScore(sf::RenderTarget& window) {
@@ -140,7 +161,11 @@ void Metrics::drawFinalScore(sf::RenderTarget& window) {
 }
 
 /**
- * Set the count of remaining enemies and updates the corresponding text.
+ * @brief Set the count of remaining enemies and updates the corresponding text.
+ * 
+ * This function sets the count of remaining enemies to the specified value and updates
+ * the enemies remaining text accordingly.
+ * 
  * @param enemyCount The count of remaining enemies.
  */
 void Metrics::setEnemyCount(int enemyCount) {
@@ -149,7 +174,11 @@ void Metrics::setEnemyCount(int enemyCount) {
 }
 
 /**
- * Increases the score by the specified points and updates the corresponding texts.
+ * @brief Increases the score by the specified points and updates the corresponding texts.
+ *
+ * This function increases the score by the specified points and updates the score text, round text,
+ * enemy killed text, and enemies remaining text accordingly.
+ *
  * @param points The points to be added to the score.
  */
 void Metrics::increaseScore(int points) {
@@ -162,6 +191,13 @@ void Metrics::increaseScore(int points) {
     highestScoreText.setString(options->getLanguage()[26] + std::to_string(highestScore));
 }
 
+/**
+ * @brief Update the highest score.
+ *
+ * This function updates the highest score if the current score is greater.
+ * It also stores the highest score in a file.
+ *
+ */
 void Metrics::updateHighestScore() {
     // Update highest score if current score is greater
     if (score > highestScore) {
@@ -178,8 +214,8 @@ void Metrics::updateHighestScore() {
     }
 }
 /**
- * Return the highest score.
- * @return highestScore The current highest score.
+ * @brief Return the highest score.
+ * @return int The current highest score.
  */
 int Metrics::getHighestScore() const {
     // Simply return the highest score
@@ -187,7 +223,11 @@ int Metrics::getHighestScore() const {
 }
 
 /**
- * Resets the metrics to their default state.
+ * @brief Resets the metrics to their default state.
+ *
+ * This function resets the metrics, including the score and various text elements,
+ * to their default state. It sets the score to zero and updates the score text,
+ * enemy killed text, round text, and enemies remaining text accordingly.
  */
 void Metrics::reset() {
     score = 0;
@@ -206,14 +246,19 @@ void Metrics::reset() {
     enemiesRemainingText.setString(options->getLanguage()[25] + std::to_string(score));
     enemiesRemainingText.setPosition((((windowSize.x) * 0.3f) - (enemiesRemainingText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (enemiesRemainingText.getLocalBounds().height/2));
 
-    highestScoreText.setString(options->getLanguage()[26] + std::to_string(score));
+    highestScoreText.setString(options->getLanguage()[26] + std::to_string(highestScore));
     highestScoreText.setPosition((((windowSize.x) * 0.82f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
 
 }
 
 /**
- * Calculate the current stage based on the score and number of enemies.
- * @return The current stage number.
+ * @brief Calculate the current stage based on the score and number of enemies.
+ *
+ * This function calculates the current stage based on the score and number of enemies.
+ * It divides the score by 10 to determine the stage progression, taking into account
+ * the number of enemies defeated. The stage is incremented by 1 to start from 1.
+ *
+ * @return int The current stage number.
  */
 int Metrics::getStage() {
     return (score/10) / enemySum + 1;
