@@ -18,10 +18,10 @@ Player::Player(sf::RenderWindow& window): Entity() {
     lives = 3;
     //if it is 4k, scale differently
     if(options->getVector().x == 3840){
-        sprite.setScale(options->widthScaling(0.5f), options->heightScaling(0.5f));
+        sprite.setScale(options->widthScaling(0.8f), options->heightScaling(0.8f));
         movementSpeed *= options->widthScaling(1.0f);
     }else{
-        sprite.setScale(options->widthScaling(1.f), options->heightScaling(1.f));
+        sprite.setScale(options->widthScaling(1.5f), options->heightScaling(1.5f));
         movementSpeed *= options->widthScaling(1.5f);
     }
     this->setPosition(window.getSize().x *0.93 , window.getSize().y/ 2);
