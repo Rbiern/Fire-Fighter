@@ -1,14 +1,3 @@
-#ifndef FIRE_FIGHTER_ENEMYWAVE_H
-#define FIRE_FIGHTER_ENEMYWAVE_H
-
-#pragma once
-#include <vector>
-#include <string>
-#include "bullet.h"
-#include "enemy.h"
-#include <cmath>
-#include <iostream>
-
 /**
  * @file EnemyWave.h
  * @brief Handles the organization and behavior of enemy waves in the game.
@@ -26,6 +15,18 @@
  *
  * @author Juyoung Lee, Sungmin Lee
  */
+
+#ifndef FIRE_FIGHTER_ENEMYWAVE_H
+#define FIRE_FIGHTER_ENEMYWAVE_H
+
+#pragma once
+#include <vector>
+#include <string>
+#include "bullet.h"
+#include "enemy.h"
+#include <cmath>
+#include <iostream>
+
 
 class EnemyWave {
 
