@@ -142,3 +142,6 @@ void EnemyWave::respawnEnemies(int flag) {
         }
     }
 }
+int EnemyWave::getTotalSpawned() const {
+    return totalSpawned;
+}
