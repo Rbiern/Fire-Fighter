@@ -1,3 +1,9 @@
+/**
+ * @file Powerup.h
+ * @author Prachi Ghevaria
+ * @brief Declaration of the Powerup class.
+ */
+
 #ifndef FIRE_FIGHTER_POWERUP_H
 #define FIRE_FIGHTER_POWERUP_H
 
@@ -6,6 +12,13 @@
 #include <random>
 #include "player.h"
 
+/**
+ * @class Powerup
+ * @brief Represents a Powerup object in the game.
+ *
+ * The Powerup class is responsible for managing the properties and behavior of a power-up object
+ * within the game environment. Power-ups are typically used to provide more lives for the player.
+ */
 class Powerup {
 public:
     /**
