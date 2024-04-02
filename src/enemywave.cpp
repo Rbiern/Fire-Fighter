@@ -66,6 +66,7 @@ void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
     if (firstUpdate) {
         movingDown = true;
         firstUpdate = false;
+
     } else if ((bottomReached || topReached) && !hasMovedRightAfterReach) {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < columns; ++j) {
@@ -125,7 +126,7 @@ void EnemyWave::removeEnemy(int row, int column) {
     enemyGrid[row].erase(enemyGrid[row].begin() + column);
 }
 
-void EnemyWave::respawnEnemies() {
+void EnemyWave::respawnEnemies(int flag) {
     float speedIncreaseFactor = 2.0f; //enemy speed increase factor
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
@@ -133,8 +134,11 @@ void EnemyWave::respawnEnemies() {
             float positionY = startY + i * spacingY;
             enemyGrid[i][j].setPosition(positionX, positionY);
             enemyGrid[i][j].setIsAlive(true);
-            enemyGrid[i][j].increaseSpeed(speedIncreaseFactor);
+            if(flag == 0){
+                enemyGrid[i][j].increaseSpeed(speedIncreaseFactor);
+            }else{
 
+            }
         }
     }
 }
