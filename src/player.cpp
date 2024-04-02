@@ -1,8 +1,7 @@
-//Sungmin Lee
-
 #include "player.h"
 
 /**
+ * @author Sungmin Lee
  * constructor of player
  * @param startX Starting point in x coordinate
  * @param startY Starting point in y coordinate
@@ -18,10 +17,10 @@ Player::Player(sf::RenderWindow& window): Entity() {
     lives = 3;
     //if it is 4k, scale differently
     if(options->getVector().x == 3840){
-        sprite.setScale(options->widthScaling(0.8f), options->heightScaling(0.8f));
+        sprite.setScale(options->widthScaling(0.5f), options->heightScaling(0.5f));
         movementSpeed *= options->widthScaling(1.0f);
     }else{
-        sprite.setScale(options->widthScaling(1.5f), options->heightScaling(1.5f));
+        sprite.setScale(options->widthScaling(1.f), options->heightScaling(1.f));
         movementSpeed *= options->widthScaling(1.5f);
     }
     this->setPosition(window.getSize().x *0.93 , window.getSize().y/ 2);
@@ -68,25 +67,9 @@ void Player::increaseLife() {
         ++lives;
     }
 }
-
-/**
- * set player's movement speed
- * @param speed movement speed
- */
-void Player::setSpeed(float speed) {
-    movementSpeed = speed;
-}
-
-/**
- * get player's movement speed
- * @return player's movement speed
- */
-float Player::getSpeed() const {
-    return movementSpeed;
-}
 /**
  * check player has collide with enemy
- * @param enemySprite enemy's bulletSprite
+ * @param enemySprite enemy's Sprite
  * @return true if player collide with enemy
  */
 bool Player::isCollidingWithEnemy(const sf::Sprite& enemySprite) const {
@@ -98,8 +81,8 @@ bool Player::isCollidingWithEnemy(const sf::Sprite& enemySprite) const {
 
 }
 /**
- * get size of player's bulletSprite
- * @return size of player's bulletSprite
+ * get size of player's Sprite
+ * @return size of player's Sprite
  */
 sf::Vector2f Player::getSize() const {
     return sprite.getGlobalBounds().getSize();
@@ -178,7 +161,7 @@ Player::~Player() {
 }
 
 /**
- * Sets the texture of the player's bulletSprite based on the provided file path.
+ * Sets the texture of the player's Sprite based on the provided file path.
  * @param str file path
  */
 void Player::setPlayerTexture(char* str) {
@@ -187,9 +170,9 @@ void Player::setPlayerTexture(char* str) {
 
 /**
  * reset player's position and lives
+ * @param window window
  */
 void Player::reset(sf::RenderWindow& window) {
     setLives(3);
-    std::cout << options->getVector().y << std::endl;
     this->setPosition(window.getSize().x *0.93 , window.getSize().y/ 2);
 }
