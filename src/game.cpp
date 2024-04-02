@@ -163,7 +163,7 @@ void Game::gameLoop() {
         }
         /** end of enemy stuff */
         // Update and draw enemies using EnemyWave
-        enemyWave->update(deltaTime, metricsBarHeight);
+        enemyWave->update(metricsBarHeight);
 
         //check enemy's bullet collide with player
         for (int i = 0; i < enemyWave->getRows(); ++i) {
