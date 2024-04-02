@@ -40,7 +40,6 @@ public:
     int getRows() const;
     int getColumns() const;
     void adjustSpacingForResolution(const sf::Vector2u& resolution);
-    sf::RenderWindow& window;
     void respawnEnemies(int flag);
     bool allEnemiesDead() const;
     int getTotalSpawned() const;
@@ -48,6 +47,7 @@ public:
 
 
 private:
+    sf::RenderWindow& window;
     std::vector<std::vector<Enemy>> enemyGrid;
     int rows;
     int columns;
