@@ -1,11 +1,6 @@
 #include "game.h"
 
-/**
- * Constructs the Game object with game settings.
- *
- * @param opt A pointer to the Settings object containing game settings.
- * @author Robert Andrew Biernacki, Chaewon Eom, Prachi Ghevaria, JuYoung Lee, Sungmin Lee
- */
+/** constructor */
 Game::Game(Settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barrier2(*opt), barrier3(*opt) {
     options = *opt;             // settings
     font = options.getFont();   // load font from settings
@@ -26,12 +21,7 @@ Game::Game(Settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barr
     enemyWave = new EnemyWave(window, options.getVector(), options.getVector().y *0.1f);
 }
 
-/**
- * Destroys the Game object.
- *
- * @author Robert Andrew Biernacki
- */
-
+/** destructor */
 Game::~Game() {
     if (window.isOpen()) {
         window.close();
@@ -46,11 +36,7 @@ Game::~Game() {
     }
 }
 
-/**
- * Contains the main game loop.
- *
- * @author Robert Andrew Biernacki, Prachi Ghevaria, JuYoung Lee, Sungmin Lee
- */
+/** run game method */
 void Game::gameLoop() {
     char* str = characterSelectScreen();                           // character selection screen method call
     if (str == NULL) return;                                       // an error has occurred or user exited back to UI
@@ -65,7 +51,7 @@ void Game::gameLoop() {
     barrier3.setPosition(options.getResolution()[0] * 0.83f, useableHeight * 0.85f);
 
     //set up enemy
-    float metricsBarHeight = 100.0f;                                // Example height, adjust as needed
+    float metricsBarHeight = options.getVector().y *0.1;                                // Example height, adjust as needed
     metrics.setEnemyCount(enemyWave->getTotalSpawned());             // setup metrics bar on top of the window
 
     sf::Clock shootCooldown;                                        // for shooting cool down
@@ -307,11 +293,9 @@ void Game::gameLoop() {
 
 
 /**
- * Displays the character selection screen and processes user input.
- *
- * @return char* A string containing the file path of the selected character's texture. Returns NULL if the user exits.
- * @author Robert Andrew Biernacki
- */
+ * character selection window
+ * handles character selection
+ * */
 char* Game::characterSelectScreen() {
     char* str;                                          // String of player texture path to return
     sf::Texture boyTexture;                             // load image of the boy droplet image
@@ -464,12 +448,7 @@ char* Game::characterSelectScreen() {
     return str;
 }
 
-/**
- * Handles the exit request when the ESC key is pressed.
- *
- * @return bool True if the game should exit, false if the game should resume.
- * @author Robert Andrew Biernacki
- */
+/** handle window when user presses ESC key */
 bool Game::handleExitRequest() {
     // Calculate button sizes and positions dynamically based on window size
     float buttonWidth = options.widthScaling(resolution.x * 0.25f);
@@ -561,11 +540,9 @@ bool Game::handleExitRequest() {
 }
 
 /**
- * Displays the game over screen and offers options to retry or exit.
- *
- * @return bool True if the player chooses to exit the game, false if choosing to retry the game.
- * @author Robert Andrew Biernacki
- */
+ * handle window when game is over
+ * creates a message on window upon game over
+ * */
 bool Game::gameOverScreen() {
     // Get the screen dimensions
     float screenWidth = static_cast<float>(window.getSize().x);
