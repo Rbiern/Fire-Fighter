@@ -3,7 +3,6 @@
     /**
      *Constructor: Initializes an enemy wave within the game environment, setting up initial positions, spacing,
      *and creating enemies based on the game's window size, resolution, and UI metrics bar height.
-     * @author Juyoung Lee, Sungmin Lee
      * @param window
      * @param resolution
      * @param metricsBarHeight
