@@ -63,7 +63,7 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
     highestScoreText.setFont(font);
     highestScoreText.setCharacterSize(opt->heightScaling(20));
     highestScoreText.setFillColor(sf::Color::White);
-    highestScoreText.setString(opt->getLanguage()[26] + std::to_string(score));
+    highestScoreText.setString(opt->getLanguage()[26] + std::to_string(highestScore));
     highestScoreText.setPosition((((windowSize.x) * 0.82f) - (highestScoreText.getLocalBounds().width) / 2.f), (infoBarHeight/2) - (highestScoreText.getLocalBounds().height/2));
 
     // Load life counter textures and set up health bar sprite
