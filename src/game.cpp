@@ -1,12 +1,7 @@
 #include "game.h"
 
 /**
- * @brief Constructs the Game object with game settings.
- *
- * This constructor initializes the game by setting up the window,
- * loading resources, and preparing the initial state of the game.
- * It sets the window properties based on the settings provided and
- * loads necessary resources such as fonts, icons, and music.
+ * Constructs the Game object with game settings.
  *
  * @param opt A pointer to the Settings object containing game settings.
  * @author Robert Andrew Biernacki, Chaewon Eom, Prachi Ghevaria, JuYoung Lee, Sungmin Lee
@@ -32,11 +27,7 @@ Game::Game(Settings *opt) : metrics(opt->getVector(), opt), barrier1(*opt), barr
 }
 
 /**
- * @brief Destroys the Game object.
- *
- * Cleans up resources used by the game. This includes closing the
- * game window and deallocating dynamically allocated memory.
- * It ensures a clean shutdown of the game application.
+ * Destroys the Game object.
  *
  * @author Robert Andrew Biernacki
  */
@@ -56,11 +47,7 @@ Game::~Game() {
 }
 
 /**
- * @brief Contains the main game loop.
- *
- * This method encapsulates the core game loop, including event handling,
- * game updates, and rendering. It manages user input, game state updates,
- * collisions, and drawing the game objects to the screen.
+ * Contains the main game loop.
  *
  * @author Robert Andrew Biernacki, Prachi Ghevaria, JuYoung Lee, Sungmin Lee
  */
@@ -320,11 +307,7 @@ void Game::gameLoop() {
 
 
 /**
- * @brief Displays the character selection screen and processes user input.
- *
- * Allows the player to select a character by displaying a selection screen.
- * Handles user interactions for selecting a character or exiting back to the main UI.
- * It loads and displays character sprites and updates the game state based on the selection.
+ * Displays the character selection screen and processes user input.
  *
  * @return char* A string containing the file path of the selected character's texture. Returns NULL if the user exits.
  * @author Robert Andrew Biernacki
@@ -482,10 +465,7 @@ char* Game::characterSelectScreen() {
 }
 
 /**
- * @brief Handles the exit request when the ESC key is pressed.
- *
- * Displays a pause menu with options to exit the game or resume playing.
- * Manages user input to process the selected action.
+ * Handles the exit request when the ESC key is pressed.
  *
  * @return bool True if the game should exit, false if the game should resume.
  * @author Robert Andrew Biernacki
@@ -581,11 +561,7 @@ bool Game::handleExitRequest() {
 }
 
 /**
- * @brief Displays the game over screen and offers options to retry or exit.
- *
- * Activated when the player's character runs out of lives or the game reaches
- * a terminal state. It presents the user with options to either restart the game
- * or exit to the main menu.
+ * Displays the game over screen and offers options to retry or exit.
  *
  * @return bool True if the player chooses to exit the game, false if choosing to retry the game.
  * @author Robert Andrew Biernacki
