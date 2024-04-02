@@ -43,12 +43,12 @@ public:
     int getColumns() const;
     void adjustSpacingForResolution(const sf::Vector2u& resolution);
     sf::RenderWindow& window;
-    void respawnEnemies();
+    void respawnEnemies(int flag);
     bool allEnemiesDead() const;
 
     //enemy count
     void enemyHit(int row, int column); // Method to call when an enemy is hit
-    int getTotalSpawned() const { return totalSpawned; }
+    int getTotalSpawned() const;
     void update(sf::Time deltaTime, float metricsBarHeight);
 
 
