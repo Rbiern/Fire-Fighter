@@ -61,7 +61,7 @@ public:
  * game updates, and rendering. It manages user input, game state updates,
  * collisions, and drawing the game objects to the screen.
  *
- * @author Robert Andrew Biernacki, Prachi Ghevaria, JuYoung Lee, Sungmin Lee
+ * @author Robert Andrew Biernacki, Prachi Ghevaria, JuYoung Lee, Sungmin Lee, Chaewon Eom
  */
     void gameLoop();
 
