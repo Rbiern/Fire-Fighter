@@ -14,6 +14,7 @@
 
 /**
  * @class Player
+ * @author Sungmin Lee
  * @brief Manages the player's behavior and state in the game.
  *
  * The Player class is responsible for controlling the player's movements, handling shooting mechanics,
