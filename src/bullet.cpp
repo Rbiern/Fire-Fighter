@@ -21,9 +21,9 @@ Bullet::Bullet(float startX, float startY, const std::string& type, sf::Vector2u
     }
     else{
         if(res.x == 3840){
-            bulletSprite.setScale(0.3f * ((float)res.x/1280.f), 0.2f * ((float)res.y/720.f));
+            bulletSprite.setScale(0.5f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
         }else{
-            bulletSprite.setScale(1.0f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
+            bulletSprite.setScale(1.2f * ((float)res.x/1280.f), 1.2f * ((float)res.y/720.f));
         }
     }
 
