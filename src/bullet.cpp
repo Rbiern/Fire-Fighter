@@ -16,10 +16,16 @@ Bullet::Bullet(float startX, float startY, const std::string& type, sf::Vector2u
     bulletSprite.setPosition(startX, startY);
 
     // Set scale based on bullet type and game resolution
-    if (type == "enemy")
+    if (type == "enemy"){
         bulletSprite.setScale(0.5f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
-    else
-        bulletSprite.setScale(1.0f * ((float)res.x/1280.f), 1.0f * ((float)res.y/720.f));
+    }
+    else{
+        if(res.x == 3840){
+            bulletSprite.setScale(0.3f * ((float)res.x/1280.f), 0.2f * ((float)res.y/720.f));
+        }else{
+            bulletSprite.setScale(1.0f * ((float)res.x/1280.f), 0.5f * ((float)res.y/720.f));
+        }
+    }
 
     // Set default speed
     speed = 300.f;
