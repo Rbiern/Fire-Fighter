@@ -2,7 +2,7 @@
 
 
 EnemyWave::EnemyWave(sf::RenderWindow& window, const sf::Vector2u& resolution, float metricsBarHeight)
-        : window(window),waveAmplitude(20.0f), waveFrequency(0.5f), wavePhase(0.0f),
+        : window(window),
           rows(5), columns(4), spacingX(100.0f), spacingY(70.0f),
           startX(0.0f),  startY(75.0f + metricsBarHeight) {
     adjustSpacingForResolution(resolution); // Adjust spacing based on resolution
@@ -38,8 +38,7 @@ void EnemyWave::adjustSpacingForResolution(const sf::Vector2u& resolution) {
 }
 
 
-void EnemyWave::update(sf::Time deltaTime, float metricsBarHeight) {
-    float screenLimit = window.getSize().y - metricsBarHeight;
+void EnemyWave::update(float metricsBarHeight) {
     float moveRightDistance = 50.0f;
     static bool movingDown = true;
     static bool hasMovedRightAfterReach = false;
@@ -120,10 +119,6 @@ bool EnemyWave::allEnemiesDead() const {
         }
     }
     return true; // All enemies are dead
-}
-
-void EnemyWave::removeEnemy(int row, int column) {
-    enemyGrid[row].erase(enemyGrid[row].begin() + column);
 }
 
 void EnemyWave::respawnEnemies(int flag) {
