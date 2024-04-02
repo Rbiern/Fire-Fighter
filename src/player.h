@@ -69,22 +69,10 @@ public:
     void move(const sf::Vector2f& direction);
 
     /**
-     * @brief Draws the player bulletSprite on the specified window.
+     * @brief Draws the player Sprite on the specified window.
      * @param window The render window to draw the player on.
      */
     void draw(sf::RenderWindow& window);
-
-    /**
-     * @brief Sets the player's movement speed.
-     * @param speed New movement speed.
-     */
-    void setSpeed(float speed);
-
-    /**
-     * @brief Retrieves the player's current movement speed.
-     * @return The current movement speed of the player.
-     */
-    float getSpeed() const;
 
     /**
      * @brief Gets the size of the player's bulletSprite.
@@ -110,7 +98,7 @@ public:
     void decreaseLife();
 
     /**
-     * @brief Increases the player's life count by one, not exceeding the maximum.
+     * @brief Increases the player's life count by one, not exceeding the maximum which is 3.
      */
     void increaseLife();
     /**
@@ -118,8 +106,8 @@ public:
      */
     void reset(sf::RenderWindow& window);
     /**
-     * @brief Checks for collision between the player and an enemy bulletSprite.
-     * @param enemySprite The bulletSprite of the enemy to check for collision.
+     * @brief Checks for collision between the player and an enemy's sprite.
+     * @param enemySprite The Sprite of the enemy to check for collision.
      * @return True if the player is colliding with the enemy bulletSprite, false otherwise.
      */
     bool isCollidingWithEnemy(const sf::Sprite& enemySprite) const;
