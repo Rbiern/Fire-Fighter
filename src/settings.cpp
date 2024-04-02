@@ -1,6 +1,8 @@
 #include "settings.h"
 
-/** constructor */
+/**
+ * Constructor of a Settings object.
+ */
 Settings::Settings() {
     std::ifstream file("../../config/settings.txt");             // Open the file
     char idx = 0;
@@ -12,10 +14,11 @@ Settings::Settings() {
     std::string line;
     while (std::getline(file, line)) {
         int number = std::stoi(line, nullptr, 2);     // Convert the line to an integer
-        dataFromFile[idx++] = number;
+        dataFromFile[idx++] = number;   // Assign the value to the data array
     }
     file.close();
 
+    // Assign settings variables based on the values read from the file
     fullscreen = dataFromFile[0];
     resolution = dataFromFile[1] == 1 ? res.dv : dataFromFile[1] == 2 ? res.sd : dataFromFile[1] == 3 ? res.hd : res.uhd;
     frameRate = dataFromFile[2];
@@ -23,29 +26,36 @@ Settings::Settings() {
     music = dataFromFile[4];
     soundEffects = dataFromFile[5];
     language = dataFromFile[6] == 1 ? lang.English : dataFromFile[6] == 2 ? lang.Korean : lang.Mandarin;
-    // load the right font file
+
+    // Load the appropriate font based on the selected language
     if (language[0] == L"\uC0C8 \uAC8C\uC784") {
         if (!font.loadFromFile("../../resource/fonts/NanumMyeongjoBold.ttf")) {
-            std::cerr << "Failed to load font!" << std::endl;
+            std::cerr << "Failed to load Korean font!" << std::endl;   // Print error message if Korean font loading fails
         }
     } else if (language[0] == L"\u65B0\u6E38\u620F") {
         if (!font.loadFromFile("../../resource/fonts/simplified_Chinese.ttf")) {
-            std::cerr << "Failed to load Korean font!" << std::endl;
+            std::cerr << "Failed to load Chinese font!" << std::endl;    // Print error message if Chinese font loading fails
         }
     } else {
         if (!font.loadFromFile("../../resource/fonts/Rajdhani-SemiBold.ttf")) {
-            std::cerr << "Failed to load English font!" << std::endl;
+            std::cerr << "Failed to load English font!" << std::endl;   // Print error message if English font loading fails
         }
     }
+
+    // Load the application icon
     if (!icon.loadFromFile("../../resource/img/icon.png")) {
-        std::cerr << "Failed to load icon" << std::endl;
+        std::cerr << "Failed to load icon" << std::endl;  // Print error message
     }
 }
 
-/** destructor */
+/**
+ * Destructor of a Settings class.
+ */
 Settings::~Settings() = default;
 
-/** main settings window loop */
+/**
+ * Open a Settings window loop where the player can adjust various game settings.
+ */
 void Settings::openSettings() {
     // Create the window
     sf::VideoMode fullScreenMode = sf::VideoMode::getDesktopMode();
@@ -73,10 +83,12 @@ void Settings::openSettings() {
     float buttonWidth = (screenWidth / 3) * 0.8f;
     float buttonHeight = (screenHeight / 4) * 0.5f;
     float totalButtonWidth = buttonWidth * 3;
+
     // create parallelogram languages buttons
     sf::ConvexShape EnglishButton = createParallelogram(buttonWidth, buttonHeight);
     sf::ConvexShape koreanButton = createParallelogram(buttonWidth, buttonHeight);
     sf::ConvexShape MandarinButton = createParallelogram(buttonWidth, buttonHeight);
+
     // set position of languages button on where to draw it
     EnglishButton.setPosition((screenWidth - totalButtonWidth) / 2, screenHeight / 2 - buttonHeight / 2);
     koreanButton.setPosition(EnglishButton.getPosition().x + buttonWidth, screenHeight / 2 - buttonHeight / 2);
@@ -88,16 +100,19 @@ void Settings::openSettings() {
     buttonWidth = (screenWidth / 4) * 0.8f;
     buttonHeight = (screenHeight / 4) * 0.5f;
     totalButtonWidth = buttonWidth * 4;
+
     // create parallelogram resolutions buttons
     sf::ConvexShape dvButton = createParallelogram(buttonWidth, buttonHeight);
     sf::ConvexShape sdButton = createParallelogram(buttonWidth, buttonHeight);
     sf::ConvexShape hdButton = createParallelogram(buttonWidth, buttonHeight);
     sf::ConvexShape uhdButton = createParallelogram(buttonWidth, buttonHeight);
+
     // set position of resolution button on where to draw it
     dvButton.setPosition((screenWidth - totalButtonWidth) / 2, screenHeight * 0.75 - buttonHeight / 2);
     sdButton.setPosition(dvButton.getPosition().x + buttonWidth, screenHeight * 0.75 - buttonHeight / 2);
     hdButton.setPosition(sdButton.getPosition().x + buttonWidth, screenHeight * 0.75 - buttonHeight / 2);
     uhdButton.setPosition(hdButton.getPosition().x + buttonWidth, screenHeight * 0.75 - buttonHeight / 2);
+
     // place select resolution text top center of all resolution buttons
     selectResolutionText.setPosition((screenWidth / 2) - buttonWidth / 2, sdButton.getPosition().y - 30);
 
@@ -400,47 +415,94 @@ void Settings::openSettings() {
     }
 }
 
+/**
+ * Get the resolution settings.
+ * @return resolution An array containing the resolution settings.
+ */
 int *Settings::getResolution() {
     return resolution;
 }
 
+/**
+ * Get the language settings.
+ * @return language An array containing the language settings.
+ */
 sf::String * Settings::getLanguage() {
     return language;
 }
 
+/**
+ * Toggle the music setting.
+ * @return bool True if music is enabled, false otherwise.
+ */
 bool Settings::toggleMusic() const {
     return music;
 }
 
+/**
+ * Check if the application is running in fullscreen mode.
+ * @return bool True if the application is in fullscreen mode, false otherwise.
+ */
 bool Settings::isFullScreen() const {
     return fullscreen;
 }
 
+/**
+ * Get the font used for rendering text in the application.
+ * @return sf::Font The font used for rendering text.
+ */
 sf::Font Settings::getFont() {
     return font;
 }
 
+/**
+ * Get the icon used for the application window.
+ * @return sf::Image The icon used for the application window.
+ */
 sf::Image Settings::getIcon() {
     return icon;
 }
 
+/**
+ * Toggle the sound effects on or off.
+ * @return bool True if sound effects are enabled, false otherwise.
+ */
 bool Settings::toggleSounds() const {
     return soundEffects;
 }
 
+/**
+ * Scale a given value according to the width of the resolution.
+ * @param x The value to be scaled.
+ * @return float The scaled value.
+ */
 float Settings::widthScaling(float x) {
     return x * ((float)resolution[0]/1280.f);
 }
 
+/**
+ * Scale a given value according to the height of the resolution.
+ * @param y The value to be scaled.
+ * @return float The scaled value.
+ */
 float Settings::heightScaling(float y) {
     return y * ((float)resolution[1]/720.f);
 }
 
+/**
+ * Get the resolution as a sf::Vector2u object.
+ * @return sf::Vector2u The resolution as a sf::Vector2u object.
+ */
 sf::Vector2u Settings::getVector() {
     sf::Vector2u vector(resolution[0], resolution[1]);
     return vector;
 }
 
+/**
+ * Set a custom screen resolution.
+ * @param x The width of the custom resolution.
+ * @param y The height of the custom resolution.
+ */
 void Settings::userScreenInfo(int x, int y) {
     if (resolution[0] != x && resolution[1] != y) {
         res.uniqueRes[0] = x;
@@ -449,37 +511,61 @@ void Settings::userScreenInfo(int x, int y) {
     }
 }
 
-/** Helper method for checking if the parallelogram button is pressed */
+/**
+ * Helper method to check if a point (mouse position) is inside a convex shape (button).
+ * @param button The convex shape representing the button.
+ * @param mousePosition The position of the mouse pointer.
+ * @return true if the mouse position is inside the button, false otherwise.
+ */
 bool Settings::isButtonPressed(const sf::ConvexShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
     return buttonBounds.contains(mousePosition);
 }
 
-/** Helper method for checking if the rectangle button is pressed */
+
+/**
+ * Helper method to check if a point (mouse position) is inside a rectangle shape (button).
+ * @param button The rectangle shape representing the button.
+ * @param mousePosition The position of the mouse pointer.
+ * @return true if the mouse position is inside the button, false otherwise.
+ */
 bool Settings::isButtonPressed(const sf::RectangleShape& button, const sf::Vector2f& mousePosition) {
     sf::FloatRect buttonBounds = button.getGlobalBounds();
     return buttonBounds.contains(mousePosition);
 }
 
-/** Helper method to create a parallelogram shape */
+/**
+ * Helper method to create a parallelogram shape with the specified dimensions.
+ * @param width The width of the parallelogram.
+ * @param height The height of the parallelogram.
+ * @return An sf::ConvexShape object representing the parallelogram.
+ */
 sf::ConvexShape Settings::createParallelogram(float width, float height) {
+    // Create a convex shape to represent the parallelogram
     sf::ConvexShape parallelogram;
-    parallelogram.setPointCount(4);
-    parallelogram.setPoint(0, sf::Vector2f(0, 0));
-    parallelogram.setPoint(1, sf::Vector2f(width, 0));
-    parallelogram.setPoint(2, sf::Vector2f(width * 0.8f, height));
-    parallelogram.setPoint(3, sf::Vector2f(-width * 0.2f, height));
-    parallelogram.setFillColor(sf::Color::Transparent);
-    parallelogram.setOutlineThickness(2);
-    parallelogram.setOutlineColor(sf::Color::White);
-    return parallelogram;
+    parallelogram.setPointCount(4); // Set the number of points to define the shape (4 for a parallelogram)
+    parallelogram.setPoint(0, sf::Vector2f(0, 0)); // Define the first point at the top-left corner
+    parallelogram.setPoint(1, sf::Vector2f(width, 0)); // Define the second point at the top-right corner
+    parallelogram.setPoint(2, sf::Vector2f(width * 0.8f, height)); // Define the third point at the bottom-right corner
+    parallelogram.setPoint(3, sf::Vector2f(-width * 0.2f, height)); // Define the fourth point at the bottom-left corner
+    parallelogram.setFillColor(sf::Color::Transparent); // Set the fill color to transparent
+    parallelogram.setOutlineThickness(2); // Set the thickness of the outline
+    parallelogram.setOutlineColor(sf::Color::White); // Set the color of the outline
+    return parallelogram; // Return the created parallelogram shape
 }
 
-/** Helper method to create a rectangle shape */
+
+/**
+ * Helper method to create a rectangle shape with the specified dimensions.
+ * @param width The width of the rectangle.
+ * @param height The height of the rectangle.
+ * @return An sf::RectangleShape object representing the rectangle.
+ */
 sf::RectangleShape Settings::createRectangle(float width, float height) {
+    // Create a rectangle shape with the specified dimensions
     sf::RectangleShape button(sf::Vector2f(width, height));
-    button.setFillColor(sf::Color(54, 207, 213));
-    button.setOutlineThickness(2);
-    button.setOutlineColor(sf::Color::White);
-    return button;
+    button.setFillColor(sf::Color(54, 207, 213)); // Set the fill color to a predefined color
+    button.setOutlineThickness(2); // Set the thickness of the outline
+    button.setOutlineColor(sf::Color::White); // Set the color of the outline
+    return button; // Return the created rectangle shape
 }
