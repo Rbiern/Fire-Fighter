@@ -87,16 +87,21 @@ Metrics::Metrics(sf::Vector2u windowSize, Settings* opt) : score(0), windowSize(
 }
 
 /**
- * Destructor of metrics.
- */
-Metrics::~Metrics() = default;
-
-/**
  * @brief Destructor of Metrics.
  *
  * Default destructor for the Metrics class.
  * This destructor is defaulted, meaning it does not have custom cleanup operations.
  * It will automatically release resources and memory allocated by the Metrics class.
+ */
+Metrics::~Metrics() = default;
+
+/**
+ * @brief Update the health bar based on the player's remaining lives.
+ *
+ * This function updates the health bar texture based on the player's remaining lives.
+ * It switches between different life counter textures depending on the number of lives.
+ *
+ * @param lives The number of lives remaining for the player.
  * @author Prachi Ghevaria
  */
 void Metrics::updateHealthbar(int lives){
@@ -162,10 +167,10 @@ void Metrics::drawFinalScore(sf::RenderTarget& window) {
 
 /**
  * @brief Set the count of remaining enemies and updates the corresponding text.
- * 
+ *
  * This function sets the count of remaining enemies to the specified value and updates
  * the enemies remaining text accordingly.
- * 
+ *
  * @param enemyCount The count of remaining enemies.
  */
 void Metrics::setEnemyCount(int enemyCount) {
