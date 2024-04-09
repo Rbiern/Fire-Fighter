@@ -1,8 +1,8 @@
 # Fire Fighter
 # Description 
-Team project of a group of five people to purpose, design, code, and document a program for CS3307 Western University. Our purposed project is to create a game similar to the original 1978 space invaders game. 
+Team project of a group of five people to design, code, and document a program for CS3307 Western University. Our purposed project is to create a game inspired by the original 1978 space invaders game.
 # UML Diagram
-![3307 class diagram](https://github.com/Rbiern/Fire-Fighter/assets/156489385/264f72a7-ce29-4f4e-87a3-dbdacbb32bf1)
+![3307 class diagram](https://github.com/Rbiern/Fire-Fighter/assets/156489385/5b421833-a56a-4cd8-b097-40d5997e454b)
 # Screenshots 
 ![menu](https://github.com/Rbiern/Fire-Fighter/assets/156489385/0b1fcd2d-264a-49ae-b9f6-2db704b22cdb)
 ![settings](https://github.com/Rbiern/Fire-Fighter/assets/156489385/f2317f32-7956-48b7-9910-0aeafd217f1d)
